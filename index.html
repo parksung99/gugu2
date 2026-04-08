@@ -2,11 +2,12 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>GUGU. — 인플루언서 공구 플랫폼</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800;900&family=Bebas+Neue&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800;900&family=Bebas+Neue&display=swap" rel="stylesheet">
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
+/* ── RESET & VARIABLES ── */
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{
   --bg:#0A0A0A;--s1:#111114;--s2:#171719;--s3:#1e1e22;
   --b1:#242428;--b2:#2e2e34;
@@ -15,238 +16,330 @@
   --max:1100px;
 }
 html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--t);font-family:'Noto Sans KR',sans-serif;font-size:14px;line-height:1.6}
-.wrap{max-width:var(--max);margin:0 auto;padding:0 28px}
-nav{position:sticky;top:0;z-index:200;background:rgba(10,10,10,.95);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid var(--b1)}
-.nav-inner{max-width:var(--max);margin:0 auto;display:flex;align-items:center;height:56px;padding:0 28px;gap:0}
-.logo{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:3px;color:var(--t);flex-shrink:0;text-decoration:none;margin-right:24px}
+body{background:var(--bg);color:var(--t);font-family:'Noto Sans KR',sans-serif;font-size:14px;line-height:1.6;min-height:100vh}
+img{max-width:100%;display:block}
+a{text-decoration:none;color:inherit}
+
+/* ── LAYOUT ── */
+.wrap{max-width:var(--max);margin:0 auto;padding:0 20px}
+
+/* ── NAV ── */
+nav{position:sticky;top:0;z-index:200;background:rgba(10,10,10,.97);border-bottom:1px solid var(--b1);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+.nav-inner{max-width:var(--max);margin:0 auto;display:flex;align-items:center;height:54px;padding:0 20px;gap:12px}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:3px;color:var(--t);flex-shrink:0}
 .logo em{color:var(--r);font-style:normal}
-.nav-cats{display:flex;gap:1px;flex:1;overflow:hidden}
-.nc{padding:6px 12px;border-radius:6px;font-size:13px;color:var(--t2);cursor:pointer;border:none;background:none;font-family:inherit;white-space:nowrap;transition:.15s;text-decoration:none;display:block}
-.nc:hover{color:var(--t);background:var(--s2)}.nc.on{color:var(--t);font-weight:600}
+.nav-cats{display:flex;gap:2px;flex:1;overflow:hidden}
+.nc{padding:5px 10px;border-radius:6px;font-size:13px;color:var(--t2);border:none;background:none;font-family:inherit;white-space:nowrap;cursor:pointer;transition:.15s}
+.nc:hover,.nc.on{color:var(--t);background:var(--s2)}
 .nav-r{display:flex;align-items:center;gap:8px;margin-left:auto;flex-shrink:0}
-.search-wrap{display:flex;align-items:center;gap:6px;background:var(--s2);border:1px solid var(--b1);border-radius:8px;padding:7px 12px;width:190px}
-.search-wrap input{background:none;border:none;outline:none;color:var(--t);font-size:13px;font-family:inherit;width:100%}
-.search-wrap input::placeholder{color:var(--t3)}
-.notif-btn{width:34px;height:34px;border-radius:8px;background:var(--s2);border:1px solid var(--b1);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;font-size:14px}
-.notif-btn .nb{position:absolute;top:4px;right:4px;width:7px;height:7px;border-radius:50%;background:var(--r);border:1.5px solid var(--bg)}
+.search-box{display:flex;align-items:center;gap:6px;background:var(--s2);border:1px solid var(--b1);border-radius:8px;padding:6px 12px;width:180px}
+.search-box input{background:none;border:none;outline:none;color:var(--t);font-size:13px;font-family:inherit;width:100%}
+.search-box input::placeholder{color:var(--t3)}
 .btn-sm{padding:6px 14px;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap}
 .btn-line{background:none;border:1px solid var(--b2);color:var(--t)}
 .btn-fill{background:var(--r);border:none;color:#fff}
-.hero{padding:32px 0 24px}
-.hero-grid{display:grid;grid-template-columns:1fr 320px;gap:24px;align-items:start}
-.hero-badge{display:inline-flex;align-items:center;gap:7px;background:rgba(255,59,59,.1);border:1px solid rgba(255,59,59,.22);border-radius:99px;padding:5px 14px;font-size:12px;font-weight:600;color:var(--r);margin-bottom:18px}
+.notif-btn{width:34px;height:34px;border-radius:8px;background:var(--s2);border:1px solid var(--b1);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;font-size:16px;flex-shrink:0}
+.notif-btn .nb{position:absolute;top:5px;right:5px;width:6px;height:6px;border-radius:50%;background:var(--r);border:1.5px solid var(--bg)}
+
+/* 모바일 햄버거 버튼 — 기본 숨김 */
+.mob-btn{display:none;width:36px;height:36px;border-radius:8px;background:var(--s2);border:1px solid var(--b1);align-items:center;justify-content:center;cursor:pointer;font-size:18px;color:var(--t2);flex-shrink:0}
+
+/* ── HERO ── */
+.hero{padding:28px 0 20px}
+.hero-grid{display:grid;grid-template-columns:1fr 300px;gap:28px;align-items:start}
+.hero-badge{display:inline-flex;align-items:center;gap:7px;background:rgba(255,59,59,.1);border:1px solid rgba(255,59,59,.22);border-radius:99px;padding:5px 14px;font-size:12px;font-weight:600;color:var(--r);margin-bottom:16px}
 .live-dot{width:6px;height:6px;border-radius:50%;background:var(--r);animation:blink 1.4s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
-.hero h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(48px,5.5vw,72px);letter-spacing:2px;line-height:.95;color:var(--t);margin-bottom:12px}
+.hero h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(44px,5vw,68px);letter-spacing:2px;line-height:.95;margin-bottom:12px}
 .hero h1 em{color:var(--r);font-style:normal}
-.hero-sub{font-size:15px;color:var(--t2);line-height:1.7;margin-bottom:22px;max-width:420px}
-.hero-stats{display:flex;gap:28px;margin-bottom:24px}
-.hs-item .hs-n{font-size:22px;font-weight:800;color:var(--t);letter-spacing:-.5px}
-.hs-item .hs-l{font-size:11px;color:var(--t2);margin-top:2px;font-weight:500}
+.hero-sub{font-size:14px;color:var(--t2);line-height:1.7;margin-bottom:20px}
+.hero-stats{display:flex;gap:24px;margin-bottom:22px}
+.hs-n{font-size:20px;font-weight:800;letter-spacing:-.5px}
+.hs-l{font-size:11px;color:var(--t2);margin-top:2px}
 .hero-cta{display:flex;gap:10px}
-.btn-lg{padding:12px 24px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:.2s}
-.btn-lg-fill{background:var(--r);border:none;color:#fff}.btn-lg-fill:hover{background:#e03333}
-.btn-lg-out{background:none;border:1px solid var(--b2);color:var(--t)}.btn-lg-out:hover{border-color:var(--t3)}
+.btn-lg{padding:12px 22px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:.2s;border:none}
+.btn-lg-r{background:var(--r);color:#fff}
+.btn-lg-o{background:none;border:1px solid var(--b2);color:var(--t)}
+
+/* 히어로 카드 */
 .hero-card{background:var(--s1);border:1px solid var(--b1);border-radius:16px;overflow:hidden}
-.hc-img{height:180px;position:relative;overflow:hidden;background:linear-gradient(135deg,#180808,#260e0e);display:flex;align-items:center;justify-content:center;font-size:64px}
-.hc-badge{position:absolute;top:10px;left:10px;background:var(--r);color:#fff;font-size:10px;font-weight:700;padding:3px 9px;border-radius:5px}
+.hc-img{height:160px;background:linear-gradient(135deg,#180808,#260e0e);display:flex;align-items:center;justify-content:center;font-size:56px;position:relative}
+.hc-badge{position:absolute;top:10px;left:10px;background:var(--r);color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:5px}
 .hc-body{padding:14px}
 .hc-inf{display:flex;align-items:center;gap:8px;margin-bottom:10px}
 .av{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0}
-.hc-inf-name{font-size:13px;font-weight:600}.hc-inf-sub{font-size:10px;color:var(--t2)}
-.verified{margin-left:auto;font-size:10px;font-weight:600;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.2);color:var(--g);padding:2px 7px;border-radius:4px}
-.hc-name{font-size:13px;font-weight:700;margin-bottom:8px;line-height:1.4}
-.price-row{display:flex;align-items:center;gap:7px;margin-bottom:10px}
+.hc-name-row{flex:1}
+.hc-inf-name{font-size:13px;font-weight:600}
+.hc-inf-sub{font-size:10px;color:var(--t2)}
+.verified{font-size:10px;font-weight:600;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.2);color:var(--g);padding:2px 6px;border-radius:4px;white-space:nowrap}
+.hc-title{font-size:13px;font-weight:700;margin-bottom:8px;line-height:1.4}
+.price-row{display:flex;align-items:center;gap:6px;margin-bottom:10px;flex-wrap:wrap}
 .p-orig{font-size:11px;color:var(--t3);text-decoration:line-through}
-.p-sale{font-size:20px;font-weight:800;color:var(--t)}
+.p-sale{font-size:18px;font-weight:800}
 .p-disc{font-size:11px;font-weight:700;color:var(--r);background:rgba(255,59,59,.1);padding:2px 6px;border-radius:4px}
-.prog-wrap{margin-bottom:8px}
-.prog-row{display:flex;justify-content:space-between;font-size:11px;color:var(--t2);margin-bottom:4px}
-.prog-bar{height:4px;background:var(--b2);border-radius:2px}
+.prog-lbl{display:flex;justify-content:space-between;font-size:11px;color:var(--t2);margin-bottom:4px}
+.prog-bar{height:4px;background:var(--b2);border-radius:2px;margin-bottom:8px}
 .prog-fill{height:100%;background:linear-gradient(90deg,var(--r),var(--o));border-radius:2px}
-.hc-timer{display:flex;align-items:center;justify-content:center;gap:4px;font-size:11px;color:var(--t2);margin-top:6px}
-.tc{background:var(--s3);border-radius:5px;padding:3px 7px;font-weight:700;color:var(--t);font-size:13px;font-family:'Bebas Neue',sans-serif;letter-spacing:1px}
-.btn-buy{width:100%;padding:11px;border-radius:10px;background:var(--r);border:none;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:.2s;margin-bottom:6px}
-.btn-buy:hover{background:#e03333}
-.sec{padding:24px 0}
+.btn-buy{width:100%;padding:11px;border-radius:10px;background:var(--r);border:none;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:6px}
+.timer-row{display:flex;align-items:center;justify-content:center;gap:4px;font-size:11px;color:var(--t2)}
+.tc{background:var(--s3);border-radius:4px;padding:3px 6px;font-weight:700;color:var(--t);font-size:12px;font-family:'Bebas Neue',sans-serif;letter-spacing:1px}
+
+/* ── SECTIONS ── */
+.sec{padding:20px 0}
 .sec-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
-.sec-title{font-size:17px;font-weight:800;letter-spacing:-.3px}
-.sec-more{font-size:13px;color:var(--t2);cursor:pointer;text-decoration:none;transition:.15s}.sec-more:hover{color:var(--t)}
-.sec-divider{height:1px;background:var(--b1);margin:8px 0 24px}
-.follow-banner{background:linear-gradient(135deg,rgba(255,59,59,.07),rgba(255,138,0,.04));border:1px solid rgba(255,59,59,.15);border-radius:14px;padding:20px 24px;display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
-.fb-left h3{font-size:16px;font-weight:700;margin-bottom:4px}.fb-left h3 em{color:var(--r);font-style:normal}
-.fb-left p{font-size:13px;color:var(--t2)}.fb-right{display:flex;gap:8px}
-.inf-strip{display:flex;gap:16px;overflow-x:auto;padding-bottom:6px}
-.inf-strip::-webkit-scrollbar{height:3px}.inf-strip::-webkit-scrollbar-thumb{background:var(--b2);border-radius:2px}
-.inf-chip{flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer;text-decoration:none}
-.ic-av{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;background:var(--s2);border:2px solid var(--b1);color:var(--t);transition:.2s;position:relative}
+.sec-title{font-size:16px;font-weight:800;letter-spacing:-.3px}
+.sec-more{font-size:13px;color:var(--t2);transition:.15s}
+.sec-more:hover{color:var(--t)}
+.divider{height:1px;background:var(--b1);margin:4px 0 20px}
+
+/* ── 팔로잉 배너 ── */
+.follow-banner{background:linear-gradient(135deg,rgba(255,59,59,.07),rgba(255,138,0,.04));border:1px solid rgba(255,59,59,.15);border-radius:14px;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:20px}
+.fb-title{font-size:15px;font-weight:700;margin-bottom:3px}
+.fb-title em{color:var(--r);font-style:normal}
+.fb-sub{font-size:12px;color:var(--t2)}
+.fb-btns{display:flex;gap:8px;flex-shrink:0}
+
+/* ── 인플루언서 스트립 ── */
+.inf-strip{display:flex;gap:14px;overflow-x:auto;padding-bottom:6px;-webkit-overflow-scrolling:touch}
+.inf-strip::-webkit-scrollbar{height:3px}
+.inf-strip::-webkit-scrollbar-thumb{background:var(--b2);border-radius:2px}
+.inf-chip{flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:6px}
+.ic-av{width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;background:var(--s2);border:2px solid var(--b1);color:var(--t);position:relative}
 .inf-chip.live .ic-av{border-color:var(--r);background:rgba(255,59,59,.08)}
-.ic-live{position:absolute;bottom:0;right:0;width:13px;height:13px;border-radius:50%;background:var(--r);border:2px solid var(--bg)}
-.ic-name{font-size:11px;color:var(--t2);text-align:center;white-space:nowrap}.inf-chip.live .ic-name{color:var(--r);font-weight:600}
-.ic-cnt{font-size:10px;color:var(--t3);text-align:center}
-.flash-banner{background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:20px 24px;display:flex;align-items:center;justify-content:space-between}
-.fbl-tag{display:inline-flex;align-items:center;gap:5px;background:rgba(255,138,0,.1);border:1px solid rgba(255,138,0,.2);color:var(--o);font-size:10px;font-weight:700;padding:3px 10px;border-radius:99px;letter-spacing:.5px;margin-bottom:8px}
-.fbl h3{font-size:22px;font-weight:800;letter-spacing:-.5px;margin-bottom:4px}.fbl p{font-size:13px;color:var(--t2)}
-.fbr{display:flex;align-items:center;gap:20px}
-.timer-unit{text-align:center}
-.tu-n{font-family:'Bebas Neue',sans-serif;font-size:44px;letter-spacing:2px;line-height:1}
+.ic-live{position:absolute;bottom:0;right:0;width:12px;height:12px;border-radius:50%;background:var(--r);border:2px solid var(--bg)}
+.ic-name{font-size:11px;color:var(--t2);text-align:center;white-space:nowrap}
+.inf-chip.live .ic-name{color:var(--r);font-weight:600}
+.ic-cnt{font-size:10px;color:var(--t3)}
+
+/* ── 오늘마감 배너 ── */
+.flash-banner{background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.fb-tag{display:inline-flex;align-items:center;gap:5px;background:rgba(255,138,0,.1);border:1px solid rgba(255,138,0,.2);color:var(--o);font-size:10px;font-weight:700;padding:3px 10px;border-radius:99px;margin-bottom:6px}
+.fb-t h3{font-size:20px;font-weight:800;margin-bottom:3px}
+.fb-t p{font-size:12px;color:var(--t2)}
+.timer-units{display:flex;align-items:center;gap:14px;flex-shrink:0}
+.tu{text-align:center}
+.tu-n{font-family:'Bebas Neue',sans-serif;font-size:40px;line-height:1;letter-spacing:2px}
 .tu-n.r{color:var(--r)}.tu-n.o{color:var(--o)}.tu-n.w{color:var(--t)}
-.tu-l{font-size:10px;color:var(--t2);margin-top:2px;font-weight:500}.tu-div{width:1px;height:40px;background:var(--b2)}
-.cat-tabs{display:flex;gap:6px;margin-bottom:18px;flex-wrap:wrap}
-.ct{padding:6px 14px;border-radius:99px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--b1);background:none;color:var(--t2);font-family:inherit;transition:.2s;white-space:nowrap}
+.tu-l{font-size:10px;color:var(--t2);margin-top:1px}
+.tu-div{width:1px;height:36px;background:var(--b2)}
+
+/* ── 오늘마감 카드 ── */
+.flash-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.flash-card{background:var(--s1);border:1px solid var(--b1);border-radius:13px;padding:14px;display:flex;gap:12px;cursor:pointer;transition:.2s;position:relative;overflow:hidden}
+.flash-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--r),var(--o))}
+.flash-card:hover{border-color:rgba(255,59,59,.3)}
+.fc-img{width:68px;height:68px;border-radius:10px;background:var(--s2);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:28px}
+.fc-info{flex:1;min-width:0}
+.fc-inf{font-size:11px;color:var(--t2);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fc-name{font-size:13px;font-weight:700;margin-bottom:5px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fc-pr{display:flex;align-items:center;gap:5px;margin-bottom:4px;flex-wrap:wrap}
+.fc-orig{font-size:11px;color:var(--t3);text-decoration:line-through}
+.fc-sale{font-size:15px;font-weight:800;color:var(--r)}
+.fc-disc{font-size:10px;font-weight:700;color:var(--r)}
+.fc-bar{height:3px;background:var(--b2);border-radius:2px;margin-bottom:3px}
+.fc-fill{height:100%;background:linear-gradient(90deg,var(--r),var(--o));border-radius:2px}
+.fc-meta{font-size:11px;color:var(--t2)}
+
+/* ── 신규오픈 ── */
+.new-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.new-card{background:var(--s1);border:1px solid var(--b1);border-radius:13px;padding:14px;display:flex;gap:12px;cursor:pointer;transition:.2s}
+.new-card:hover{border-color:var(--b2)}
+.nc-img{width:68px;height:68px;border-radius:10px;background:var(--s2);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:28px;position:relative}
+.nc-new{position:absolute;top:-4px;right:-4px;background:var(--bl);color:#fff;font-size:8px;font-weight:700;padding:1px 5px;border-radius:3px}
+.nc-info{flex:1;min-width:0}
+.nc-inf{font-size:11px;color:var(--t2);margin-bottom:2px}
+.nc-name{font-size:13px;font-weight:700;margin-bottom:5px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nc-pr{display:flex;align-items:center;gap:5px;margin-bottom:3px;flex-wrap:wrap}
+.nc-orig{font-size:11px;color:var(--t3);text-decoration:line-through}
+.nc-sale{font-size:14px;font-weight:800}
+.nc-disc{font-size:10px;font-weight:700;color:var(--r)}
+.nc-time{font-size:11px;color:var(--t2);display:flex;align-items:center;gap:4px}
+.nc-dot{width:4px;height:4px;border-radius:50%;background:var(--g)}
+
+/* ── 카테고리 탭 ── */
+.cat-tabs{display:flex;gap:6px;margin-bottom:16px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.cat-tabs::-webkit-scrollbar{display:none}
+.ct{padding:6px 14px;border-radius:99px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--b1);background:none;color:var(--t2);font-family:inherit;transition:.2s;white-space:nowrap;flex-shrink:0}
 .ct:hover{border-color:var(--b2);color:var(--t)}.ct.on{background:var(--r);border-color:var(--r);color:#fff}
+
+/* ── 핫한 공구 그리드 ── */
 .prod-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
-.prod-card{background:var(--s1);border:1px solid var(--b1);border-radius:13px;overflow:hidden;cursor:pointer;transition:transform .2s,border-color .2s;text-decoration:none;display:block}
+.prod-card{background:var(--s1);border:1px solid var(--b1);border-radius:13px;overflow:hidden;cursor:pointer;transition:.2s}
 .prod-card:hover{transform:translateY(-3px);border-color:var(--b2)}
-.pc-img{height:168px;background:var(--s2);display:flex;align-items:center;justify-content:center;font-size:48px;position:relative}
+.pc-img{height:160px;background:var(--s2);display:flex;align-items:center;justify-content:center;font-size:44px;position:relative}
 .pc-bdg{position:absolute;top:8px;left:8px;font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;color:#fff}
 .bdg-r{background:var(--r)}.bdg-o{background:var(--o)}.bdg-b{background:var(--bl)}
 .pc-body{padding:12px}
-.pc-inf-row{display:flex;align-items:center;gap:5px;margin-bottom:6px}
+.pc-inf-row{display:flex;align-items:center;gap:5px;margin-bottom:5px}
 .pc-av{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:#fff;flex-shrink:0}
 .pc-inf-name{font-size:11px;color:var(--t2)}
-.pc-name{font-size:13px;font-weight:700;margin-bottom:7px;line-height:1.4;color:var(--t);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:36px}
-.pc-pr{display:flex;align-items:center;gap:6px;margin-bottom:7px;flex-wrap:wrap}
+.pc-name{font-size:13px;font-weight:700;margin-bottom:6px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:36px}
+.pc-pr{display:flex;align-items:center;gap:5px;margin-bottom:6px;flex-wrap:wrap}
 .pc-orig{font-size:11px;color:var(--t3);text-decoration:line-through}
-.pc-sale{font-size:16px;font-weight:800;color:var(--t)}.pc-disc{font-size:11px;font-weight:700;color:var(--r)}
-.pc-bar{height:3px;background:var(--b2);border-radius:2px;margin-bottom:5px}
-.pc-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--r),var(--o))}
+.pc-sale{font-size:15px;font-weight:800}
+.pc-disc{font-size:11px;font-weight:700;color:var(--r)}
+.pc-bar{height:3px;background:var(--b2);border-radius:2px;margin-bottom:4px}
+.pc-fill{height:100%;background:linear-gradient(90deg,var(--r),var(--o));border-radius:2px}
 .pc-meta{display:flex;justify-content:space-between;font-size:11px;color:var(--t2)}
-.new-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.new-card{background:var(--s1);border:1px solid var(--b1);border-radius:13px;padding:14px;display:flex;gap:12px;cursor:pointer;transition:border-color .2s;text-decoration:none}
-.new-card:hover{border-color:var(--b2)}
-.nc-img{width:72px;height:72px;border-radius:10px;background:var(--s2);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:30px;position:relative}
-.nc-new{position:absolute;top:-4px;right:-4px;background:var(--bl);color:#fff;font-size:8px;font-weight:700;padding:1px 5px;border-radius:3px}
-.nc-info{flex:1;min-width:0}
-.nc-inf{font-size:11px;color:var(--t2);margin-bottom:3px}
-.nc-name{font-size:13px;font-weight:700;color:var(--t);margin-bottom:5px;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.nc-pr{display:flex;align-items:center;gap:5px;margin-bottom:4px}
-.nc-orig{font-size:11px;color:var(--t3);text-decoration:line-through}
-.nc-sale{font-size:15px;font-weight:800;color:var(--t)}.nc-disc{font-size:10px;font-weight:700;color:var(--r)}
-.nc-time{font-size:11px;color:var(--t2);display:flex;align-items:center;gap:4px}
-.nc-time .dot{width:4px;height:4px;border-radius:50%;background:var(--g)}
-.flash-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.flash-card{background:var(--s1);border:1px solid var(--b1);border-radius:13px;padding:14px;display:flex;gap:12px;cursor:pointer;transition:border-color .2s;text-decoration:none;position:relative}
-.flash-card:hover{border-color:rgba(255,59,59,.3)}
-.flash-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;border-radius:13px 13px 0 0;background:linear-gradient(90deg,var(--r),var(--o))}
-.fc-img{width:72px;height:72px;border-radius:10px;background:var(--s2);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:30px}
-.fc-info{flex:1;min-width:0}
-.fc-inf{font-size:11px;color:var(--t2);margin-bottom:2px}
-.fc-name{font-size:13px;font-weight:700;color:var(--t);margin-bottom:5px;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.fc-pr{display:flex;align-items:center;gap:5px;margin-bottom:5px}
-.fc-orig{font-size:11px;color:var(--t3);text-decoration:line-through}
-.fc-sale{font-size:15px;font-weight:800;color:var(--r)}.fc-disc{font-size:10px;font-weight:700;color:var(--r)}
-.fc-bar{height:3px;background:var(--b2);border-radius:2px;margin-bottom:3px}
-.fc-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--r),var(--o))}
-.fc-meta{font-size:11px;color:var(--t2)}
-.fc-timer{position:absolute;top:10px;right:10px;display:flex;gap:2px}
-.fct{background:var(--s3);border-radius:3px;padding:2px 4px;font-size:10px;font-weight:700;color:var(--r);font-family:'Bebas Neue',sans-serif;letter-spacing:.5px}
+
+/* ── 카테고리 쇼케이스 ── */
 .cat-showcase{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
-.cs-card{background:var(--s1);border:1px solid var(--b1);border-radius:12px;padding:16px 12px;text-align:center;cursor:pointer;transition:.2s;text-decoration:none;display:block;position:relative;overflow:hidden}
+.cs-card{background:var(--s1);border:1px solid var(--b1);border-radius:12px;padding:16px 12px;text-align:center;cursor:pointer;transition:.2s;position:relative;overflow:hidden}
 .cs-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;border-radius:12px 12px 0 0}
 .cs1::before{background:var(--r)}.cs2::before{background:var(--o)}.cs3::before{background:var(--g)}.cs4::before{background:var(--bl)}.cs5::before{background:#a855f7}
-.cs-card:hover{border-color:var(--b2);transform:translateY(-2px)}
-.cs-emoji{font-size:26px;margin-bottom:8px}.cs-name{font-size:13px;font-weight:700;color:var(--t);margin-bottom:3px}
-.cs-cnt{font-size:11px;color:var(--t2)}.cs-hot{font-size:10px;font-weight:600;padding:2px 8px;border-radius:99px;margin-top:6px;display:inline-block}
+.cs-card:hover{transform:translateY(-2px);border-color:var(--b2)}
+.cs-emoji{font-size:24px;margin-bottom:8px}
+.cs-name{font-size:13px;font-weight:700;margin-bottom:3px}
+.cs-cnt{font-size:11px;color:var(--t2)}
+.cs-hot{font-size:10px;font-weight:600;padding:2px 8px;border-radius:99px;margin-top:6px;display:inline-block}
 .cs1 .cs-hot{background:rgba(255,59,59,.1);color:var(--r)}.cs2 .cs-hot{background:rgba(255,138,0,.1);color:var(--o)}.cs3 .cs-hot{background:rgba(34,197,94,.1);color:var(--g)}.cs4 .cs-hot{background:rgba(99,102,241,.1);color:var(--bl)}.cs5 .cs-hot{background:rgba(168,85,247,.1);color:#a855f7}
-.following-feed{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
-.ff-card{background:var(--s1);border:1px solid rgba(255,59,59,.15);border-radius:13px;overflow:hidden;cursor:pointer;transition:transform .2s;text-decoration:none;display:block}
-.ff-card:hover{transform:translateY(-2px)}
-.ff-top{display:flex;align-items:center;gap:8px;padding:10px 12px 0}
-.ff-av-wrap{position:relative}
-.ff-av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;border:2px solid var(--r)}
-.ff-live{position:absolute;bottom:-2px;right:-2px;background:var(--r);color:#fff;font-size:7px;font-weight:700;padding:1px 3px;border-radius:3px;border:1px solid var(--bg)}
-.ff-inf-info{flex:1;min-width:0}.ff-inf-name{font-size:12px;font-weight:700;color:var(--t)}.ff-inf-time{font-size:10px;color:var(--t2)}
-.ff-img{height:130px;background:var(--s2);display:flex;align-items:center;justify-content:center;font-size:40px;margin-top:8px}
-.ff-body{padding:10px 12px 12px}
-.ff-name{font-size:12px;font-weight:700;color:var(--t);margin-bottom:5px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:32px}
-.ff-pr{display:flex;align-items:center;gap:5px}.ff-sale{font-size:15px;font-weight:800;color:var(--t)}.ff-disc{font-size:10px;font-weight:700;color:var(--r)}
-.ff-bar{height:2px;background:var(--b2);border-radius:1px;margin-top:6px}.ff-fill{height:100%;background:var(--r);border-radius:1px}
-footer{border-top:1px solid var(--b1);padding:24px 28px;margin-top:12px}
-.footer-inner{max-width:var(--max);margin:0 auto;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:24px}
-.f-logo{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;color:var(--t)}.f-logo em{color:var(--r);font-style:normal}
-.f-links{display:flex;gap:20px;justify-content:center;flex-wrap:wrap}.f-links a{font-size:12px;color:var(--t3);text-decoration:none;transition:.15s}.f-links a:hover{color:var(--t2)}
-.f-copy{font-size:11px;color:var(--t3);text-align:right}.f-copy span{color:var(--t2)}
 
+/* ── 팔로잉 피드 ── */
+.feed-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.feed-card{background:var(--s1);border:1px solid rgba(255,59,59,.15);border-radius:13px;overflow:hidden;cursor:pointer;transition:.2s}
+.feed-card:hover{transform:translateY(-2px)}
+.fd-top{display:flex;align-items:center;gap:8px;padding:10px 12px 0}
+.fd-av{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;border:2px solid var(--r);flex-shrink:0;position:relative}
+.fd-new{position:absolute;bottom:-2px;right:-2px;background:var(--r);color:#fff;font-size:7px;font-weight:700;padding:1px 3px;border-radius:3px;border:1px solid var(--bg)}
+.fd-name{font-size:12px;font-weight:700}
+.fd-time{font-size:10px;color:var(--t2)}
+.fd-img{height:120px;background:var(--s2);display:flex;align-items:center;justify-content:center;font-size:38px;margin-top:8px}
+.fd-body{padding:10px 12px 12px}
+.fd-title{font-size:12px;font-weight:700;margin-bottom:4px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:30px}
+.fd-pr{display:flex;align-items:center;gap:5px}
+.fd-sale{font-size:14px;font-weight:800}
+.fd-disc{font-size:10px;font-weight:700;color:var(--r)}
+.fd-prog{height:2px;background:var(--b2);border-radius:1px;margin-top:6px}
+.fd-fill{height:100%;background:var(--r);border-radius:1px}
 
-/* ══════════════════════════════════════
-   MOBILE RESPONSIVE — index.html
-══════════════════════════════════════ */
+/* ── FOOTER ── */
+footer{border-top:1px solid var(--b1);padding:20px;margin-top:12px}
+.footer-inner{max-width:var(--max);margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.f-logo{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px}
+.f-logo em{color:var(--r);font-style:normal}
+.f-links{display:flex;gap:16px;flex-wrap:wrap}
+.f-links a{font-size:12px;color:var(--t3);transition:.15s}
+.f-links a:hover{color:var(--t2)}
+.f-copy{font-size:11px;color:var(--t3)}
 
-@media (max-width: 1024px) {
-  .prod-grid { grid-template-columns: repeat(3,1fr) !important; }
-  .cat-showcase { grid-template-columns: repeat(3,1fr) !important; }
-  .new-grid { grid-template-columns: repeat(2,1fr) !important; }
-  .following-feed { grid-template-columns: repeat(2,1fr) !important; }
-}
-@media (max-width: 768px) {
-  .wrap { padding-left:16px !important; padding-right:16px !important; }
-  .nav-cats { display:none !important; }
-  .search-wrap { display:none !important; }
-  .nav-r > .btn-line { display:none !important; }
-  .mob-menu-btn { display:none; display:flex !important; }
-  .mob-search-bar { display:flex !important; }
-  .hero { padding:20px 0 16px !important; }
-  .hero-grid { grid-template-columns:1fr !important; gap:20px !important; }
-  .hero-right { order:-1; }
-  .hero h1 { font-size:40px !important; line-height:1 !important; }
-  .hero-sub { font-size:14px !important; }
-  .hero-stats { gap:16px !important; }
-  .hero-cta { flex-direction:column !important; }
-  .btn-lg { width:100% !important; }
-  .follow-banner { flex-direction:column !important; gap:14px !important; }
-  .fb-right { width:100% !important; display:flex !important; }
-  .fb-right button { flex:1 !important; }
-  .flash-banner { flex-direction:column !important; gap:16px !important; }
-  .fbr { justify-content:center !important; }
-  .tu-n { font-size:36px !important; }
-  .flash-grid { grid-template-columns:1fr !important; gap:10px !important; }
-  .fc-timer { display:none !important; }
-  .new-grid { grid-template-columns:repeat(2,1fr) !important; gap:10px !important; }
-  .prod-grid { grid-template-columns:repeat(2,1fr) !important; gap:10px !important; }
-  .cat-showcase { grid-template-columns:repeat(2,1fr) !important; gap:8px !important; }
-  .following-feed { grid-template-columns:repeat(2,1fr) !important; gap:10px !important; }
-  .footer-inner { grid-template-columns:1fr !important; gap:12px !important; text-align:center !important; }
-  .f-links { justify-content:center !important; }
-  .f-copy { text-align:center !important; }
-  .sec { padding:16px 0 !important; }
-  .inf-strip { gap:12px !important; }
-  .ic-av { width:46px !important; height:46px !important; }
+/* ── 모바일 하단 탭바 ── */
+.mob-bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:rgba(10,10,10,.97);border-top:1px solid var(--b1);z-index:300;padding-bottom:env(safe-area-inset-bottom,0)}
+.mob-bottom-nav a{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 4px;color:var(--t2);font-size:10px;font-weight:600;white-space:nowrap}
+.mob-bottom-nav a:hover,.mob-bottom-nav a.on{color:var(--r)}
+.mob-bottom-nav a span:first-child{font-size:20px}
+
+/* ── 햄버거 드로어 ── */
+.mob-drawer{display:none;position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.8);align-items:flex-end}
+.mob-drawer.open{display:flex}
+.mob-drawer-inner{background:var(--s1);width:100%;border-radius:20px 20px 0 0;padding:20px 20px calc(20px + env(safe-area-inset-bottom,0));transform:translateY(100%);transition:transform .3s ease}
+.mob-drawer.open .mob-drawer-inner{transform:translateY(0)}
+.mob-handle{width:36px;height:4px;background:var(--b2);border-radius:2px;margin:0 auto 20px}
+.mob-cats{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+.mob-cats a{padding:13px 16px;border-radius:10px;font-size:15px;font-weight:600;border:1px solid var(--b1);background:var(--s2);display:flex;align-items:center;gap:10px}
+.mob-btns{display:flex;gap:8px}
+.mob-btns button{flex:1;padding:13px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit}
+
+/* ── 모바일 검색바 ── */
+.mob-search{display:none;align-items:center;gap:8px;background:var(--s2);border:1px solid var(--b1);border-radius:10px;padding:10px 14px;margin:6px 16px 0}
+.mob-search input{background:none;border:none;outline:none;color:var(--t);font-size:14px;font-family:inherit;width:100%}
+.mob-search input::placeholder{color:var(--t3)}
+
+/* ══════════════════════════════
+   TABLET 1024px
+══════════════════════════════ */
+@media (max-width:1024px){
+  .prod-grid{grid-template-columns:repeat(3,1fr)}
+  .cat-showcase{grid-template-columns:repeat(3,1fr)}
+  .flash-grid{grid-template-columns:repeat(2,1fr)}
+  .new-grid{grid-template-columns:repeat(2,1fr)}
+  .feed-grid{grid-template-columns:repeat(2,1fr)}
 }
 
+/* ══════════════════════════════
+   MOBILE 768px
+══════════════════════════════ */
+@media (max-width:768px){
+  /* 네비 */
+  .wrap{padding:0 16px}
+  .nav-inner{padding:0 16px;height:50px}
+  .logo{font-size:22px}
+  .nav-cats,.search-box,.btn-line{display:none}
+  .mob-btn{display:flex}
+  .mob-search{display:flex}
+  .mob-bottom-nav{display:flex}
+  body{padding-bottom:62px}
 
-/* ══════ 공통 모바일 요소 ══════ */
-@media (max-width: 768px) {
-  /* 네비 공통 */
-  .mob-menu-btn { display:flex !important; }
-  .mob-search-bar { display:flex !important; }
-  /* 하단 탭바 */
-  .mob-bottom-nav { display:flex !important; }
-  body { padding-bottom:60px; }
+  /* 히어로 */
+  .hero{padding:16px 0 14px}
+  .hero-grid{grid-template-columns:1fr;gap:16px}
+  .hero-right{order:-1}
+  .hero h1{font-size:42px;line-height:.95}
+  .hero-sub{font-size:13px;margin-bottom:16px}
+  .hero-stats{gap:16px;margin-bottom:18px}
+  .hs-n{font-size:18px}
+  .hs-l{font-size:10px}
+  .hero-cta{flex-direction:column;gap:8px}
+  .btn-lg{width:100%;text-align:center;padding:13px}
+  .hc-img{height:140px;font-size:48px}
+
+  /* 팔로잉 배너 */
+  .follow-banner{flex-direction:column;align-items:flex-start;gap:12px;padding:16px}
+  .fb-btns{width:100%}
+  .fb-btns .btn-sm{flex:1;text-align:center}
+
+  /* 인플루언서 스트립 */
+  .ic-av{width:46px;height:46px;font-size:14px}
+  .ic-name{font-size:10px}
+
+  /* 오늘마감 배너 */
+  .flash-banner{flex-direction:column;align-items:flex-start;gap:14px;padding:16px}
+  .timer-units{width:100%;justify-content:center}
+  .tu-n{font-size:36px}
+
+  /* 오늘마감 카드 → 1열 */
+  .flash-grid{grid-template-columns:1fr;gap:10px}
+  .fc-img{width:60px;height:60px;font-size:24px}
+  .fc-name{font-size:12px}
+
+  /* 신규오픈 → 2열 */
+  .new-grid{grid-template-columns:repeat(2,1fr);gap:10px}
+  .nc-img{width:56px;height:56px;font-size:22px}
+  .nc-name{font-size:12px}
+  .nc-sale{font-size:13px}
+
+  /* 핫한공구 → 2열 */
+  .prod-grid{grid-template-columns:repeat(2,1fr);gap:10px}
+  .pc-img{height:140px;font-size:36px}
+  .pc-name{font-size:12px;min-height:32px}
+  .pc-sale{font-size:14px}
+
+  /* 카테고리 쇼케이스 → 2열+1 */
+  .cat-showcase{grid-template-columns:repeat(2,1fr);gap:8px}
+  .cs-emoji{font-size:22px}
+  .cs-name{font-size:12px}
+  .cs-cnt{font-size:10px}
+  .cs-hot{font-size:9px}
+
+  /* 팔로잉 피드 → 2열 */
+  .feed-grid{grid-template-columns:repeat(2,1fr);gap:10px}
+  .fd-img{height:100px;font-size:30px}
+  .fd-title{font-size:11px;min-height:28px}
+  .fd-sale{font-size:13px}
+
+  /* 섹션 */
+  .sec{padding:14px 0}
+  .sec-title{font-size:15px}
+  .divider{margin:2px 0 16px}
+
+  /* 푸터 */
+  .footer-inner{flex-direction:column;align-items:center;text-align:center;gap:10px}
+  .f-links{justify-content:center;gap:12px}
 }
-
-/* 햄버거 드로어 메뉴 */
-.mob-menu-btn { display:none; width:36px; height:36px; border-radius:8px; background:var(--s2,#171719); border:1px solid var(--b1,#242428); align-items:center; justify-content:center; cursor:pointer; font-size:18px; color:var(--t2,#8a8a9a); flex-shrink:0; }
-.mob-drawer { position:fixed; inset:0; z-index:999; background:rgba(0,0,0,.75);  display:flex; align-items:flex-end; opacity:0; pointer-events:none; transition:opacity .25s; }
-.mob-drawer.open { opacity:1; pointer-events:all; visibility:visible; }
-.mob-drawer-inner { background:var(--s1,#111114); width:100%; border-radius:20px 20px 0 0; padding:20px 20px 40px; transform:translateY(100%); transition:transform .25s cubic-bezier(.4,0,.2,1); }
-.mob-drawer.open .mob-drawer-inner { transform:translateY(0); }
-.mob-drawer-handle { width:36px; height:4px; background:var(--b2,#2e2e34); border-radius:2px; margin:0 auto 20px; }
-.mob-drawer-cats { display:flex; flex-direction:column; gap:6px; margin-bottom:20px; }
-.mob-drawer-cats a { padding:12px 16px; border-radius:10px; font-size:15px; font-weight:600; color:var(--t,#F2F2F5); text-decoration:none; border:1px solid var(--b1,#242428); background:var(--s2,#171719); display:flex; align-items:center; gap:10px; }
-.mob-drawer-btns { display:flex; gap:8px; }
-.mob-drawer-btns button { flex:1; padding:12px; border-radius:10px; font-size:14px; font-weight:700; cursor:pointer; font-family:inherit; }
-.mob-search-bar { display:none; align-items:center; gap:8px; background:var(--s2,#171719); border:1px solid var(--b1,#242428); border-radius:10px; padding:10px 14px; margin:6px 16px 0; }
-.mob-search-bar input { background:none; border:none; outline:none; color:var(--t,#F2F2F5); font-size:14px; font-family:inherit; width:100%; }
-@media (max-width: 768px) {
-  .mob-menu-btn { display:flex !important; }
-  .mob-search-bar { display:flex !important; }
-}
-
 </style>
 </head>
 <body>
+
+<!-- NAV -->
 <nav>
   <div class="nav-inner">
     <a class="logo" href="index.html">GUGU<em>.</em></a>
@@ -259,17 +352,27 @@ footer{border-top:1px solid var(--b1);padding:24px 28px;margin-top:12px}
       <a class="nc" href="category.html">피트니스</a>
     </div>
     <div class="nav-r">
-      <div class="search-wrap">
-        <span style="color:var(--t3);font-size:13px">⌕</span>
+      <div class="search-box">
+        <span style="color:var(--t3);font-size:14px">⌕</span>
         <input type="text" placeholder="인플루언서, 상품 검색">
       </div>
       <div class="notif-btn" onclick="location.href='notifications.html'">🔔<div class="nb"></div></div>
       <button class="btn-sm btn-line" onclick="location.href='login.html'">로그인</button>
       <button class="btn-sm btn-fill" onclick="location.href='login.html'">회원가입</button>
+      <div class="mob-btn" onclick="openMenu()">☰</div>
     </div>
   </div>
 </nav>
+
+<!-- 모바일 검색바 -->
+<div class="mob-search">
+  <span style="color:var(--t3);font-size:14px">⌕</span>
+  <input type="text" placeholder="인플루언서, 상품 검색" onkeypress="if(event.key==='Enter')location.href='search.html'">
+</div>
+
 <div class="wrap">
+
+  <!-- HERO -->
   <div class="hero">
     <div class="hero-grid">
       <div class="hero-left">
@@ -282,8 +385,8 @@ footer{border-top:1px solid var(--b1);padding:24px 28px;margin-top:12px}
           <div class="hs-item"><div class="hs-n">최대 72%</div><div class="hs-l">할인율</div></div>
         </div>
         <div class="hero-cta">
-          <button class="btn-lg btn-lg-fill" onclick="location.href='category.html'">공구 둘러보기</button>
-          <button class="btn-lg btn-lg-out" onclick="location.href='influencer-landing.html'">인플루언서 신청</button>
+          <button class="btn-lg btn-lg-r" onclick="location.href='category.html'">공구 둘러보기</button>
+          <button class="btn-lg btn-lg-o" onclick="location.href='influencer-landing.html'">인플루언서 신청</button>
         </div>
       </div>
       <div class="hero-right">
@@ -292,33 +395,36 @@ footer{border-top:1px solid var(--b1);padding:24px 28px;margin-top:12px}
           <div class="hc-body">
             <div class="hc-inf">
               <div class="av" style="background:#e83e8c">지</div>
-              <div><div class="hc-inf-name">지민뷰티</div><div class="hc-inf-sub">팔로워 89.2만 · 뷰티</div></div>
+              <div class="hc-name-row"><div class="hc-inf-name">지민뷰티</div><div class="hc-inf-sub">팔로워 89.2만 · 뷰티</div></div>
               <div class="verified">✓ 인증</div>
             </div>
-            <div class="hc-name">레티날 0.1% 나이트 세럼 30ml 단독 특가</div>
+            <div class="hc-title">레티날 0.1% 나이트 세럼 30ml 단독 특가</div>
             <div class="price-row"><span class="p-orig">68,000원</span><span class="p-sale">40,800원</span><span class="p-disc">-40%</span></div>
-            <div class="prog-wrap">
-              <div class="prog-row"><span>4,812명 참여</span><span>마감까지 18% 남음</span></div>
-              <div class="prog-bar"><div class="prog-fill" style="width:82%"></div></div>
-            </div>
+            <div class="prog-lbl"><span>4,812명 참여</span><span style="color:var(--r)">18% 남음</span></div>
+            <div class="prog-bar"><div class="prog-fill" style="width:82%"></div></div>
             <button class="btn-buy" onclick="location.href='product-detail.html'">지금 참여하기 →</button>
-            <div class="hc-timer">종료까지 <span class="tc" id="th">02</span>:<span class="tc" id="tm">14</span>:<span class="tc" id="ts">38</span></div>
+            <div class="timer-row">종료까지 <span class="tc" id="th">02</span>:<span class="tc" id="tm">14</span>:<span class="tc" id="ts">38</span></div>
           </div>
         </div>
       </div>
     </div>
   </div>
-  <div class="sec-divider"></div>
+
+  <div class="divider"></div>
+
+  <!-- 팔로잉 배너 -->
   <div class="follow-banner">
-    <div class="fb-left">
-      <h3>팔로잉 인플루언서의 <em>새 공구</em>를 놓치고 있어요</h3>
-      <p>로그인하면 내가 팔로우하는 인플루언서 공구를 가장 먼저 알려드려요</p>
+    <div>
+      <div class="fb-title">팔로잉 인플루언서의 <em>새 공구</em>를 놓치고 있어요</div>
+      <div class="fb-sub">로그인하면 내가 팔로우하는 인플루언서 공구를 가장 먼저 알려드려요</div>
     </div>
-    <div class="fb-right">
+    <div class="fb-btns">
       <button class="btn-sm btn-line" onclick="location.href='login.html'">로그인</button>
       <button class="btn-sm btn-fill" onclick="location.href='login.html'">무료 가입 →</button>
     </div>
   </div>
+
+  <!-- 인플루언서 스트립 -->
   <div class="sec">
     <div class="sec-head"><div class="sec-title">지금 공구 중인 인플루언서</div><a class="sec-more" href="category.html">전체보기 →</a></div>
     <div class="inf-strip">
@@ -334,69 +440,48 @@ footer{border-top:1px solid var(--b1);padding:24px 28px;margin-top:12px}
       <a class="inf-chip" href="influencer-profile.html"><div class="ic-av">건</div><div class="ic-name">건강언니</div><div class="ic-cnt">21.9만</div></a>
     </div>
   </div>
-  <div class="flash-banner" style="margin-bottom:0">
-    <div class="fbl">
-      <div class="fbl-tag"><span>⚡</span>TODAY ONLY</div>
+
+  <!-- 오늘마감 배너 -->
+  <div class="flash-banner">
+    <div class="fb-t">
+      <div class="fb-tag">⚡ TODAY ONLY</div>
       <h3>오늘 자정까지 이 가격</h3>
       <p>마감되면 다시는 이 가격에 못 살 수도 있어요</p>
     </div>
-    <div class="fbr">
-      <div class="timer-unit"><div class="tu-n r" id="fh">08</div><div class="tu-l">시간</div></div>
+    <div class="timer-units">
+      <div class="tu"><div class="tu-n r" id="fh">08</div><div class="tu-l">시간</div></div>
       <div class="tu-div"></div>
-      <div class="timer-unit"><div class="tu-n o" id="fm">43</div><div class="tu-l">분</div></div>
+      <div class="tu"><div class="tu-n o" id="fm">43</div><div class="tu-l">분</div></div>
       <div class="tu-div"></div>
-      <div class="timer-unit"><div class="tu-n w" id="fs">21</div><div class="tu-l">초</div></div>
+      <div class="tu"><div class="tu-n w" id="fs">21</div><div class="tu-l">초</div></div>
     </div>
   </div>
-  <div class="sec" style="padding-top:16px">
+
+  <!-- 오늘마감 상품 -->
+  <div class="sec" style="padding-top:14px">
     <div class="flash-grid">
-      <a class="flash-card" href="product-detail.html">
-        <div class="fc-img">🧴</div>
-        <div class="fc-info">
-          <div class="fc-inf">채링이 · 팔로워 42만</div>
-          <div class="fc-name">나이아신아마이드 10% 토너패드 100매</div>
-          <div class="fc-pr"><span class="fc-orig">38,000원</span><span class="fc-sale">22,800원</span><span class="fc-disc">-40%</span></div>
-          <div class="fc-bar"><div class="fc-fill" style="width:78%"></div></div>
-          <div class="fc-meta">2,341명 · 22% 남음</div>
-        </div>
-        <div class="fc-timer"><span class="fct" id="ct1h">08</span>:<span class="fct" id="ct1m">43</span>:<span class="fct" id="ct1s">21</span></div>
-      </a>
-      <a class="flash-card" href="product-detail.html">
-        <div class="fc-img">💊</div>
-        <div class="fc-info">
-          <div class="fc-inf">건강언니 · 팔로워 22만</div>
-          <div class="fc-name">저분자 콜라겐 펩타이드 스틱 30포</div>
-          <div class="fc-pr"><span class="fc-orig">65,000원</span><span class="fc-sale">39,000원</span><span class="fc-disc">-40%</span></div>
-          <div class="fc-bar"><div class="fc-fill" style="width:61%"></div></div>
-          <div class="fc-meta">891명 · 39% 남음</div>
-        </div>
-        <div class="fc-timer"><span class="fct" id="ct2h">08</span>:<span class="fct" id="ct2m">43</span>:<span class="fct" id="ct2s">21</span></div>
-      </a>
-      <a class="flash-card" href="product-detail.html">
-        <div class="fc-img">💪</div>
-        <div class="fc-info">
-          <div class="fc-inf">머슬박사 · 팔로워 33만</div>
-          <div class="fc-name">제로슈거 웨이프로틴 초코맛 2kg</div>
-          <div class="fc-pr"><span class="fc-orig">89,000원</span><span class="fc-sale">53,400원</span><span class="fc-disc">-40%</span></div>
-          <div class="fc-bar"><div class="fc-fill" style="width:91%"></div></div>
-          <div class="fc-meta">5,102명 · 9% 남음</div>
-        </div>
-        <div class="fc-timer"><span class="fct" id="ct3h">08</span>:<span class="fct" id="ct3m">43</span>:<span class="fct" id="ct3s">21</span></div>
-      </a>
+      <a class="flash-card" href="product-detail.html"><div class="fc-img">🧴</div><div class="fc-info"><div class="fc-inf">채링이 · 42만</div><div class="fc-name">나이아신아마이드 10% 토너패드 100매</div><div class="fc-pr"><span class="fc-orig">38,000원</span><span class="fc-sale">22,800원</span><span class="fc-disc">-40%</span></div><div class="fc-bar"><div class="fc-fill" style="width:78%"></div></div><div class="fc-meta">2,341명 · 22% 남음</div></div></a>
+      <a class="flash-card" href="product-detail.html"><div class="fc-img">💊</div><div class="fc-info"><div class="fc-inf">건강언니 · 22만</div><div class="fc-name">저분자 콜라겐 펩타이드 스틱 30포</div><div class="fc-pr"><span class="fc-orig">65,000원</span><span class="fc-sale">39,000원</span><span class="fc-disc">-40%</span></div><div class="fc-bar"><div class="fc-fill" style="width:61%"></div></div><div class="fc-meta">891명 · 39% 남음</div></div></a>
+      <a class="flash-card" href="product-detail.html"><div class="fc-img">💪</div><div class="fc-info"><div class="fc-inf">머슬박사 · 33만</div><div class="fc-name">제로슈거 웨이프로틴 초코맛 2kg</div><div class="fc-pr"><span class="fc-orig">89,000원</span><span class="fc-sale">53,400원</span><span class="fc-disc">-40%</span></div><div class="fc-bar"><div class="fc-fill" style="width:91%"></div></div><div class="fc-meta">5,102명 · 9% 남음</div></div></a>
     </div>
   </div>
-  <div class="sec-divider"></div>
+
+  <div class="divider"></div>
+
+  <!-- 신규오픈 -->
   <div class="sec">
     <div class="sec-head"><div class="sec-title">🆕 방금 오픈한 공구</div><a class="sec-more" href="category.html">전체보기 →</a></div>
     <div class="new-grid">
-      <a class="new-card" href="product-detail.html"><div class="nc-img">🧴<div class="nc-new">NEW</div></div><div class="nc-info"><div class="nc-inf">지민뷰티 · 뷰티</div><div class="nc-name">레티날 0.1% 나이트 세럼 30ml</div><div class="nc-pr"><span class="nc-orig">68,000원</span><span class="nc-sale">40,800원</span><span class="nc-disc">-40%</span></div><div class="nc-time"><span class="dot"></span>방금 오픈</div></div></a>
-      <a class="new-card" href="product-detail.html"><div class="nc-img">👗<div class="nc-new">NEW</div></div><div class="nc-info"><div class="nc-inf">나리스타일 · 패션</div><div class="nc-name">배럴핏 와이드 데님 3컬러</div><div class="nc-pr"><span class="nc-orig">89,000원</span><span class="nc-sale">53,400원</span><span class="nc-disc">-40%</span></div><div class="nc-time"><span class="dot"></span>12분 전 오픈</div></div></a>
-      <a class="new-card" href="product-detail.html"><div class="nc-img">🏠<div class="nc-new">NEW</div></div><div class="nc-info"><div class="nc-inf">홈인테리어수 · 라이프</div><div class="nc-name">아로마 소이 캔들 5종 기프트셋</div><div class="nc-pr"><span class="nc-orig">78,000원</span><span class="nc-sale">46,800원</span><span class="nc-disc">-40%</span></div><div class="nc-time"><span class="dot"></span>34분 전 오픈</div></div></a>
-      <a class="new-card" href="product-detail.html"><div class="nc-img">🍳<div class="nc-new">NEW</div></div><div class="nc-info"><div class="nc-inf">쿡스타그램 · 라이프</div><div class="nc-name">IH 세라믹 프라이팬 3종 세트</div><div class="nc-pr"><span class="nc-orig">145,000원</span><span class="nc-sale">87,000원</span><span class="nc-disc">-40%</span></div><div class="nc-time"><span class="dot"></span>1시간 전 오픈</div></div></a>
-      <a class="new-card" href="product-detail.html"><div class="nc-img">🍵<div class="nc-new">NEW</div></div><div class="nc-info"><div class="nc-inf">힐링유진 · 푸드</div><div class="nc-name">마그네슘 + 수면 멜라토닌 2종 세트</div><div class="nc-pr"><span class="nc-orig">55,000원</span><span class="nc-sale">33,000원</span><span class="nc-disc">-40%</span></div><div class="nc-time"><span class="dot"></span>2시간 전 오픈</div></div></a>
-      <a class="new-card" href="product-detail.html"><div class="nc-img">🩳<div class="nc-new">NEW</div></div><div class="nc-info"><div class="nc-inf">홈트여신 · 피트니스</div><div class="nc-name">압박 레깅스 + 크롭탑 세트 4컬러</div><div class="nc-pr"><span class="nc-orig">98,000원</span><span class="nc-sale">58,800원</span><span class="nc-disc">-40%</span></div><div class="nc-time"><span class="dot"></span>3시간 전 오픈</div></div></a>
+      <a class="new-card" href="product-detail.html"><div class="nc-img">🧴<div class="nc-new">NEW</div></div><div class="nc-info"><div class="nc-inf">지민뷰티 · 뷰티</div><div class="nc-name">레티날 0.1% 나이트 세럼 30ml</div><div class="nc-pr"><span class="nc-orig">68,000원</span><span class="nc-sale">40,800원</span><span class="nc-disc">-40%</span></div><div class="nc-time"><span class="nc-dot"></span>방금 오픈</div></div></a>
+      <a class="new-card" href="product-detail.html"><div class="nc-img">👗<div class="nc-new">NEW</div></div><div class="nc-info"><div class="nc-inf">나리스타일 · 패션</div><div class="nc-name">배럴핏 와이드 데님 3컬러</div><div class="nc-pr"><span class="nc-orig">89,000원</span><span class="nc-sale">53,400원</span><span class="nc-disc">-40%</span></div><div class="nc-time"><span class="nc-dot"></span>12분 전</div></div></a>
+      <a class="new-card" href="product-detail.html"><div class="nc-img">🏠<div class="nc-new">NEW</div></div><div class="nc-info"><div class="nc-inf">홈인테리어수 · 라이프</div><div class="nc-name">아로마 소이 캔들 5종 기프트셋</div><div class="nc-pr"><span class="nc-orig">78,000원</span><span class="nc-sale">46,800원</span><span class="nc-disc">-40%</span></div><div class="nc-time"><span class="nc-dot"></span>34분 전</div></div></a>
+      <a class="new-card" href="product-detail.html"><div class="nc-img">🍳<div class="nc-new">NEW</div></div><div class="nc-info"><div class="nc-inf">쿡스타그램 · 라이프</div><div class="nc-name">IH 세라믹 프라이팬 3종 세트</div><div class="nc-pr"><span class="nc-orig">145,000원</span><span class="nc-sale">87,000원</span><span class="nc-disc">-40%</span></div><div class="nc-time"><span class="nc-dot"></span>1시간 전</div></div></a>
+      <a class="new-card" href="product-detail.html"><div class="nc-img">🍵<div class="nc-new">NEW</div></div><div class="nc-info"><div class="nc-inf">힐링유진 · 푸드</div><div class="nc-name">마그네슘 + 멜라토닌 2종 세트</div><div class="nc-pr"><span class="nc-orig">55,000원</span><span class="nc-sale">33,000원</span><span class="nc-disc">-40%</span></div><div class="nc-time"><span class="nc-dot"></span>2시간 전</div></div></a>
+      <a class="new-card" href="product-detail.html"><div class="nc-img">🩳<div class="nc-new">NEW</div></div><div class="nc-info"><div class="nc-inf">홈트여신 · 피트니스</div><div class="nc-name">압박 레깅스 + 크롭탑 4컬러</div><div class="nc-pr"><span class="nc-orig">98,000원</span><span class="nc-sale">58,800원</span><span class="nc-disc">-40%</span></div><div class="nc-time"><span class="nc-dot"></span>3시간 전</div></div></a>
     </div>
   </div>
+
+  <!-- 핫한 공구 -->
   <div class="sec">
     <div class="sec-head"><div class="sec-title">🔥 지금 핫한 공구</div><a class="sec-more" href="category.html">전체보기 →</a></div>
     <div class="cat-tabs">
@@ -408,117 +493,127 @@ footer{border-top:1px solid var(--b1);padding:24px 28px;margin-top:12px}
       <button class="ct" onclick="setCat(this)">피트니스</button>
     </div>
     <div class="prod-grid">
-      <a class="prod-card" href="product-detail.html"><div class="pc-img" style="background:linear-gradient(135deg,#1a0808,#260d0d)">💄<div class="pc-bdg bdg-r">마감임박</div></div><div class="pc-body"><div class="pc-inf-row"><div class="pc-av" style="background:#e83e8c">지</div><span class="pc-inf-name">지민뷰티</span></div><div class="pc-name">엑소좀 앰플 + 크림 세트 단독 특가</div><div class="pc-pr"><span class="pc-orig">125,000원</span><span class="pc-sale">75,000원</span><span class="pc-disc">-40%</span></div><div class="pc-bar"><div class="pc-fill" style="width:89%"></div></div><div class="pc-meta"><span>3,291명</span><span>11% 남음</span></div></div></a>
-      <a class="prod-card" href="product-detail.html"><div class="pc-img" style="background:linear-gradient(135deg,#0a0a1a,#0d0d26)">👗<div class="pc-bdg bdg-b">NEW</div></div><div class="pc-body"><div class="pc-inf-row"><div class="pc-av" style="background:#6f42c1">나</div><span class="pc-inf-name">나리스타일</span></div><div class="pc-name">배럴핏 와이드 데님 3컬러 SS26</div><div class="pc-pr"><span class="pc-orig">89,000원</span><span class="pc-sale">53,400원</span><span class="pc-disc">-40%</span></div><div class="pc-bar"><div class="pc-fill" style="width:38%"></div></div><div class="pc-meta"><span>1,204명</span><span>62% 남음</span></div></div></a>
-      <a class="prod-card" href="product-detail.html"><div class="pc-img" style="background:linear-gradient(135deg,#0a1400,#0d2000)">🥗<div class="pc-bdg bdg-o">BEST</div></div><div class="pc-body"><div class="pc-inf-row"><div class="pc-av" style="background:#28a745">건</div><span class="pc-inf-name">건강언니</span></div><div class="pc-name">저혈당 식이섬유 + 혈당케어 세트</div><div class="pc-pr"><span class="pc-orig">78,000원</span><span class="pc-sale">46,800원</span><span class="pc-disc">-40%</span></div><div class="pc-bar"><div class="pc-fill" style="width:67%"></div></div><div class="pc-meta"><span>2,108명</span><span>33% 남음</span></div></div></a>
-      <a class="prod-card" href="product-detail.html"><div class="pc-img" style="background:linear-gradient(135deg,#1a0800,#261200)">🏋️<div class="pc-bdg bdg-r">마감임박</div></div><div class="pc-body"><div class="pc-inf-row"><div class="pc-av" style="background:#fd7e14">머</div><span class="pc-inf-name">머슬박사</span></div><div class="pc-name">제로슈거 웨이프로틴 초코맛 2kg</div><div class="pc-pr"><span class="pc-orig">89,000원</span><span class="pc-sale">53,400원</span><span class="pc-disc">-40%</span></div><div class="pc-bar"><div class="pc-fill" style="width:92%"></div></div><div class="pc-meta"><span>5,430명</span><span>8% 남음</span></div></div></a>
+      <a class="prod-card" href="product-detail.html"><div class="pc-img" style="background:linear-gradient(135deg,#1a0808,#260d0d)">💄<div class="pc-bdg bdg-r">마감임박</div></div><div class="pc-body"><div class="pc-inf-row"><div class="pc-av" style="background:#e83e8c">지</div><span class="pc-inf-name">지민뷰티</span></div><div class="pc-name">엑소좀 앰플 + 크림 세트 단독</div><div class="pc-pr"><span class="pc-orig">125,000원</span><span class="pc-sale">75,000원</span><span class="pc-disc">-40%</span></div><div class="pc-bar"><div class="pc-fill" style="width:89%"></div></div><div class="pc-meta"><span>3,291명</span><span>11% 남음</span></div></div></a>
+      <a class="prod-card" href="product-detail.html"><div class="pc-img" style="background:linear-gradient(135deg,#0a0a1a,#0d0d26)">👗<div class="pc-bdg bdg-b">NEW</div></div><div class="pc-body"><div class="pc-inf-row"><div class="pc-av" style="background:#6f42c1">나</div><span class="pc-inf-name">나리스타일</span></div><div class="pc-name">배럴핏 와이드 데님 3컬러</div><div class="pc-pr"><span class="pc-orig">89,000원</span><span class="pc-sale">53,400원</span><span class="pc-disc">-40%</span></div><div class="pc-bar"><div class="pc-fill" style="width:38%"></div></div><div class="pc-meta"><span>1,204명</span><span>62% 남음</span></div></div></a>
+      <a class="prod-card" href="product-detail.html"><div class="pc-img" style="background:linear-gradient(135deg,#0a1400,#0d2000)">🥗<div class="pc-bdg bdg-o">BEST</div></div><div class="pc-body"><div class="pc-inf-row"><div class="pc-av" style="background:#28a745">건</div><span class="pc-inf-name">건강언니</span></div><div class="pc-name">저혈당 식이섬유 혈당케어 세트</div><div class="pc-pr"><span class="pc-orig">78,000원</span><span class="pc-sale">46,800원</span><span class="pc-disc">-40%</span></div><div class="pc-bar"><div class="pc-fill" style="width:67%"></div></div><div class="pc-meta"><span>2,108명</span><span>33% 남음</span></div></div></a>
+      <a class="prod-card" href="product-detail.html"><div class="pc-img" style="background:linear-gradient(135deg,#1a0800,#261200)">🏋️<div class="pc-bdg bdg-r">마감임박</div></div><div class="pc-body"><div class="pc-inf-row"><div class="pc-av" style="background:#fd7e14">머</div><span class="pc-inf-name">머슬박사</span></div><div class="pc-name">제로슈거 웨이프로틴 2kg</div><div class="pc-pr"><span class="pc-orig">89,000원</span><span class="pc-sale">53,400원</span><span class="pc-disc">-40%</span></div><div class="pc-bar"><div class="pc-fill" style="width:92%"></div></div><div class="pc-meta"><span>5,430명</span><span>8% 남음</span></div></div></a>
     </div>
   </div>
+
+  <!-- 카테고리 쇼케이스 -->
   <div class="sec">
-    <div class="sec-head"><div class="sec-title">카테고리별 베스트</div><a class="sec-more" href="category.html">전체 카테고리 →</a></div>
+    <div class="sec-head"><div class="sec-title">카테고리별 베스트</div><a class="sec-more" href="category.html">전체 →</a></div>
     <div class="cat-showcase">
-      <a class="cs-card cs1" href="category.html"><div class="cs-emoji">💄</div><div class="cs-name">뷰티</div><div class="cs-cnt">공구 312개 진행 중</div><div class="cs-hot">레티날 · 엑소좀 HOT</div></a>
-      <a class="cs-card cs2" href="category.html"><div class="cs-emoji">👗</div><div class="cs-name">패션</div><div class="cs-cnt">공구 187개 진행 중</div><div class="cs-hot">배럴핏 검색 500%↑</div></a>
-      <a class="cs-card cs3" href="category.html"><div class="cs-emoji">🍎</div><div class="cs-name">푸드 & 건강</div><div class="cs-cnt">공구 241개 진행 중</div><div class="cs-hot">혈당케어 급부상</div></a>
-      <a class="cs-card cs4" href="category.html"><div class="cs-emoji">🏠</div><div class="cs-name">라이프</div><div class="cs-cnt">공구 156개 진행 중</div><div class="cs-hot">홈웰니스 트렌드</div></a>
-      <a class="cs-card cs5" href="category.html"><div class="cs-emoji">💪</div><div class="cs-name">피트니스</div><div class="cs-cnt">공구 98개 진행 중</div><div class="cs-hot">남성 뷰티 230%↑</div></a>
+      <a class="cs-card cs1" href="category.html"><div class="cs-emoji">💄</div><div class="cs-name">뷰티</div><div class="cs-cnt">312개 진행 중</div><div class="cs-hot">레티날 HOT</div></a>
+      <a class="cs-card cs2" href="category.html"><div class="cs-emoji">👗</div><div class="cs-name">패션</div><div class="cs-cnt">187개 진행 중</div><div class="cs-hot">배럴핏 500%↑</div></a>
+      <a class="cs-card cs3" href="category.html"><div class="cs-emoji">🍎</div><div class="cs-name">푸드&건강</div><div class="cs-cnt">241개 진행 중</div><div class="cs-hot">혈당케어 급부상</div></a>
+      <a class="cs-card cs4" href="category.html"><div class="cs-emoji">🏠</div><div class="cs-name">라이프</div><div class="cs-cnt">156개 진행 중</div><div class="cs-hot">홈웰니스 트렌드</div></a>
+      <a class="cs-card cs5" href="category.html"><div class="cs-emoji">💪</div><div class="cs-name">피트니스</div><div class="cs-cnt">98개 진행 중</div><div class="cs-hot">남성뷰티 230%↑</div></a>
     </div>
   </div>
+
+  <!-- 팔로잉 피드 -->
   <div class="sec">
     <div class="sec-head">
       <div class="sec-title">팔로잉 새 공구</div>
-      <div style="display:flex;align-items:center;gap:10px">
-        <span style="font-size:12px;color:var(--t3);background:rgba(255,59,59,.08);border:1px solid rgba(255,59,59,.12);border-radius:5px;padding:3px 8px">로그인 후 내 피드 표시</span>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:11px;color:var(--t3);background:rgba(255,59,59,.08);border:1px solid rgba(255,59,59,.12);border-radius:5px;padding:3px 7px">로그인 후 표시</span>
         <a class="sec-more" href="mypage.html">팔로잉 관리 →</a>
       </div>
     </div>
-    <div class="following-feed">
-      <a class="ff-card" href="product-detail.html"><div class="ff-top"><div class="ff-av-wrap"><div class="ff-av" style="background:#e83e8c">지<div class="ff-live">NEW</div></div></div><div class="ff-inf-info"><div class="ff-inf-name">지민뷰티</div><div class="ff-inf-time">방금 공구 오픈</div></div></div><div class="ff-img">🧴</div><div class="ff-body"><div class="ff-name">레티날 0.1% 나이트 세럼 팔로워 전용 특가</div><div class="ff-pr"><span class="ff-sale">40,800원</span><span class="ff-disc">-40%</span></div><div class="ff-bar"><div class="ff-fill" style="width:15%"></div></div></div></a>
-      <a class="ff-card" href="product-detail.html"><div class="ff-top"><div class="ff-av-wrap"><div class="ff-av" style="background:#fd7e14">효</div></div><div class="ff-inf-info"><div class="ff-inf-name">효리핏</div><div class="ff-inf-time">2시간 전</div></div></div><div class="ff-img">🏋️</div><div class="ff-body"><div class="ff-name">마이프로틴 웨이 2.5kg + 셰이커</div><div class="ff-pr"><span class="ff-sale">52,000원</span><span class="ff-disc">-42%</span></div><div class="ff-bar"><div class="ff-fill" style="width:92%"></div></div></div></a>
-      <a class="ff-card" href="product-detail.html"><div class="ff-top"><div class="ff-av-wrap"><div class="ff-av" style="background:#28a745">채</div></div><div class="ff-inf-info"><div class="ff-inf-name">채링이</div><div class="ff-inf-time">4시간 전</div></div></div><div class="ff-img">💊</div><div class="ff-body"><div class="ff-name">나이아신아마이드 토너패드 100매</div><div class="ff-pr"><span class="ff-sale">22,800원</span><span class="ff-disc">-40%</span></div><div class="ff-bar"><div class="ff-fill" style="width:78%"></div></div></div></a>
-      <a class="ff-card" href="product-detail.html"><div class="ff-top"><div class="ff-av-wrap"><div class="ff-av" style="background:#6f42c1">나</div></div><div class="ff-inf-info"><div class="ff-inf-name">나리스타일</div><div class="ff-inf-time">어제</div></div></div><div class="ff-img">👗</div><div class="ff-body"><div class="ff-name">배럴핏 와이드 데님 3컬러</div><div class="ff-pr"><span class="ff-sale">53,400원</span><span class="ff-disc">-40%</span></div><div class="ff-bar"><div class="ff-fill" style="width:38%"></div></div></div></a>
+    <div class="feed-grid">
+      <a class="feed-card" href="product-detail.html"><div class="fd-top"><div class="fd-av" style="background:#e83e8c">지<div class="fd-new">NEW</div></div><div><div class="fd-name">지민뷰티</div><div class="fd-time">방금</div></div></div><div class="fd-img">🧴</div><div class="fd-body"><div class="fd-title">레티날 0.1% 나이트 세럼 팔로워 전용 특가</div><div class="fd-pr"><span class="fd-sale">40,800원</span><span class="fd-disc">-40%</span></div><div class="fd-prog"><div class="fd-fill" style="width:15%"></div></div></div></a>
+      <a class="feed-card" href="product-detail.html"><div class="fd-top"><div class="fd-av" style="background:#fd7e14">효</div><div><div class="fd-name">효리핏</div><div class="fd-time">2시간 전</div></div></div><div class="fd-img">🏋️</div><div class="fd-body"><div class="fd-title">마이프로틴 웨이 2.5kg + 셰이커</div><div class="fd-pr"><span class="fd-sale">52,000원</span><span class="fd-disc">-42%</span></div><div class="fd-prog"><div class="fd-fill" style="width:92%"></div></div></div></a>
+      <a class="feed-card" href="product-detail.html"><div class="fd-top"><div class="fd-av" style="background:#28a745">채</div><div><div class="fd-name">채링이</div><div class="fd-time">4시간 전</div></div></div><div class="fd-img">💊</div><div class="fd-body"><div class="fd-title">나이아신아마이드 토너패드 100매</div><div class="fd-pr"><span class="fd-sale">22,800원</span><span class="fd-disc">-40%</span></div><div class="fd-prog"><div class="fd-fill" style="width:78%"></div></div></div></a>
+      <a class="feed-card" href="product-detail.html"><div class="fd-top"><div class="fd-av" style="background:#6f42c1">나</div><div><div class="fd-name">나리스타일</div><div class="fd-time">어제</div></div></div><div class="fd-img">👗</div><div class="fd-body"><div class="fd-title">배럴핏 와이드 데님 3컬러</div><div class="fd-pr"><span class="fd-sale">53,400원</span><span class="fd-disc">-40%</span></div><div class="fd-prog"><div class="fd-fill" style="width:38%"></div></div></div></a>
     </div>
   </div>
+
 </div>
+
+<!-- FOOTER -->
 <footer>
   <div class="footer-inner">
     <div class="f-logo">GUGU<em>.</em></div>
     <div class="f-links">
-      <a href="help.html">이용약관</a>
-      <a href="help.html">개인정보처리방침</a>
+      <a href="terms.html">이용약관</a>
+      <a href="privacy.html">개인정보처리방침</a>
       <a href="influencer-apply.html">인플루언서 신청</a>
       <a href="help.html">고객센터</a>
-      <a href="influencer-landing.html">셀러 입점</a>
     </div>
-    <div class="f-copy">© 2026 <span>GUGU.</span> All rights reserved.</div>
+    <div class="f-copy">© 2026 GUGU. All rights reserved.</div>
   </div>
 </footer>
-<script>
-let t=2*3600+14*60+38;
-function tick(){t--;if(t<0)t=86400;const h=Math.floor(t/3600),m=Math.floor((t%3600)/60),s=t%60;const pad=n=>String(n).padStart(2,'0');document.getElementById('th').textContent=pad(h);document.getElementById('tm').textContent=pad(m);document.getElementById('ts').textContent=pad(s);}
-setInterval(tick,1000);
-let deadline=8*3600+43*60+21;
-function flashTick(){deadline--;if(deadline<0)deadline=86400;const h=Math.floor(deadline/3600),m=Math.floor((deadline%3600)/60),s=deadline%60;const pad=n=>String(n).padStart(2,'0');['fh','ct1h','ct2h','ct3h'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=pad(h)});['fm','ct1m','ct2m','ct3m'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=pad(m)});['fs','ct1s','ct2s','ct3s'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=pad(s)});}
-setInterval(flashTick,1000);
-function setCat(btn){document.querySelectorAll('.ct').forEach(t=>t.classList.remove('on'));btn.classList.add('on');}
-document.querySelector('.search-wrap input').addEventListener('keypress',function(e){if(e.key==='Enter')location.href='search.html';});
-</script>
 
-<!-- 모바일 하단 네비게이션 -->
-<nav class="mob-bottom-nav" id="mobBottomNav">
-  <a class="mbn-item" href="index.html">
-    <span class="mbn-icon">🏠</span>
-    <span class="mbn-label">홈</span>
-  </a>
-  <a class="mbn-item" href="category.html">
-    <span class="mbn-icon">🔍</span>
-    <span class="mbn-label">탐색</span>
-  </a>
-  <a class="mbn-item" href="search.html">
-    <span class="mbn-icon">⌕</span>
-    <span class="mbn-label">검색</span>
-  </a>
-  <a class="mbn-item" href="notifications.html">
-    <span class="mbn-icon" style="position:relative">🔔<span class="mbn-badge"></span></span>
-    <span class="mbn-label">알림</span>
-  </a>
-  <a class="mbn-item" href="mypage.html">
-    <span class="mbn-icon">👤</span>
-    <span class="mbn-label">마이</span>
-  </a>
+<!-- 모바일 하단 탭바 -->
+<nav class="mob-bottom-nav">
+  <a href="index.html" class="on"><span>🏠</span><span>홈</span></a>
+  <a href="category.html"><span>🔍</span><span>탐색</span></a>
+  <a href="search.html"><span>⌕</span><span>검색</span></a>
+  <a href="notifications.html"><span>🔔</span><span>알림</span></a>
+  <a href="mypage.html"><span>👤</span><span>마이</span></a>
 </nav>
-<style>
-.mob-bottom-nav {
-  display: none;
-  position: fixed; bottom: 0; left: 0; right: 0;
-  background: rgba(10,10,10,.97);
-  -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
-  border-top: 1px solid var(--b1, #242428);
-  z-index: 300;
-  padding: 0 8px;
-  padding-bottom: env(safe-area-inset-bottom, 0px);
+
+<!-- 햄버거 드로어 -->
+<div class="mob-drawer" id="drawer" onclick="if(event.target===this)closeMenu()">
+  <div class="mob-drawer-inner">
+    <div class="mob-handle"></div>
+    <div class="mob-cats">
+      <a href="index.html">🏠 홈</a>
+      <a href="category.html">💄 뷰티</a>
+      <a href="category.html">👗 패션</a>
+      <a href="category.html">🍎 푸드 &amp; 건강</a>
+      <a href="category.html">🏠 라이프</a>
+      <a href="category.html">💪 피트니스</a>
+      <a href="influencer-apply.html">✨ 인플루언서 신청</a>
+    </div>
+    <div class="mob-btns">
+      <button style="background:var(--s2);border:1px solid var(--b2);color:var(--t)" onclick="location.href='login.html'">로그인</button>
+      <button style="background:var(--r);border:none;color:#fff" onclick="location.href='login.html'">회원가입</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// 타이머
+let t=2*3600+14*60+38;
+let dl=8*3600+43*60+21;
+const pad=n=>String(n).padStart(2,'0');
+setInterval(()=>{
+  t--;if(t<0)t=86400;
+  document.getElementById('th').textContent=pad(Math.floor(t/3600));
+  document.getElementById('tm').textContent=pad(Math.floor((t%3600)/60));
+  document.getElementById('ts').textContent=pad(t%60);
+},1000);
+setInterval(()=>{
+  dl--;if(dl<0)dl=86400;
+  const h=Math.floor(dl/3600),m=Math.floor((dl%3600)/60),s=dl%60;
+  document.getElementById('fh').textContent=pad(h);
+  document.getElementById('fm').textContent=pad(m);
+  document.getElementById('fs').textContent=pad(s);
+},1000);
+
+// 카테고리 탭
+function setCat(b){document.querySelectorAll('.ct').forEach(c=>c.classList.remove('on'));b.classList.add('on');}
+
+// 햄버거 메뉴
+function openMenu(){
+  const d=document.getElementById('drawer');
+  d.style.display='flex';
+  setTimeout(()=>d.querySelector('.mob-drawer-inner').style.transform='translateY(0)',10);
+  document.body.style.overflow='hidden';
 }
-.mob-bottom-nav .mbn-item {
-  flex: 1; display: flex; flex-direction: column;
-  align-items: center; gap: 3px;
-  padding: 10px 4px;
-  text-decoration: none; color: var(--t2, #8a8a9a);
-  transition: .15s;
+function closeMenu(){
+  const d=document.getElementById('drawer');
+  d.querySelector('.mob-drawer-inner').style.transform='translateY(100%)';
+  setTimeout(()=>{d.style.display='none';document.body.style.overflow='';},300);
 }
-.mob-bottom-nav .mbn-item:hover,
-.mob-bottom-nav .mbn-item.active { color: var(--r, #FF3B3B); }
-.mbn-icon { font-size: 18px; position: relative; }
-.mbn-label { font-size: 10px; font-weight: 600; white-space: nowrap; }
-.mbn-badge {
-  position: absolute; top: -3px; right: -5px;
-  width: 8px; height: 8px; border-radius: 50%;
-  background: var(--r, #FF3B3B);
-  border: 1.5px solid var(--bg, #0A0A0A);
-}
-@media (max-width: 768px) {
-  .mob-bottom-nav { display: flex !important; }
-  body { padding-bottom: 64px; }
-}
-</style>
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMenu();});
+
+// 검색
+document.querySelectorAll('input[type=text]').forEach(i=>{
+  i.addEventListener('keypress',e=>{if(e.key==='Enter')location.href='search.html';});
+});
+</script>
 </body>
 </html>
