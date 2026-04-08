@@ -7,49 +7,42 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=Bebas+Neue&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#0A0A0A;--surface:#141414;--surface2:#1C1C1C;--border:#2A2A2A;--accent:#FF3B3B;--accent2:#FF8A00;--text:#F5F5F5;--muted:#888}
-body {background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;min-height:100vh;display:flex;flex-direction:column;padding-top:54px}
-nav{background:rgba(10,10,10,0.97);border-bottom:1px solid var(--border);padding:0 32px}
+:root{
+  --bg:#0A0A0A;--s1:#111114;--s2:#171719;--s3:#1e1e22;
+  --b1:#242428;--b2:#2e2e34;
+  --r:#FF3B3B;--o:#FF8A00;--g:#22c55e;--bl:#6366f1;
+  --t:#F2F2F5;--t2:#8a8a9a;--t3:#464650;
+  --max:1100px;
+}
+body {background:var(--bg);color:var(--t);font-family:'Noto Sans KR',sans-serif;min-height:100vh;display:flex;flex-direction:column;padding-top:54px}
+nav{background:rgba(10,10,10,0.97);border-bottom:1px solid var(--b1);padding:0 32px}
 .nav-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;height:56px}
-.logo{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;text-decoration:none;color:var(--text)}
-.logo span{color:var(--accent)}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;text-decoration:none;color:var(--t)}
+.logo span{color:var(--r)}
 .main{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 20px}
 .box{text-align:center;max-width:480px}
-.num{font-family:'Bebas Neue',sans-serif;font-size:120px;letter-spacing:4px;line-height:1;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.num{font-family:'Bebas Neue',sans-serif;font-size:120px;letter-spacing:4px;line-height:1;background:linear-gradient(135deg,var(--r),var(--o));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
 .title{font-size:22px;font-weight:700;margin-bottom:10px}
-.sub{font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:32px}
+.sub{font-size:14px;color:var(--t2);line-height:1.7;margin-bottom:32px}
 .btn-row{display:flex;gap:10px;justify-content:center;margin-bottom:40px}
-.btn-primary{padding:12px 28px;border-radius:10px;border:none;background:var(--accent);color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit}
-.btn-secondary{padding:12px 28px;border-radius:10px;border:1px solid var(--border);background:none;color:var(--text);font-size:14px;cursor:pointer;font-family:inherit}
-.btn-secondary:hover{background:var(--surface2)}
-.rec-title{font-size:13px;color:var(--muted);margin-bottom:14px}
+.btn-primary{padding:12px 28px;border-radius:10px;border:none;background:var(--r);color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit}
+.btn-secondary{padding:12px 28px;border-radius:10px;border:1px solid var(--b1);background:none;color:var(--t);font-size:14px;cursor:pointer;font-family:inherit}
+.btn-secondary:hover{background:var(--s2)}
+.rec-title{font-size:13px;color:var(--t2);margin-bottom:14px}
 .quick-links{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
-.quick-link{padding:7px 16px;border-radius:20px;border:1px solid var(--border);background:none;color:var(--muted);font-size:13px;cursor:pointer;font-family:inherit;transition:.2s}
-.quick-link:hover{border-color:var(--muted);color:var(--text)}
+.quick-link{padding:7px 16px;border-radius:20px;border:1px solid var(--b1);background:none;color:var(--t2);font-size:13px;cursor:pointer;font-family:inherit;transition:.2s}
+.quick-link:hover{border-color:var(--t2);color:var(--t)}
 
 
 /* ══════════════════════════════════════
    MOBILE RESPONSIVE — 404.html
 ══════════════════════════════════════ */
 
-@media (max-width: 768px) {
-  .error-wrap { padding:60px 20px !important; }
-  .error-num { font-size:100px !important; }
-  .error-title { font-size:22px !important; }
-  .btn-group { flex-direction:column !important; gap:8px !important; }
-  .btn-group a,.btn-group button { width:100% !important; }
-}
+
 
 
 /* ══════ 공통 모바일 요소 ══════ */
-@media (max-width: 768px) {
-  /* 네비 공통 */
-  .mob-menu-btn { display:flex !important; }
-  .mob-search-bar { display:flex !important; }
-  /* 하단 탭바 */
-  .mob-bottom-nav { display:flex !important; }
-  body { padding-bottom:60px; }
-}
+
 
 /* 햄버거 드로어 메뉴 */
 .mob-menu-btn { display:none; width:36px; height:36px; border-radius:8px; background:var(--s2,#171719); border:1px solid var(--b1,#242428); align-items:center; justify-content:center; cursor:pointer; font-size:18px; color:var(--t2,#8a8a9a); flex-shrink:0; }
@@ -64,11 +57,25 @@ nav{background:rgba(10,10,10,0.97);border-bottom:1px solid var(--border);padding
 .mob-drawer-btns button { flex:1; padding:12px; border-radius:10px; font-size:14px; font-weight:700; cursor:pointer; font-family:inherit; }
 .mob-search-bar { display:none; align-items:center; gap:8px; background:var(--s2,#171719); border:1px solid var(--b1,#242428); border-radius:10px; padding:10px 14px; margin:6px 16px 0; }
 .mob-search-bar input { background:none; border:none; outline:none; color:var(--t,#F2F2F5); font-size:14px; font-family:inherit; width:100%; }
+
+
+
 @media (max-width: 768px) {
+.error-wrap { padding:60px 20px !important; }
+  .error-num { font-size:100px !important; }
+  .error-title { font-size:22px !important; }
+  .btn-group { flex-direction:column !important; gap:8px !important; }
+  .btn-group a,.btn-group button { width:100% !important; }
+/* 네비 공통 */
   .mob-menu-btn { display:flex !important; }
   .mob-search-bar { display:flex !important; }
+  /* 하단 탭바 */
+  .mob-bottom-nav { display:flex !important; }
+  body { padding-bottom:60px; }
+.mob-menu-btn { display:flex !important; }
+  .mob-search-bar { display:flex !important; }
+.mob-bottom-nav { display: flex !important; }
 }
-
 </style>
 </head>
 <body>
@@ -147,10 +154,7 @@ nav{background:rgba(10,10,10,0.97);border-bottom:1px solid var(--border);padding
   background: var(--r, #FF3B3B);
   border: 1.5px solid var(--bg, #0A0A0A);
 }
-@media (max-width: 768px) {
-  .mob-bottom-nav { display: flex !important; }
-  
-}
+
 </style>
 </body>
 </html>

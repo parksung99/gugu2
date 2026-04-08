@@ -7,77 +7,70 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=Bebas+Neue&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#0A0A0A;--surface:#141414;--surface2:#1C1C1C;--border:#2A2A2A;--accent:#FF3B3B;--accent2:#FF8A00;--text:#F5F5F5;--muted:#888}
-body {background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;min-height:100vh;display:flex;flex-direction:column;padding-top:54px}
-nav{background:rgba(10,10,10,0.97);border-bottom:1px solid var(--border);padding:0 32px}
+:root{
+  --bg:#0A0A0A;--s1:#111114;--s2:#171719;--s3:#1e1e22;
+  --b1:#242428;--b2:#2e2e34;
+  --r:#FF3B3B;--o:#FF8A00;--g:#22c55e;--bl:#6366f1;
+  --t:#F2F2F5;--t2:#8a8a9a;--t3:#464650;
+  --max:1100px;
+}
+body {background:var(--bg);color:var(--t);font-family:'Noto Sans KR',sans-serif;min-height:100vh;display:flex;flex-direction:column;padding-top:54px}
+nav{background:rgba(10,10,10,0.97);border-bottom:1px solid var(--b1);padding:0 32px}
 .nav-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;height:56px}
-.logo{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;text-decoration:none;color:var(--text)}
-.logo span{color:var(--accent)}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;text-decoration:none;color:var(--t)}
+.logo span{color:var(--r)}
 .main{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 20px;gap:80px}
 .left{display:flex;flex-direction:column;gap:20px;max-width:360px}
 .left-title{font-size:36px;font-weight:800;letter-spacing:-1px;line-height:1.2}
-.left-title .red{color:var(--accent)}
-.left-sub{font-size:14px;color:var(--muted);line-height:1.7}
+.left-title .red{color:var(--r)}
+.left-sub{font-size:14px;color:var(--t2);line-height:1.7}
 .left-points{display:flex;flex-direction:column;gap:10px;margin-top:8px}
-.lp{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted)}
-.lp-dot{width:20px;height:20px;border-radius:50%;background:rgba(255,59,59,0.12);border:1px solid rgba(255,59,59,0.25);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--accent);flex-shrink:0}
-.divider{width:1px;height:280px;background:var(--border)}
-.form-box{width:380px;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:32px}
-.form-tabs{display:flex;margin-bottom:28px;background:var(--surface2);border-radius:8px;padding:3px}
-.ftab{flex:1;padding:8px;text-align:center;border-radius:6px;font-size:14px;cursor:pointer;transition:.15s;font-family:inherit;border:none;background:none;color:var(--muted)}
-.ftab.active{background:var(--surface);color:var(--text);font-weight:600}
+.lp{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--t2)}
+.lp-dot{width:20px;height:20px;border-radius:50%;background:rgba(255,59,59,0.12);border:1px solid rgba(255,59,59,0.25);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--r);flex-shrink:0}
+.divider{width:1px;height:280px;background:var(--b1)}
+.form-box{width:380px;background:var(--s1);border:1px solid var(--b1);border-radius:16px;padding:32px}
+.form-tabs{display:flex;margin-bottom:28px;background:var(--s2);border-radius:8px;padding:3px}
+.ftab{flex:1;padding:8px;text-align:center;border-radius:6px;font-size:14px;cursor:pointer;transition:.15s;font-family:inherit;border:none;background:none;color:var(--t2)}
+.ftab.active{background:var(--s1);color:var(--t);font-weight:600}
 .form-group{margin-bottom:16px}
-.form-label{font-size:12px;color:var(--muted);margin-bottom:6px;display:block;font-weight:500}
-.form-input{width:100%;padding:11px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;font-family:inherit;outline:none;transition:.2s}
-.form-input:focus{border-color:var(--accent)}
-.form-input::placeholder{color:var(--muted)}
+.form-label{font-size:12px;color:var(--t2);margin-bottom:6px;display:block;font-weight:500}
+.form-input{width:100%;padding:11px 14px;background:var(--s2);border:1px solid var(--b1);border-radius:8px;color:var(--t);font-size:14px;font-family:inherit;outline:none;transition:.2s}
+.form-input:focus{border-color:var(--r)}
+.form-input::placeholder{color:var(--t2)}
 .form-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;font-size:12px}
-.form-check{display:flex;align-items:center;gap:6px;color:var(--muted);cursor:pointer}
-.form-check input{accent-color:var(--accent)}
-.form-link{color:var(--muted);text-decoration:none}
-.form-link:hover{color:var(--text)}
-.btn-submit{width:100%;padding:13px;border-radius:10px;border:none;background:var(--accent);color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:16px}
+.form-check{display:flex;align-items:center;gap:6px;color:var(--t2);cursor:pointer}
+.form-check input{accent-color:var(--r)}
+.form-link{color:var(--t2);text-decoration:none}
+.form-link:hover{color:var(--t)}
+.btn-submit{width:100%;padding:13px;border-radius:10px;border:none;background:var(--r);color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:16px}
 .btn-submit:hover{background:#e63535}
 .social-divider{display:flex;align-items:center;gap:10px;margin-bottom:16px}
-.social-divider span{font-size:12px;color:var(--muted);white-space:nowrap}
-.social-divider::before,.social-divider::after{content:'';flex:1;height:1px;background:var(--border)}
+.social-divider span{font-size:12px;color:var(--t2);white-space:nowrap}
+.social-divider::before,.social-divider::after{content:'';flex:1;height:1px;background:var(--b1)}
 .social-btns{display:flex;gap:8px;margin-bottom:20px}
-.social-btn{flex:1;padding:10px;border-radius:8px;border:1px solid var(--border);background:none;color:var(--text);font-size:13px;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:6px}
-.social-btn:hover{background:var(--surface2)}
-.form-bottom{text-align:center;font-size:13px;color:var(--muted)}
-.form-bottom a{color:var(--accent);text-decoration:none;font-weight:600}
+.social-btn{flex:1;padding:10px;border-radius:8px;border:1px solid var(--b1);background:none;color:var(--t);font-size:13px;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:6px}
+.social-btn:hover{background:var(--s2)}
+.form-bottom{text-align:center;font-size:13px;color:var(--t2)}
+.form-bottom a{color:var(--r);text-decoration:none;font-weight:600}
 .signup-panel{display:none}
 .type-select{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
-.type-card{padding:16px;border-radius:10px;border:1px solid var(--border);background:none;cursor:pointer;text-align:center;transition:.2s;font-family:inherit}
-.type-card:hover{border-color:var(--muted)}
-.type-card.active{border-color:var(--accent);background:rgba(255,59,59,0.06)}
+.type-card{padding:16px;border-radius:10px;border:1px solid var(--b1);background:none;cursor:pointer;text-align:center;transition:.2s;font-family:inherit}
+.type-card:hover{border-color:var(--t2)}
+.type-card.active{border-color:var(--r);background:rgba(255,59,59,0.06)}
 .type-card .tc-icon{font-size:24px;margin-bottom:6px}
-.type-card .tc-name{font-size:13px;font-weight:600;color:var(--text)}
-.type-card .tc-desc{font-size:11px;color:var(--muted);margin-top:2px}
+.type-card .tc-name{font-size:13px;font-weight:600;color:var(--t)}
+.type-card .tc-desc{font-size:11px;color:var(--t2);margin-top:2px}
 
 
 /* ══════════════════════════════════════
    MOBILE RESPONSIVE — login.html
 ══════════════════════════════════════ */
 
-@media (max-width: 768px) {
-  body { display:flex; align-items:flex-start; justify-content:center; }
-  .login-wrap { padding:20px 16px 60px !important; width:100% !important; }
-  .form-box { width:100% !important; max-width:100% !important; padding:20px 16px !important; }
-  .type-select { grid-template-columns:1fr !important; gap:8px !important; }
-  .social-buttons { flex-direction:column !important; }
-}
+
 
 
 /* ══════ 공통 모바일 요소 ══════ */
-@media (max-width: 768px) {
-  /* 네비 공통 */
-  .mob-menu-btn { display:flex !important; }
-  .mob-search-bar { display:flex !important; }
-  /* 하단 탭바 */
-  .mob-bottom-nav { display:flex !important; }
-  body { padding-bottom:60px; }
-}
+
 
 /* 햄버거 드로어 메뉴 */
 .mob-menu-btn { display:none; width:36px; height:36px; border-radius:8px; background:var(--s2,#171719); border:1px solid var(--b1,#242428); align-items:center; justify-content:center; cursor:pointer; font-size:18px; color:var(--t2,#8a8a9a); flex-shrink:0; }
@@ -92,11 +85,25 @@ nav{background:rgba(10,10,10,0.97);border-bottom:1px solid var(--border);padding
 .mob-drawer-btns button { flex:1; padding:12px; border-radius:10px; font-size:14px; font-weight:700; cursor:pointer; font-family:inherit; }
 .mob-search-bar { display:none; align-items:center; gap:8px; background:var(--s2,#171719); border:1px solid var(--b1,#242428); border-radius:10px; padding:10px 14px; margin:6px 16px 0; }
 .mob-search-bar input { background:none; border:none; outline:none; color:var(--t,#F2F2F5); font-size:14px; font-family:inherit; width:100%; }
+
+
+
 @media (max-width: 768px) {
+body { display:flex; align-items:flex-start; justify-content:center; }
+  .login-wrap { padding:20px 16px 60px !important; width:100% !important; }
+  .form-box { width:100% !important; max-width:100% !important; padding:20px 16px !important; }
+  .type-select { grid-template-columns:1fr !important; gap:8px !important; }
+  .social-buttons { flex-direction:column !important; }
+/* 네비 공통 */
   .mob-menu-btn { display:flex !important; }
   .mob-search-bar { display:flex !important; }
+  /* 하단 탭바 */
+  .mob-bottom-nav { display:flex !important; }
+  body { padding-bottom:60px; }
+.mob-menu-btn { display:flex !important; }
+  .mob-search-bar { display:flex !important; }
+.mob-bottom-nav { display: flex !important; }
 }
-
 </style>
 </head>
 <body>
@@ -247,10 +254,7 @@ function selectType(el){document.querySelectorAll('.type-card').forEach(t=>t.cla
   background: var(--r, #FF3B3B);
   border: 1.5px solid var(--bg, #0A0A0A);
 }
-@media (max-width: 768px) {
-  .mob-bottom-nav { display: flex !important; }
-  
-}
+
 </style>
 </body>
 </html>

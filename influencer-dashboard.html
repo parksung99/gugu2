@@ -7,143 +7,122 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=Bebas+Neue&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#0A0A0A;--surface:#141414;--surface2:#1C1C1C;--border:#2A2A2A;--accent:#FF3B3B;--accent2:#FF8A00;--green:#22c55e;--text:#F5F5F5;--muted:#888}
-body {background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;font-size:14px;padding-top:54px}
-nav {background:rgba(10,10,10,0.97);border-bottom:1px solid var(--border);padding:0 24px;position:fixed;top:0;z-index:100}
+:root{
+  --bg:#0A0A0A;--s1:#111114;--s2:#171719;--s3:#1e1e22;
+  --b1:#242428;--b2:#2e2e34;
+  --r:#FF3B3B;--o:#FF8A00;--g:#22c55e;--bl:#6366f1;
+  --t:#F2F2F5;--t2:#8a8a9a;--t3:#464650;
+  --max:1100px;
+}
+body {background:var(--bg);color:var(--t);font-family:'Noto Sans KR',sans-serif;font-size:14px;padding-top:54px}
+nav {background:rgba(10,10,10,0.97);border-bottom:1px solid var(--b1);padding:0 24px;position:fixed;top:0;z-index:100}
 .nav-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;gap:16px;height:56px}
 .logo{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:2px}
-.logo span{color:var(--accent)}
-.nav-badge{background:rgba(255,59,59,0.12);border:1px solid rgba(255,59,59,0.25);color:var(--accent);font-size:10px;padding:2px 8px;border-radius:4px;font-weight:600}
+.logo span{color:var(--r)}
+.nav-badge{background:rgba(255,59,59,0.12);border:1px solid rgba(255,59,59,0.25);color:var(--r);font-size:10px;padding:2px 8px;border-radius:4px;font-weight:600}
 .nav-right{display:flex;align-items:center;gap:12px;margin-left:auto}
-.nav-av{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;cursor:pointer}
+.nav-av{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--r),var(--o));display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;cursor:pointer}
 .nav-name{font-size:13px;font-weight:500}
-.btn-new-gugu{padding:7px 16px;border-radius:7px;border:none;background:var(--accent);color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit}
+.btn-new-gugu{padding:7px 16px;border-radius:7px;border:none;background:var(--r);color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit}
 .layout{display:grid;grid-template-columns:200px 1fr;min-height:calc(100vh - 56px)}
-.sidebar{border-right:1px solid var(--border);padding:20px 0}
+.sidebar{border-right:1px solid var(--b1);padding:20px 0}
 .sb-section{margin-bottom:8px}
-.sb-label{font-size:10px;color:var(--muted);font-weight:600;letter-spacing:1px;padding:0 18px;margin-bottom:4px}
-.sb-item{display:flex;align-items:center;gap:10px;padding:10px 18px;font-size:13px;color:var(--muted);cursor:pointer;transition:.15s;border-left:2px solid transparent}
-.sb-item:hover{color:var(--text);background:var(--surface)}
-.sb-item.active{color:var(--text);background:var(--surface);border-left-color:var(--accent)}
+.sb-label{font-size:10px;color:var(--t2);font-weight:600;letter-spacing:1px;padding:0 18px;margin-bottom:4px}
+.sb-item{display:flex;align-items:center;gap:10px;padding:10px 18px;font-size:13px;color:var(--t2);cursor:pointer;transition:.15s;border-left:2px solid transparent}
+.sb-item:hover{color:var(--t);background:var(--s1)}
+.sb-item.active{color:var(--t);background:var(--s1);border-left-color:var(--r)}
 .sb-item .ic{width:16px;text-align:center;font-size:14px}
-.sb-item .cnt{margin-left:auto;background:var(--accent);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px}
+.sb-item .cnt{margin-left:auto;background:var(--r);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px}
 .main{padding:28px 32px;overflow-y:auto}
 .page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
 .page-title{font-size:20px;font-weight:700}
 .period-select{display:flex;gap:6px}
-.period-btn{padding:5px 12px;border-radius:6px;font-size:12px;cursor:pointer;border:1px solid var(--border);background:none;color:var(--muted);font-family:inherit}
-.period-btn.active{background:var(--surface2);color:var(--text);border-color:var(--muted)}
+.period-btn{padding:5px 12px;border-radius:6px;font-size:12px;cursor:pointer;border:1px solid var(--b1);background:none;color:var(--t2);font-family:inherit}
+.period-btn.active{background:var(--s2);color:var(--t);border-color:var(--t2)}
 .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
-.kpi{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px}
-.kpi-label{font-size:11px;color:var(--muted);margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
+.kpi{background:var(--s1);border:1px solid var(--b1);border-radius:12px;padding:18px}
+.kpi-label{font-size:11px;color:var(--t2);margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
 .kpi-val{font-size:24px;font-weight:700;margin-bottom:4px;font-family:'Bebas Neue',sans-serif;letter-spacing:1px}
-.kpi-val.green{color:var(--green)}
-.kpi-val.orange{color:var(--accent2)}
-.kpi-val.red{color:var(--accent)}
+.kpi-val.green{color:var(--g)}
+.kpi-val.orange{color:var(--o)}
+.kpi-val.red{color:var(--r)}
 .kpi-change{font-size:11px;display:flex;align-items:center;gap:4px}
-.kpi-change.up{color:var(--green)}
+.kpi-change.up{color:var(--g)}
 .chart-grid{display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:24px}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px}
+.card{background:var(--s1);border:1px solid var(--b1);border-radius:12px;padding:20px}
 .card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
 .card-title{font-size:14px;font-weight:600}
-.card-sub{font-size:12px;color:var(--muted)}
+.card-sub{font-size:12px;color:var(--t2)}
 .bar-chart{display:flex;align-items:flex-end;gap:8px;height:140px}
 .bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%}
 .bar-track{flex:1;display:flex;align-items:flex-end;width:100%}
 .bar{width:100%;border-radius:4px 4px 0 0;transition:.3s;cursor:pointer}
 .bar:hover{filter:brightness(1.2)}
-.bar-label{font-size:10px;color:var(--muted);text-align:center}
+.bar-label{font-size:10px;color:var(--t2);text-align:center}
 .donut-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;height:140px;position:relative}
 .donut-center{position:absolute;text-align:center}
 .donut-center .n{font-size:22px;font-weight:700;font-family:'Bebas Neue',sans-serif}
-.donut-center .l{font-size:10px;color:var(--muted)}
+.donut-center .l{font-size:10px;color:var(--t2)}
 .donut-legend{display:flex;flex-direction:column;gap:6px;margin-top:12px;width:100%}
 .dl-item{display:flex;align-items:center;gap:8px;font-size:11px}
 .dl-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.dl-name{color:var(--muted);flex:1}
+.dl-name{color:var(--t2);flex:1}
 .dl-val{font-weight:600}
 .gugu-table{width:100%;border-collapse:collapse}
-.gugu-table th{font-size:11px;color:var(--muted);font-weight:500;text-align:left;padding:0 0 10px;border-bottom:1px solid var(--border)}
-.gugu-table td{padding:12px 0;border-bottom:1px solid var(--border);vertical-align:middle}
+.gugu-table th{font-size:11px;color:var(--t2);font-weight:500;text-align:left;padding:0 0 10px;border-bottom:1px solid var(--b1)}
+.gugu-table td{padding:12px 0;border-bottom:1px solid var(--b1);vertical-align:middle}
 .gugu-table tr:last-child td{border-bottom:none}
 .gt-product{display:flex;align-items:center;gap:10px}
-.gt-emoji{width:36px;height:36px;border-radius:8px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.gt-emoji{width:36px;height:36px;border-radius:8px;background:var(--s2);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
 .gt-name{font-size:13px;font-weight:600}
-.gt-cat{font-size:11px;color:var(--muted)}
+.gt-cat{font-size:11px;color:var(--t2)}
 .gt-prog{width:100px}
-.prog-bar{height:4px;background:var(--border);border-radius:2px;margin-top:4px}
-.prog-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.prog-bar{height:4px;background:var(--b1);border-radius:2px;margin-top:4px}
+.prog-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--r),var(--o))}
 .gt-status{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:3px 8px;border-radius:4px}
-.st-live{background:rgba(255,59,59,0.12);color:var(--accent)}
-.st-end{background:rgba(136,136,136,0.12);color:var(--muted)}
-.st-ready{background:rgba(255,138,0,0.12);color:var(--accent2)}
+.st-live{background:rgba(255,59,59,0.12);color:var(--r)}
+.st-end{background:rgba(136,136,136,0.12);color:var(--t2)}
+.st-ready{background:rgba(255,138,0,0.12);color:var(--o)}
 .gt-dot{width:5px;height:5px;border-radius:50%;background:currentColor;animation:pulse 1.5s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 .gt-action{display:flex;gap:6px}
-.gt-btn{padding:5px 10px;border-radius:6px;font-size:11px;cursor:pointer;font-family:inherit;border:1px solid var(--border);background:none;color:var(--text)}
-.gt-btn:hover{background:var(--surface2)}
+.gt-btn{padding:5px 10px;border-radius:6px;font-size:11px;cursor:pointer;font-family:inherit;border:1px solid var(--b1);background:none;color:var(--t)}
+.gt-btn:hover{background:var(--s2)}
 .bottom-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px}
 .settle-list{display:flex;flex-direction:column;gap:0}
-.settle-item{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
+.settle-item{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--b1)}
 .settle-item:last-child{border-bottom:none}
-.settle-date{font-size:12px;color:var(--muted);width:70px;flex-shrink:0}
+.settle-date{font-size:12px;color:var(--t2);width:70px;flex-shrink:0}
 .settle-info{flex:1}
 .settle-name{font-size:13px;font-weight:500}
-.settle-detail{font-size:11px;color:var(--muted)}
+.settle-detail{font-size:11px;color:var(--t2)}
 .settle-amount{font-size:14px;font-weight:700}
-.settle-amount.plus{color:var(--green)}
+.settle-amount.plus{color:var(--g)}
 .settle-status{font-size:10px;padding:2px 7px;border-radius:4px;flex-shrink:0}
-.ss-done{background:rgba(34,197,94,0.12);color:var(--green)}
-.ss-pending{background:rgba(255,138,0,0.12);color:var(--accent2)}
+.ss-done{background:rgba(34,197,94,0.12);color:var(--g)}
+.ss-pending{background:rgba(255,138,0,0.12);color:var(--o)}
 .notif-list{display:flex;flex-direction:column;gap:0}
-.notif-item{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);cursor:pointer}
+.notif-item{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--b1);cursor:pointer}
 .notif-item:last-child{border-bottom:none}
 .notif-ic{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
 .ni-red{background:rgba(255,59,59,0.12)}
 .ni-orange{background:rgba(255,138,0,0.12)}
 .ni-green{background:rgba(34,197,94,0.12)}
 .notif-body .t{font-size:13px;font-weight:500;margin-bottom:2px}
-.notif-body .s{font-size:11px;color:var(--muted)}
-.notif-time{font-size:11px;color:var(--muted);margin-left:auto;flex-shrink:0}
-.unread-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0;margin-top:4px}
+.notif-body .s{font-size:11px;color:var(--t2)}
+.notif-time{font-size:11px;color:var(--t2);margin-left:auto;flex-shrink:0}
+.unread-dot{width:6px;height:6px;border-radius:50%;background:var(--r);flex-shrink:0;margin-top:4px}
 
 
 /* ══════════════════════════════════════
    MOBILE RESPONSIVE — influencer-dashboard.html
 ══════════════════════════════════════ */
 
-@media (max-width: 768px) {
-  .layout { grid-template-columns:1fr !important; }
-  .sidebar-wrap {
-    display:flex !important; flex-direction:row !important;
-    overflow-x:auto !important; border-right:none !important;
-    border-bottom:1px solid var(--border) !important;
-    padding:8px 14px !important; gap:4px !important;
-  }
-  .sidebar-wrap::-webkit-scrollbar { display:none; }
-  .sb-item {
-    white-space:nowrap !important; border-radius:8px !important;
-    border:1px solid var(--border) !important; padding:7px 12px !important; font-size:12px !important;
-  }
-  .sb-item .ic { display:none !important; }
-  .kpi-grid { grid-template-columns:repeat(2,1fr) !important; gap:10px !important; }
-  .chart-grid { grid-template-columns:1fr !important; gap:12px !important; }
-  .bottom-grid { grid-template-columns:1fr !important; }
-  .main-content { padding:14px !important; }
-  .gugu-table { font-size:12px !important; }
-  .gugu-table th,.gugu-table td { padding:9px 8px !important; }
-}
+
 
 
 /* ══════ 공통 모바일 요소 ══════ */
-@media (max-width: 768px) {
-  /* 네비 공통 */
-  .mob-menu-btn { display:flex !important; }
-  .mob-search-bar { display:flex !important; }
-  /* 하단 탭바 */
-  .mob-bottom-nav { display:flex !important; }
-  body { padding-bottom:60px; }
-}
+
 
 /* 햄버거 드로어 메뉴 */
 .mob-menu-btn { display:none; width:36px; height:36px; border-radius:8px; background:var(--s2,#171719); border:1px solid var(--b1,#242428); align-items:center; justify-content:center; cursor:pointer; font-size:18px; color:var(--t2,#8a8a9a); flex-shrink:0; }
@@ -158,11 +137,39 @@ nav {background:rgba(10,10,10,0.97);border-bottom:1px solid var(--border);paddin
 .mob-drawer-btns button { flex:1; padding:12px; border-radius:10px; font-size:14px; font-weight:700; cursor:pointer; font-family:inherit; }
 .mob-search-bar { display:none; align-items:center; gap:8px; background:var(--s2,#171719); border:1px solid var(--b1,#242428); border-radius:10px; padding:10px 14px; margin:6px 16px 0; }
 .mob-search-bar input { background:none; border:none; outline:none; color:var(--t,#F2F2F5); font-size:14px; font-family:inherit; width:100%; }
+
+
+
 @media (max-width: 768px) {
+.layout { grid-template-columns:1fr !important; }
+  .sidebar-wrap {
+    display:flex !important; flex-direction:row !important;
+    overflow-x:auto !important; border-right:none !important;
+    border-bottom:1px solid var(--b1) !important;
+    padding:8px 14px !important; gap:4px !important;
+  }
+  .sidebar-wrap::-webkit-scrollbar { display:none; }
+  .sb-item {
+    white-space:nowrap !important; border-radius:8px !important;
+    border:1px solid var(--b1) !important; padding:7px 12px !important; font-size:12px !important;
+  }
+  .sb-item .ic { display:none !important; }
+  .kpi-grid { grid-template-columns:repeat(2,1fr) !important; gap:10px !important; }
+  .chart-grid { grid-template-columns:1fr !important; gap:12px !important; }
+  .bottom-grid { grid-template-columns:1fr !important; }
+  .main-content { padding:14px !important; }
+  .gugu-table { font-size:12px !important; }
+  .gugu-table th,.gugu-table td { padding:9px 8px !important; }
+/* 네비 공통 */
   .mob-menu-btn { display:flex !important; }
   .mob-search-bar { display:flex !important; }
+  /* 하단 탭바 */
+  .mob-bottom-nav { display:flex !important; }
+  body { padding-bottom:60px; }
+.mob-menu-btn { display:flex !important; }
+  .mob-search-bar { display:flex !important; }
+.mob-bottom-nav { display: flex !important; }
 }
-
 </style>
 </head>
 <body>
@@ -204,7 +211,7 @@ nav {background:rgba(10,10,10,0.97);border-bottom:1px solid var(--border);paddin
     <div class="page-header">
       <div>
         <div class="page-title">안녕하세요, 지민뷰티님 👋</div>
-        <div style="font-size:13px;color:var(--muted);margin-top:3px">현재 3개 공구가 진행 중이에요</div>
+        <div style="font-size:13px;color:var(--t2);margin-top:3px">현재 3개 공구가 진행 중이에요</div>
       </div>
       <div class="period-select">
         <button class="period-btn">오늘</button>
@@ -218,25 +225,25 @@ nav {background:rgba(10,10,10,0.97);border-bottom:1px solid var(--border);paddin
       <div class="kpi">
         <div class="kpi-label">이번달 수익 💰</div>
         <div class="kpi-val green">4,821,000</div>
-        <div style="font-size:11px;color:var(--muted);margin-bottom:4px">원</div>
+        <div style="font-size:11px;color:var(--t2);margin-bottom:4px">원</div>
         <div class="kpi-change up">↑ 23.4% 지난달 대비</div>
       </div>
       <div class="kpi">
         <div class="kpi-label">총 참여자 👥</div>
         <div class="kpi-val orange">12,847</div>
-        <div style="font-size:11px;color:var(--muted);margin-bottom:4px">명</div>
+        <div style="font-size:11px;color:var(--t2);margin-bottom:4px">명</div>
         <div class="kpi-change up">↑ 8.1% 지난달 대비</div>
       </div>
       <div class="kpi">
         <div class="kpi-label">진행중 공구 🔥</div>
         <div class="kpi-val red">3</div>
-        <div style="font-size:11px;color:var(--muted);margin-bottom:4px">개</div>
-        <div class="kpi-change" style="color:var(--muted)">총 18개 완료</div>
+        <div style="font-size:11px;color:var(--t2);margin-bottom:4px">개</div>
+        <div class="kpi-change" style="color:var(--t2)">총 18개 완료</div>
       </div>
       <div class="kpi">
         <div class="kpi-label">평균 달성률 🎯</div>
         <div class="kpi-val">94</div>
-        <div style="font-size:11px;color:var(--muted);margin-bottom:4px">%</div>
+        <div style="font-size:11px;color:var(--t2);margin-bottom:4px">%</div>
         <div class="kpi-change up">↑ 2.3% 지난달 대비</div>
       </div>
     </div>
@@ -258,9 +265,9 @@ nav {background:rgba(10,10,10,0.97);border-bottom:1px solid var(--border);paddin
           <div class="donut-center"><div class="n">21</div><div class="l">공구</div></div>
         </div>
         <div class="donut-legend">
-          <div class="dl-item"><div class="dl-dot" style="background:var(--accent)"></div><span class="dl-name">스킨케어</span><span class="dl-val">60%</span></div>
-          <div class="dl-item"><div class="dl-dot" style="background:var(--accent2)"></div><span class="dl-name">메이크업</span><span class="dl-val">28%</span></div>
-          <div class="dl-item"><div class="dl-dot" style="background:var(--green)"></div><span class="dl-name">기타</span><span class="dl-val">12%</span></div>
+          <div class="dl-item"><div class="dl-dot" style="background:var(--r)"></div><span class="dl-name">스킨케어</span><span class="dl-val">60%</span></div>
+          <div class="dl-item"><div class="dl-dot" style="background:var(--o)"></div><span class="dl-name">메이크업</span><span class="dl-val">28%</span></div>
+          <div class="dl-item"><div class="dl-dot" style="background:var(--g)"></div><span class="dl-name">기타</span><span class="dl-val">12%</span></div>
         </div>
       </div>
     </div>
@@ -268,7 +275,7 @@ nav {background:rgba(10,10,10,0.97);border-bottom:1px solid var(--border);paddin
     <div class="card" style="margin-bottom:24px">
       <div class="card-header">
         <div class="card-title">진행중인 공구</div>
-        <button style="padding:5px 12px;border-radius:6px;border:1px solid var(--border);background:none;color:var(--muted);font-size:12px;cursor:pointer;font-family:inherit">전체보기</button>
+        <button style="padding:5px 12px;border-radius:6px;border:1px solid var(--b1);background:none;color:var(--t2);font-size:12px;cursor:pointer;font-family:inherit">전체보기</button>
       </div>
       <table class="gugu-table">
         <thead>
@@ -277,27 +284,27 @@ nav {background:rgba(10,10,10,0.97);border-bottom:1px solid var(--border);paddin
         <tbody>
           <tr>
             <td><div class="gt-product"><div class="gt-emoji">🧴</div><div><div class="gt-name">닥터자르트 시카페어 크림</div><div class="gt-cat">스킨케어 · 31,900원</div></div></div></td>
-            <td><strong>4,812</strong><br><span style="font-size:11px;color:var(--muted)">목표 6,500</span></td>
+            <td><strong>4,812</strong><br><span style="font-size:11px;color:var(--t2)">목표 6,500</span></td>
             <td><div class="gt-prog"><span style="font-size:12px;font-weight:600">74%</span><div class="prog-bar"><div class="prog-fill" style="width:74%"></div></div></div></td>
-            <td><strong style="color:var(--green)">1,832,400원</strong></td>
+            <td><strong style="color:var(--g)">1,832,400원</strong></td>
             <td><span style="font-size:12px">2일 14시간</span></td>
             <td><span class="gt-status st-live"><span class="gt-dot"></span> 진행중</span></td>
             <td><div class="gt-action"><button class="gt-btn">수정</button><button class="gt-btn">상세</button></div></td>
           </tr>
           <tr>
             <td><div class="gt-product"><div class="gt-emoji">💄</div><div><div class="gt-name">롬앤 쥬시래스팅틴트</div><div class="gt-cat">메이크업 · 11,200원</div></div></div></td>
-            <td><strong>3,291</strong><br><span style="font-size:11px;color:var(--muted)">목표 3,500</span></td>
+            <td><strong>3,291</strong><br><span style="font-size:11px;color:var(--t2)">목표 3,500</span></td>
             <td><div class="gt-prog"><span style="font-size:12px;font-weight:600">94%</span><div class="prog-bar"><div class="prog-fill" style="width:94%"></div></div></div></td>
-            <td><strong style="color:var(--green)">1,021,000원</strong></td>
-            <td><span style="font-size:12px;color:var(--accent)">1일 3시간</span></td>
+            <td><strong style="color:var(--g)">1,021,000원</strong></td>
+            <td><span style="font-size:12px;color:var(--r)">1일 3시간</span></td>
             <td><span class="gt-status st-live"><span class="gt-dot"></span> 진행중</span></td>
             <td><div class="gt-action"><button class="gt-btn">수정</button><button class="gt-btn">상세</button></div></td>
           </tr>
           <tr>
             <td><div class="gt-product"><div class="gt-emoji">🌿</div><div><div class="gt-name">이니스프리 그린티 세럼</div><div class="gt-cat">스킨케어 · 22,800원</div></div></div></td>
-            <td><strong>890</strong><br><span style="font-size:11px;color:var(--muted)">목표 2,000</span></td>
+            <td><strong>890</strong><br><span style="font-size:11px;color:var(--t2)">목표 2,000</span></td>
             <td><div class="gt-prog"><span style="font-size:12px;font-weight:600">45%</span><div class="prog-bar"><div class="prog-fill" style="width:45%"></div></div></div></td>
-            <td><strong style="color:var(--green)">382,600원</strong></td>
+            <td><strong style="color:var(--g)">382,600원</strong></td>
             <td><span style="font-size:12px">5일 8시간</span></td>
             <td><span class="gt-status st-ready">준비중</span></td>
             <td><div class="gt-action"><button class="gt-btn">수정</button><button class="gt-btn">상세</button></div></td>
@@ -308,7 +315,7 @@ nav {background:rgba(10,10,10,0.97);border-bottom:1px solid var(--border);paddin
 
     <div class="bottom-grid">
       <div class="card">
-        <div class="card-header"><div class="card-title">정산 내역</div><div class="card-sub" style="color:var(--green);font-weight:600">다음 정산 D-8</div></div>
+        <div class="card-header"><div class="card-title">정산 내역</div><div class="card-sub" style="color:var(--g);font-weight:600">다음 정산 D-8</div></div>
         <div class="settle-list">
           <div class="settle-item">
             <div class="settle-date">03.15</div>
@@ -331,7 +338,7 @@ nav {background:rgba(10,10,10,0.97);border-bottom:1px solid var(--border);paddin
         </div>
       </div>
       <div class="card">
-        <div class="card-header"><div class="card-title">알림</div><div style="font-size:11px;color:var(--accent);font-weight:600;cursor:pointer">모두읽기</div></div>
+        <div class="card-header"><div class="card-title">알림</div><div style="font-size:11px;color:var(--r);font-weight:600;cursor:pointer">모두읽기</div></div>
         <div class="notif-list">
           <div class="notif-item">
             <div class="notif-ic ni-red">🔥</div>
@@ -369,7 +376,7 @@ const bc=document.getElementById('barChart');
 months.forEach((m,i)=>{
   const pct=Math.round(vals[i]/max*100);
   const isLast=i===months.length-1;
-  bc.innerHTML+=`<div class="bar-wrap"><div class="bar-track"><div class="bar" style="height:${pct}%;background:${isLast?'linear-gradient(180deg,var(--accent),var(--accent2))':'var(--surface2)'};border:1px solid ${isLast?'transparent':'var(--border)'}"></div></div><div class="bar-label">${m}</div></div>`;
+  bc.innerHTML+=`<div class="bar-wrap"><div class="bar-track"><div class="bar" style="height:${pct}%;background:${isLast?'linear-gradient(180deg,var(--r),var(--o))':'var(--s2)'};border:1px solid ${isLast?'transparent':'var(--b1)'}"></div></div><div class="bar-label">${m}</div></div>`;
 });
 document.querySelectorAll('.sb-item').forEach(t=>t.addEventListener('click',function(){document.querySelectorAll('.sb-item').forEach(x=>x.classList.remove('active'));this.classList.add('active')}));
 document.querySelectorAll('.period-btn').forEach(t=>t.addEventListener('click',function(){document.querySelectorAll('.period-btn').forEach(x=>x.classList.remove('active'));this.classList.add('active')}));
@@ -426,10 +433,7 @@ document.querySelectorAll('.period-btn').forEach(t=>t.addEventListener('click',f
   background: var(--r, #FF3B3B);
   border: 1.5px solid var(--bg, #0A0A0A);
 }
-@media (max-width: 768px) {
-  .mob-bottom-nav { display: flex !important; }
-  
-}
+
 </style>
 </body>
 </html>

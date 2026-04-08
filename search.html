@@ -7,105 +7,98 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=Bebas+Neue&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#0A0A0A;--surface:#141414;--surface2:#1C1C1C;--border:#2A2A2A;--accent:#FF3B3B;--accent2:#FF8A00;--text:#F5F5F5;--muted:#888}
-body {background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;font-size:14px;padding-top:54px}
-nav {background:rgba(10,10,10,0.97);border-bottom:1px solid var(--border);padding:0 32px;position:fixed;top:0;z-index:100}
+:root{
+  --bg:#0A0A0A;--s1:#111114;--s2:#171719;--s3:#1e1e22;
+  --b1:#242428;--b2:#2e2e34;
+  --r:#FF3B3B;--o:#FF8A00;--g:#22c55e;--bl:#6366f1;
+  --t:#F2F2F5;--t2:#8a8a9a;--t3:#464650;
+  --max:1100px;
+}
+body {background:var(--bg);color:var(--t);font-family:'Noto Sans KR',sans-serif;font-size:14px;padding-top:54px}
+nav {background:rgba(10,10,10,0.97);border-bottom:1px solid var(--b1);padding:0 32px;position:fixed;top:0;z-index:100}
 .nav-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:16px;height:56px}
-.logo{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;text-decoration:none;color:var(--text)}
-.logo span{color:var(--accent)}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;text-decoration:none;color:var(--t)}
+.logo span{color:var(--r)}
 .search-wrap{flex:1;max-width:500px}
-.search-box{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:9px 14px;display:flex;align-items:center;gap:8px;width:100%}
-.search-box input{background:none;border:none;outline:none;color:var(--text);font-size:14px;font-family:inherit;width:100%}
-.search-box input::placeholder{color:var(--muted)}
-.search-icon{color:var(--muted);font-size:16px;cursor:pointer}
+.search-box{background:var(--s1);border:1px solid var(--b1);border-radius:10px;padding:9px 14px;display:flex;align-items:center;gap:8px;width:100%}
+.search-box input{background:none;border:none;outline:none;color:var(--t);font-size:14px;font-family:inherit;width:100%}
+.search-box input::placeholder{color:var(--t2)}
+.search-icon{color:var(--t2);font-size:16px;cursor:pointer}
 .nav-right{display:flex;align-items:center;gap:10px;margin-left:auto}
-.btn-login{padding:6px 14px;border-radius:6px;border:1px solid var(--border);background:none;color:var(--text);font-size:13px;cursor:pointer;font-family:inherit}
-.btn-join{padding:6px 14px;border-radius:6px;border:none;background:var(--accent);color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
+.btn-login{padding:6px 14px;border-radius:6px;border:1px solid var(--b1);background:none;color:var(--t);font-size:13px;cursor:pointer;font-family:inherit}
+.btn-join{padding:6px 14px;border-radius:6px;border:none;background:var(--r);color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
 .wrap{max-width:1100px;margin:0 auto;padding:28px 32px}
 .search-header{margin-bottom:24px}
 .search-query{font-size:22px;font-weight:700;margin-bottom:4px}
-.search-query span{color:var(--accent)}
-.search-count{font-size:13px;color:var(--muted)}
+.search-query span{color:var(--r)}
+.search-count{font-size:13px;color:var(--t2)}
 .layout{display:grid;grid-template-columns:220px 1fr;gap:28px}
 /* FILTER SIDEBAR */
 .filter-sidebar{}
-.filter-section{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:14px}
+.filter-section{background:var(--s1);border:1px solid var(--b1);border-radius:12px;padding:18px;margin-bottom:14px}
 .filter-title{font-size:13px;font-weight:600;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
-.filter-title .reset{font-size:11px;color:var(--muted);cursor:pointer;font-weight:400}
-.filter-title .reset:hover{color:var(--accent)}
+.filter-title .reset{font-size:11px;color:var(--t2);cursor:pointer;font-weight:400}
+.filter-title .reset:hover{color:var(--r)}
 .filter-list{display:flex;flex-direction:column;gap:8px}
 .filter-item{display:flex;align-items:center;justify-content:space-between;cursor:pointer}
-.filter-item label{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;color:var(--muted)}
-.filter-item input{accent-color:var(--accent)}
-.filter-item label.active-label{color:var(--text)}
-.filter-cnt{font-size:11px;color:var(--muted)}
+.filter-item label{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;color:var(--t2)}
+.filter-item input{accent-color:var(--r)}
+.filter-item label.active-label{color:var(--t)}
+.filter-cnt{font-size:11px;color:var(--t2)}
 .price-range{margin-top:8px}
 .range-inputs{display:flex;align-items:center;gap:8px;margin-top:8px}
-.range-input{flex:1;padding:8px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:12px;font-family:inherit;outline:none;text-align:center}
-.range-sep{font-size:12px;color:var(--muted)}
+.range-input{flex:1;padding:8px 10px;background:var(--s2);border:1px solid var(--b1);border-radius:6px;color:var(--t);font-size:12px;font-family:inherit;outline:none;text-align:center}
+.range-sep{font-size:12px;color:var(--t2)}
 .sort-filter{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
 .active-filters{display:flex;gap:6px;flex-wrap:wrap}
-.af-tag{display:flex;align-items:center;gap:5px;padding:4px 10px;background:rgba(255,59,59,0.1);border:1px solid rgba(255,59,59,0.25);border-radius:20px;font-size:12px;color:var(--accent)}
-.af-tag button{background:none;border:none;color:var(--accent);cursor:pointer;font-size:14px;line-height:1;padding:0}
-.sort-select{padding:7px 12px;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;font-family:inherit;outline:none;cursor:pointer}
+.af-tag{display:flex;align-items:center;gap:5px;padding:4px 10px;background:rgba(255,59,59,0.1);border:1px solid rgba(255,59,59,0.25);border-radius:20px;font-size:12px;color:var(--r)}
+.af-tag button{background:none;border:none;color:var(--r);cursor:pointer;font-size:14px;line-height:1;padding:0}
+.sort-select{padding:7px 12px;background:var(--s1);border:1px solid var(--b1);border-radius:8px;color:var(--t);font-size:13px;font-family:inherit;outline:none;cursor:pointer}
 /* PRODUCT GRID */
 .product-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-.product-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;cursor:pointer;transition:.2s}
+.product-card{background:var(--s1);border:1px solid var(--b1);border-radius:12px;overflow:hidden;cursor:pointer;transition:.2s}
 .product-card:hover{transform:translateY(-3px);border-color:#444}
-.product-card-img{height:180px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:44px;position:relative}
+.product-card-img{height:180px;background:var(--s2);display:flex;align-items:center;justify-content:center;font-size:44px;position:relative}
 .badge{position:absolute;top:8px;left:8px;color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px}
-.badge-live{background:var(--accent)}
-.badge-end{background:var(--surface2);color:var(--muted);border:1px solid var(--border)}
+.badge-live{background:var(--r)}
+.badge-end{background:var(--s2);color:var(--t2);border:1px solid var(--b1)}
 .product-card-
 .pc-inf{display:flex;align-items:center;gap:6px;margin-bottom:8px}
 .pc-av{width:22px;height:22px;border-radius:50%;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0}
-.pc-inf-name{font-size:11px;color:var(--muted)}
+.pc-inf-name{font-size:11px;color:var(--t2)}
 .pc-name{font-size:13px;font-weight:600;margin-bottom:8px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:36px}
 .pc-price-row{display:flex;align-items:center;gap:6px;margin-bottom:8px;flex-wrap:wrap}
-.pc-orig{font-size:11px;color:var(--muted);text-decoration:line-through}
+.pc-orig{font-size:11px;color:var(--t2);text-decoration:line-through}
 .pc-sale{font-size:16px;font-weight:700}
-.pc-disc{font-size:11px;font-weight:700;color:var(--accent)}
-.pc-bar{height:3px;background:var(--border);border-radius:2px;margin-bottom:5px}
-.pc-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--accent),var(--accent2))}
-.pc-meta{display:flex;justify-content:space-between;font-size:11px;color:var(--muted)}
+.pc-disc{font-size:11px;font-weight:700;color:var(--r)}
+.pc-bar{height:3px;background:var(--b1);border-radius:2px;margin-bottom:5px}
+.pc-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--r),var(--o))}
+.pc-meta{display:flex;justify-content:space-between;font-size:11px;color:var(--t2)}
 .pagination{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:32px}
-.pg-btn{width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:none;color:var(--text);font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:inherit}
-.pg-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
-.pg-btn:hover:not(.active){background:var(--surface2)}
-.no-result{text-align:center;padding:60px 0;color:var(--muted)}
+.pg-btn{width:36px;height:36px;border-radius:8px;border:1px solid var(--b1);background:none;color:var(--t);font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:inherit}
+.pg-btn.active{background:var(--r);border-color:var(--r);color:#fff;font-weight:700}
+.pg-btn:hover:not(.active){background:var(--s2)}
+.no-result{text-align:center;padding:60px 0;color:var(--t2)}
 .no-result .icon{font-size:48px;margin-bottom:16px}
 
 .empty-state{text-align:center;padding:64px 20px;display:flex;flex-direction:column;align-items:center}
 .es-icon{font-size:56px;opacity:.22;margin-bottom:18px}
-.es-title{font-size:20px;font-weight:800;color:var(--text);margin-bottom:10px;letter-spacing:-.3px}
-.es-sub{font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:24px;max-width:320px}
+.es-title{font-size:20px;font-weight:800;color:var(--t);margin-bottom:10px;letter-spacing:-.3px}
+.es-sub{font-size:14px;color:var(--t2);line-height:1.7;margin-bottom:24px;max-width:320px}
 .es-cta{display:flex;gap:10px;justify-content:center}
-.es-btn{padding:11px 22px;border-radius:10px;background:var(--accent);border:none;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit}
-.es-btn-out{padding:11px 22px;border-radius:10px;background:none;border:1px solid var(--border);color:var(--muted);font-size:14px;font-weight:600;cursor:pointer;font-family:inherit}
+.es-btn{padding:11px 22px;border-radius:10px;background:var(--r);border:none;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit}
+.es-btn-out{padding:11px 22px;border-radius:10px;background:none;border:1px solid var(--b1);color:var(--t2);font-size:14px;font-weight:600;cursor:pointer;font-family:inherit}
 
 
 /* ══════════════════════════════════════
    MOBILE RESPONSIVE — search.html
 ══════════════════════════════════════ */
 
-@media (max-width: 768px) {
-  .wrap { padding-left:16px !important; padding-right:16px !important; }
-  .layout { grid-template-columns:1fr !important; }
-  .filter-col { display:none !important; }
-  .product-grid { grid-template-columns:repeat(2,1fr) !important; gap:10px !important; }
-  .sort-row { flex-wrap:wrap !important; gap:8px !important; }
-}
+
 
 
 /* ══════ 공통 모바일 요소 ══════ */
-@media (max-width: 768px) {
-  /* 네비 공통 */
-  .mob-menu-btn { display:flex !important; }
-  .mob-search-bar { display:flex !important; }
-  /* 하단 탭바 */
-  .mob-bottom-nav { display:flex !important; }
-  body { padding-bottom:60px; }
-}
+
 
 /* 햄버거 드로어 메뉴 */
 .mob-menu-btn { display:none; width:36px; height:36px; border-radius:8px; background:var(--s2,#171719); border:1px solid var(--b1,#242428); align-items:center; justify-content:center; cursor:pointer; font-size:18px; color:var(--t2,#8a8a9a); flex-shrink:0; }
@@ -120,11 +113,25 @@ nav {background:rgba(10,10,10,0.97);border-bottom:1px solid var(--border);paddin
 .mob-drawer-btns button { flex:1; padding:12px; border-radius:10px; font-size:14px; font-weight:700; cursor:pointer; font-family:inherit; }
 .mob-search-bar { display:none; align-items:center; gap:8px; background:var(--s2,#171719); border:1px solid var(--b1,#242428); border-radius:10px; padding:10px 14px; margin:6px 16px 0; }
 .mob-search-bar input { background:none; border:none; outline:none; color:var(--t,#F2F2F5); font-size:14px; font-family:inherit; width:100%; }
+
+
+
 @media (max-width: 768px) {
+.wrap { padding-left:16px !important; padding-right:16px !important; }
+  .layout { grid-template-columns:1fr !important; }
+  .filter-col { display:none !important; }
+  .product-grid { grid-template-columns:repeat(2,1fr) !important; gap:10px !important; }
+  .sort-row { flex-wrap:wrap !important; gap:8px !important; }
+/* 네비 공통 */
   .mob-menu-btn { display:flex !important; }
   .mob-search-bar { display:flex !important; }
+  /* 하단 탭바 */
+  .mob-bottom-nav { display:flex !important; }
+  body { padding-bottom:60px; }
+.mob-menu-btn { display:flex !important; }
+  .mob-search-bar { display:flex !important; }
+.mob-bottom-nav { display: flex !important; }
 }
-
 </style>
 </head>
 <body>
@@ -163,7 +170,7 @@ nav {background:rgba(10,10,10,0.97);border-bottom:1px solid var(--border);paddin
       <div class="filter-section">
         <div class="filter-title">가격대</div>
         <div class="price-range">
-          <input type="range" min="0" max="200000" value="100000" style="width:100%;accent-color:var(--accent)">
+          <input type="range" min="0" max="200000" value="100000" style="width:100%;accent-color:var(--r)">
           <div class="range-inputs">
             <input class="range-input" type="text" value="0원">
             <span class="range-sep">~</span>
@@ -349,10 +356,7 @@ function resetFilters(){document.querySelectorAll('.filter-item input').forEach(
   background: var(--r, #FF3B3B);
   border: 1.5px solid var(--bg, #0A0A0A);
 }
-@media (max-width: 768px) {
-  .mob-bottom-nav { display: flex !important; }
-  
-}
+
 </style>
 </body>
 </html>

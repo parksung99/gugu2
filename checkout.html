@@ -7,103 +7,92 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=Bebas+Neue&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#0A0A0A;--surface:#141414;--surface2:#1C1C1C;--border:#2A2A2A;--accent:#FF3B3B;--accent2:#FF8A00;--green:#22c55e;--text:#F5F5F5;--muted:#888}
-body {background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;font-size:14px;padding-top:54px}
-nav{background:rgba(10,10,10,0.97);border-bottom:1px solid var(--border);padding:0 32px}
+:root{
+  --bg:#0A0A0A;--s1:#111114;--s2:#171719;--s3:#1e1e22;
+  --b1:#242428;--b2:#2e2e34;
+  --r:#FF3B3B;--o:#FF8A00;--g:#22c55e;--bl:#6366f1;
+  --t:#F2F2F5;--t2:#8a8a9a;--t3:#464650;
+  --max:1100px;
+}
+body {background:var(--bg);color:var(--t);font-family:'Noto Sans KR',sans-serif;font-size:14px;padding-top:54px}
+nav{background:rgba(10,10,10,0.97);border-bottom:1px solid var(--b1);padding:0 32px}
 .nav-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;height:56px}
-.logo{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;text-decoration:none;color:var(--text)}
-.logo span{color:var(--accent)}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;text-decoration:none;color:var(--t)}
+.logo span{color:var(--r)}
 .steps{display:flex;align-items:center;gap:0;margin-left:40px}
 .step{display:flex;align-items:center;gap:6px;font-size:12px}
 .step-c{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0}
-.step.done .step-c{background:var(--green);color:#fff}
-.step.active .step-c{background:var(--accent);color:#fff}
-.step.idle .step-c{background:var(--surface2);color:var(--muted);border:1px solid var(--border)}
-.step.active .step-l{color:var(--text);font-weight:600}
-.step.idle .step-l{color:var(--muted)}
-.step.done .step-l{color:var(--green)}
-.step-line{width:32px;height:1px;background:var(--border);margin:0 4px}
-.step-line.done{background:var(--green)}
+.step.done .step-c{background:var(--g);color:#fff}
+.step.active .step-c{background:var(--r);color:#fff}
+.step.idle .step-c{background:var(--s2);color:var(--t2);border:1px solid var(--b1)}
+.step.active .step-l{color:var(--t);font-weight:600}
+.step.idle .step-l{color:var(--t2)}
+.step.done .step-l{color:var(--g)}
+.step-line{width:32px;height:1px;background:var(--b1);margin:0 4px}
+.step-line.done{background:var(--g)}
 .wrap{max-width:1100px;margin:0 auto;padding:32px}
 .layout{display:grid;grid-template-columns:1fr 360px;gap:28px}
-.section{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:22px;margin-bottom:16px}
+.section{background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:22px;margin-bottom:16px}
 .section-title{font-size:15px;font-weight:700;margin-bottom:18px}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .form-group{display:flex;flex-direction:column;gap:6px}
 .form-group.full{grid-column:1/-1}
-.form-label{font-size:12px;color:var(--muted);font-weight:500}
-.form-input{padding:10px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;font-family:inherit;outline:none;transition:.2s}
-.form-input:focus{border-color:var(--accent)}
-.form-input::placeholder{color:var(--muted)}
-.form-select{padding:10px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;font-family:inherit;outline:none;appearance:none;cursor:pointer}
-.addr-btn{padding:10px 16px;border-radius:8px;border:1px solid var(--border);background:none;color:var(--text);font-size:13px;cursor:pointer;font-family:inherit;white-space:nowrap}
-.addr-btn:hover{background:var(--surface2)}
+.form-label{font-size:12px;color:var(--t2);font-weight:500}
+.form-input{padding:10px 14px;background:var(--s2);border:1px solid var(--b1);border-radius:8px;color:var(--t);font-size:14px;font-family:inherit;outline:none;transition:.2s}
+.form-input:focus{border-color:var(--r)}
+.form-input::placeholder{color:var(--t2)}
+.form-select{padding:10px 14px;background:var(--s2);border:1px solid var(--b1);border-radius:8px;color:var(--t);font-size:14px;font-family:inherit;outline:none;appearance:none;cursor:pointer}
+.addr-btn{padding:10px 16px;border-radius:8px;border:1px solid var(--b1);background:none;color:var(--t);font-size:13px;cursor:pointer;font-family:inherit;white-space:nowrap}
+.addr-btn:hover{background:var(--s2)}
 .pay-methods{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
-.pay-method{padding:12px 8px;border-radius:10px;border:1px solid var(--border);background:none;cursor:pointer;text-align:center;transition:.2s;font-family:inherit}
-.pay-method:hover{border-color:var(--muted)}
-.pay-method.active{border-color:var(--accent);background:rgba(255,59,59,0.06)}
+.pay-method{padding:12px 8px;border-radius:10px;border:1px solid var(--b1);background:none;cursor:pointer;text-align:center;transition:.2s;font-family:inherit}
+.pay-method:hover{border-color:var(--t2)}
+.pay-method.active{border-color:var(--r);background:rgba(255,59,59,0.06)}
 .pay-method .pm-icon{font-size:20px;margin-bottom:4px}
-.pay-method .pm-name{font-size:11px;color:var(--muted)}
-.pay-method.active .pm-name{color:var(--accent)}
-.card-inputs{background:var(--surface2);border-radius:10px;padding:16px}
+.pay-method .pm-name{font-size:11px;color:var(--t2)}
+.pay-method.active .pm-name{color:var(--r)}
+.card-inputs{background:var(--s2);border-radius:10px;padding:16px}
 .agree-list{display:flex;flex-direction:column;gap:10px}
 .agree-item{display:flex;align-items:center;justify-content:space-between}
 .agree-left{display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer}
-.agree-left input{accent-color:var(--accent)}
-.agree-req{font-size:11px;color:var(--accent)}
-.agree-link{font-size:11px;color:var(--muted);cursor:pointer;text-decoration:underline}
+.agree-left input{accent-color:var(--r)}
+.agree-req{font-size:11px;color:var(--r)}
+.agree-link{font-size:11px;color:var(--t2);cursor:pointer;text-decoration:underline}
 /* ORDER SUMMARY */
 .order-summary{position:sticky;top:20px}
-.order-product{display:flex;gap:12px;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--border)}
-.order-img{width:64px;height:64px;border-radius:8px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0}
+.order-product{display:flex;gap:12px;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--b1)}
+.order-img{width:64px;height:64px;border-radius:8px;background:var(--s2);display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0}
 .order-info .name{font-size:14px;font-weight:600;margin-bottom:4px}
-.order-info .opt{font-size:12px;color:var(--muted);margin-bottom:4px}
-.order-info .price{font-size:14px;font-weight:700;color:var(--accent)}
-.price-table{display:flex;flex-direction:column;gap:10px;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+.order-info .opt{font-size:12px;color:var(--t2);margin-bottom:4px}
+.order-info .price{font-size:14px;font-weight:700;color:var(--r)}
+.price-table{display:flex;flex-direction:column;gap:10px;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--b1)}
 .price-row{display:flex;justify-content:space-between;font-size:13px}
-.price-row .k{color:var(--muted)}
-.price-row .v.green{color:var(--green)}
+.price-row .k{color:var(--t2)}
+.price-row .v.green{color:var(--g)}
 .price-total{display:flex;justify-content:space-between;font-size:16px;font-weight:700;margin-bottom:20px}
-.price-total .v{color:var(--accent)}
-.btn-pay{width:100%;padding:14px;border-radius:10px;border:none;background:var(--accent);color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:10px}
+.price-total .v{color:var(--r)}
+.btn-pay{width:100%;padding:14px;border-radius:10px;border:none;background:var(--r);color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:10px}
 .btn-pay:hover{background:#e63535}
-.pay-note{font-size:11px;color:var(--muted);text-align:center;line-height:1.6}
+.pay-note{font-size:11px;color:var(--t2);text-align:center;line-height:1.6}
 .coupon-row{display:flex;gap:8px;margin-bottom:16px}
-.coupon-input{flex:1;padding:10px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;font-family:inherit;outline:none}
-.coupon-input::placeholder{color:var(--muted)}
-.coupon-btn{padding:10px 16px;border-radius:8px;border:1px solid var(--border);background:none;color:var(--text);font-size:13px;cursor:pointer;font-family:inherit;white-space:nowrap}
-.coupon-btn:hover{background:var(--surface2)}
-.point-row{display:flex;justify-content:space-between;align-items:center;font-size:13px;padding:12px;background:var(--surface2);border-radius:8px;margin-bottom:16px}
-.point-row .k{color:var(--muted)}
-.point-row .v{color:var(--green);font-weight:600}
+.coupon-input{flex:1;padding:10px 14px;background:var(--s2);border:1px solid var(--b1);border-radius:8px;color:var(--t);font-size:13px;font-family:inherit;outline:none}
+.coupon-input::placeholder{color:var(--t2)}
+.coupon-btn{padding:10px 16px;border-radius:8px;border:1px solid var(--b1);background:none;color:var(--t);font-size:13px;cursor:pointer;font-family:inherit;white-space:nowrap}
+.coupon-btn:hover{background:var(--s2)}
+.point-row{display:flex;justify-content:space-between;align-items:center;font-size:13px;padding:12px;background:var(--s2);border-radius:8px;margin-bottom:16px}
+.point-row .k{color:var(--t2)}
+.point-row .v{color:var(--g);font-weight:600}
 
 
 /* ══════════════════════════════════════
    MOBILE RESPONSIVE — checkout.html
 ══════════════════════════════════════ */
 
-@media (max-width: 768px) {
-  .wrap { padding-left:16px !important; padding-right:16px !important; }
-  .nav-inner { padding-left:16px !important; padding-right:16px !important; }
-  .layout { grid-template-columns:1fr !important; gap:16px !important; }
-  .order-summary { position:static !important; }
-  .form-grid { grid-template-columns:1fr !important; }
-  .form-group.full { grid-column:1 !important; }
-  .pay-methods { grid-template-columns:repeat(2,1fr) !important; }
-  .steps { margin-left:0 !important; overflow-x:auto !important; }
-  .step-l { display:none !important; }
-}
+
 
 
 /* ══════ 공통 모바일 요소 ══════ */
-@media (max-width: 768px) {
-  /* 네비 공통 */
-  .mob-menu-btn { display:flex !important; }
-  .mob-search-bar { display:flex !important; }
-  /* 하단 탭바 */
-  .mob-bottom-nav { display:flex !important; }
-  body { padding-bottom:60px; }
-}
+
 
 /* 햄버거 드로어 메뉴 */
 .mob-menu-btn { display:none; width:36px; height:36px; border-radius:8px; background:var(--s2,#171719); border:1px solid var(--b1,#242428); align-items:center; justify-content:center; cursor:pointer; font-size:18px; color:var(--t2,#8a8a9a); flex-shrink:0; }
@@ -118,11 +107,29 @@ nav{background:rgba(10,10,10,0.97);border-bottom:1px solid var(--border);padding
 .mob-drawer-btns button { flex:1; padding:12px; border-radius:10px; font-size:14px; font-weight:700; cursor:pointer; font-family:inherit; }
 .mob-search-bar { display:none; align-items:center; gap:8px; background:var(--s2,#171719); border:1px solid var(--b1,#242428); border-radius:10px; padding:10px 14px; margin:6px 16px 0; }
 .mob-search-bar input { background:none; border:none; outline:none; color:var(--t,#F2F2F5); font-size:14px; font-family:inherit; width:100%; }
+
+
+
 @media (max-width: 768px) {
+.wrap { padding-left:16px !important; padding-right:16px !important; }
+  .nav-inner { padding-left:16px !important; padding-right:16px !important; }
+  .layout { grid-template-columns:1fr !important; gap:16px !important; }
+  .order-summary { position:static !important; }
+  .form-grid { grid-template-columns:1fr !important; }
+  .form-group.full { grid-column:1 !important; }
+  .pay-methods { grid-template-columns:repeat(2,1fr) !important; }
+  .steps { margin-left:0 !important; overflow-x:auto !important; }
+  .step-l { display:none !important; }
+/* 네비 공통 */
   .mob-menu-btn { display:flex !important; }
   .mob-search-bar { display:flex !important; }
+  /* 하단 탭바 */
+  .mob-bottom-nav { display:flex !important; }
+  body { padding-bottom:60px; }
+.mob-menu-btn { display:flex !important; }
+  .mob-search-bar { display:flex !important; }
+.mob-bottom-nav { display: flex !important; }
 }
-
 </style>
 </head>
 <body>
@@ -177,7 +184,7 @@ nav{background:rgba(10,10,10,0.97);border-bottom:1px solid var(--border);padding
           <div class="agree-item">
             <label class="agree-left"><input type="checkbox" id="allAgree" onclick="toggleAll(this)"> 전체 동의</label>
           </div>
-          <div style="height:1px;background:var(--border);margin:4px 0"></div>
+          <div style="height:1px;background:var(--b1);margin:4px 0"></div>
           <div class="agree-item"><label class="agree-left"><input type="checkbox" class="agree-cb"> <span class="agree-req">[필수]</span> 이용약관 동의</label><span class="agree-link">보기</span></div>
           <div class="agree-item"><label class="agree-left"><input type="checkbox" class="agree-cb"> <span class="agree-req">[필수]</span> 개인정보 수집 및 이용 동의</label><span class="agree-link">보기</span></div>
           <div class="agree-item"><label class="agree-left"><input type="checkbox" class="agree-cb"> [선택] 마케팅 정보 수신 동의</label><span class="agree-link">보기</span></div>
@@ -271,10 +278,7 @@ function toggleAll(el){document.querySelectorAll('.agree-cb').forEach(c=>c.check
   background: var(--r, #FF3B3B);
   border: 1.5px solid var(--bg, #0A0A0A);
 }
-@media (max-width: 768px) {
-  .mob-bottom-nav { display: flex !important; }
-  
-}
+
 </style>
 </body>
 </html>

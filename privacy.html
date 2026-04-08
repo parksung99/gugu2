@@ -7,7 +7,13 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800&family=Bebas+Neue&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#0A0A0A;--s1:#111114;--s2:#171719;--b1:#242428;--r:#FF3B3B;--t:#F2F2F5;--t2:#8a8a9a;--t3:#464650;--g:#22c55e}
+:root{
+  --bg:#0A0A0A;--s1:#111114;--s2:#171719;--s3:#1e1e22;
+  --b1:#242428;--b2:#2e2e34;
+  --r:#FF3B3B;--o:#FF8A00;--g:#22c55e;--bl:#6366f1;
+  --t:#F2F2F5;--t2:#8a8a9a;--t3:#464650;
+  --max:1100px;
+}
 body {background:var(--bg);color:var(--t);font-family:'Noto Sans KR',sans-serif;font-size:14px;padding-top:54px}
 nav {position:fixed;top:0;z-index:200;background:rgba(10,10,10,.95);border-bottom:1px solid var(--b1)}
 .nav-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;height:56px;padding:0 28px;gap:16px}
@@ -41,25 +47,11 @@ strong{color:var(--t)}
    MOBILE RESPONSIVE — privacy.html
 ══════════════════════════════════════ */
 
-@media (max-width: 768px) {
-  .doc-wrap { padding:24px 16px 60px !important; }
-  .doc-title { font-size:26px !important; }
-  .toc { padding:14px 16px !important; }
-  .info-table { display:block !important; overflow-x:auto !important; font-size:12px !important; }
-  .contact-box { padding:14px !important; }
-  .cb-row { flex-wrap:wrap !important; }
-}
+
 
 
 /* ══════ 공통 모바일 요소 ══════ */
-@media (max-width: 768px) {
-  /* 네비 공통 */
-  .mob-menu-btn { display:flex !important; }
-  .mob-search-bar { display:flex !important; }
-  /* 하단 탭바 */
-  .mob-bottom-nav { display:flex !important; }
-  body { padding-bottom:60px; }
-}
+
 
 /* 햄버거 드로어 메뉴 */
 .mob-menu-btn { display:none; width:36px; height:36px; border-radius:8px; background:var(--s2,#171719); border:1px solid var(--b1,#242428); align-items:center; justify-content:center; cursor:pointer; font-size:18px; color:var(--t2,#8a8a9a); flex-shrink:0; }
@@ -74,11 +66,26 @@ strong{color:var(--t)}
 .mob-drawer-btns button { flex:1; padding:12px; border-radius:10px; font-size:14px; font-weight:700; cursor:pointer; font-family:inherit; }
 .mob-search-bar { display:none; align-items:center; gap:8px; background:var(--s2,#171719); border:1px solid var(--b1,#242428); border-radius:10px; padding:10px 14px; margin:6px 16px 0; }
 .mob-search-bar input { background:none; border:none; outline:none; color:var(--t,#F2F2F5); font-size:14px; font-family:inherit; width:100%; }
+
+
+
 @media (max-width: 768px) {
+.doc-wrap { padding:24px 16px 60px !important; }
+  .doc-title { font-size:26px !important; }
+  .toc { padding:14px 16px !important; }
+  .info-table { display:block !important; overflow-x:auto !important; font-size:12px !important; }
+  .contact-box { padding:14px !important; }
+  .cb-row { flex-wrap:wrap !important; }
+/* 네비 공통 */
   .mob-menu-btn { display:flex !important; }
   .mob-search-bar { display:flex !important; }
+  /* 하단 탭바 */
+  .mob-bottom-nav { display:flex !important; }
+  body { padding-bottom:60px; }
+.mob-menu-btn { display:flex !important; }
+  .mob-search-bar { display:flex !important; }
+.mob-bottom-nav { display: flex !important; }
 }
-
 </style>
 </head>
 <body>
@@ -239,10 +246,7 @@ strong{color:var(--t)}
   background: var(--r, #FF3B3B);
   border: 1.5px solid var(--bg, #0A0A0A);
 }
-@media (max-width: 768px) {
-  .mob-bottom-nav { display: flex !important; }
-  
-}
+
 </style>
 </body>
 </html>
