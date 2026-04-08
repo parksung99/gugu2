@@ -131,8 +131,8 @@ input, select, textarea { font-size: 16px !important; }
     </div>
     <div class="nav-right">
       <div class="search-box"><span style="color:var(--t2)">⌕</span><input type="text" placeholder="검색"></div>
-      <button class="btn-login" onclick="location.href='login.html'">로그인</button>
-      <button class="btn-join" onclick="location.href='login.html'">회원가입</button>
+      <button id="navLoginBtn" class="btn-login" onclick="location.href='login.html'">로그인</button>
+      <button id="navSignupBtn" class="btn-join" onclick="location.href='signup.html'">회원가입</button><div id="navUserArea" style="display:none;align-items:center;gap:8px"></div>
     </div>
   </div>
 </nav>
@@ -238,5 +238,8 @@ document.querySelectorAll('.sub-tab').forEach(t=>t.addEventListener('click',func
 }
 
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase.js"></script>
+<script src="js/nav.js"></script>
 </body>
 </html>
