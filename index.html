@@ -361,8 +361,9 @@ input, select, textarea { font-size: 16px !important; }
         <input type="text" placeholder="인플루언서, 상품 검색">
       </div>
       <div class="notif-btn" onclick="location.href='notifications.html'">🔔<div class="nb"></div></div>
-      <button class="btn-sm btn-line" onclick="location.href='login.html'">로그인</button>
-      <button class="btn-sm btn-fill" onclick="location.href='login.html'">회원가입</button>
+      <button id="navLoginBtn" class="btn-sm btn-line" onclick="location.href='login.html'">로그인</button>
+      <button id="navSignupBtn" class="btn-sm btn-fill" onclick="location.href='signup.html'">회원가입</button>
+      <div id="navUserArea" style="display:none;align-items:center;gap:8px"></div>
       <div class="mob-btn" onclick="openMenu()">☰</div>
     </div>
   </div>
@@ -619,5 +620,8 @@ document.querySelectorAll('input[type=text]').forEach(i=>{
   i.addEventListener('keypress',e=>{if(e.key==='Enter')location.href='search.html';});
 });
 </script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase.js"></script>
+<script src="js/nav.js"></script>
 </body>
 </html>

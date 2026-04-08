@@ -202,10 +202,11 @@ input, select, textarea { font-size: 16px !important; }
   <div class="page-layout">
     <div>
       <div class="side-profile">
-        <div class="side-av">나</div>
-        <div class="side-name">나혜진</div>
-        <div class="side-email">nahyejin@gmail.com</div>
+        <div class="side-av" id="sideAv">?</div>
+        <div class="side-name" id="sideName">로딩중...</div>
+        <div class="side-email" id="sideEmail"></div>
         <div class="side-grade">⭐ GUGU 멤버</div>
+        <button onclick="doSignOut()" style="margin-top:10px;width:100%;padding:7px;border-radius:7px;border:1px solid var(--b1);background:none;color:var(--t2);font-size:12px;cursor:pointer;font-family:inherit">로그아웃</button>
       </div>
       <div class="side-nav">
         <div class="side-nav-item active" onclick="showSection('orders',this)"><span class="icon">📦</span>주문내역</div>
@@ -222,10 +223,10 @@ input, select, textarea { font-size: 16px !important; }
       <div id="sec-orders">
         <div class="main-header"><div class="main-title">주문내역</div></div>
         <div class="summary-grid">
-          <div class="sum-card"><div class="l">전체 주문</div><div class="n">14</div></div>
-          <div class="sum-card"><div class="l">배송중</div><div class="n accent2">2</div></div>
-          <div class="sum-card"><div class="l">배송완료</div><div class="n">11</div></div>
-          <div class="sum-card"><div class="l">총 구매금액</div><div class="n accent" style="font-size:16px">487,200원</div></div>
+          <div class="sum-card"><div class="l">전체 주문</div><div class="n" id="sumTotal">-</div></div>
+          <div class="sum-card"><div class="l">배송중</div><div class="n accent2" id="sumShipping">-</div></div>
+          <div class="sum-card"><div class="l">배송완료</div><div class="n" id="sumDone">-</div></div>
+          <div class="sum-card"><div class="l">총 구매금액</div><div class="n accent" id="sumAmount" style="font-size:16px">-</div></div>
         </div>
         <div class="order-filter">
           <button class="filter-btn active">전체</button>
@@ -233,7 +234,7 @@ input, select, textarea { font-size: 16px !important; }
           <button class="filter-btn">배송완료</button>
           <button class="filter-btn">취소/반품</button>
         </div>
-        <div class="order-list">
+        <div class="order-list" id="orderListEl">
           <div class="order-card">
             <div class="order-head">
               <div>
@@ -447,14 +448,105 @@ input, select, textarea { font-size: 16px !important; }
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase.js"></script>
 <script>
+const statusLabel = {paid:'결제완료',preparing:'준비중',shipped:'배송중',delivered:'배송완료',cancelled:'취소',refunded:'환불'};
+const statusClass = {paid:'status-wait',preparing:'status-wait',shipped:'status-delivery',delivered:'status-done',cancelled:'status-wait',refunded:'status-wait'};
+const trackingSteps = ['결제완료','상품준비','배송중','배송완료'];
+const statusToStep = {paid:0,preparing:1,shipped:2,delivered:3};
+
 function showSection(id,el){
-  ['orders','wishlist','following','reviews','profile','notify','coupon'].forEach(k=>{const el=document.getElementById('sec-'+k);if(el)el.style.display='none'});
+  ['orders','wishlist','following','reviews','profile','notify','coupon'].forEach(k=>{const e=document.getElementById('sec-'+k);if(e)e.style.display='none'});
   document.getElementById('sec-'+id).style.display='block';
   document.querySelectorAll('.side-nav-item').forEach(i=>i.classList.remove('active'));
   el.classList.add('active');
 }
 document.querySelectorAll('.filter-btn').forEach(b=>b.addEventListener('click',function(){document.querySelectorAll('.filter-btn').forEach(x=>x.classList.remove('active'));this.classList.add('active')}));
+
+async function doSignOut(){ await sb.auth.signOut(); location.href='login.html'; }
+
+function renderTrackingBar(status){
+  const cur = statusToStep[status] ?? 0;
+  return `<div class="tracking-bar">
+    <div class="tracking-steps">
+      ${trackingSteps.map((s,i)=>`
+        <div class="t-step ${i<cur?'done':i===cur?'current':''}">
+          <div class="t-step-dot">${i<cur?'✓':''}</div>
+          ${i<trackingSteps.length-1?'<div class="t-step-line"></div>':''}
+          <div class="t-step-label">${s}</div>
+        </div>`).join('')}
+    </div>
+  </div>`;
+}
+
+function renderOrders(orders){
+  const list = document.getElementById('orderListEl');
+  if(!orders.length){
+    list.innerHTML=`<div class="empty-state"><div class="es-icon">📦</div><div class="es-title">주문 내역이 없어요</div><div class="es-sub">공구에 참여하면 여기에 주문 내역이 표시돼요</div><button class="es-btn" onclick="location.href='index.html'">공구 둘러보기</button></div>`;
+    return;
+  }
+  list.innerHTML = orders.map(o=>{
+    const d = new Date(o.created_at);
+    const dateStr = `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`;
+    const sl = statusLabel[o.status]||o.status;
+    const sc = statusClass[o.status]||'status-wait';
+    const productName = o.gugus?.product_name || '공구 상품';
+    const influencerName = o.gugus?.profiles?.channel_name || o.gugus?.profiles?.name || '인플루언서';
+    return `
+    <div class="order-card">
+      <div class="order-head">
+        <div>
+          <div class="order-num">주문번호 GG-${o.id.slice(0,8).toUpperCase()}</div>
+          <div class="order-date">${dateStr} 주문</div>
+        </div>
+        <span class="order-status ${sc}">${sl}</span>
+      </div>
+      <div class="order-body">
+        <div class="order-img">🛍️</div>
+        <div class="order-info">
+          <div class="order-inf">${influencerName} 공구</div>
+          <div class="order-name">${productName}</div>
+          <div class="order-opt">수량 ${o.quantity}개</div>
+          <div class="order-price-row">
+            <div class="order-price">${Number(o.total_amount).toLocaleString()}원</div>
+          </div>
+        </div>
+      </div>
+      ${renderTrackingBar(o.status)}
+    </div>`;
+  }).join('');
+}
+
+(async()=>{
+  const u = await getCurrentUser();
+  if(!u){ location.href='login.html'; return; }
+
+  const name = u.profile?.name || u.email?.split('@')[0] || '유저';
+  const initial = name[0] || '?';
+  document.getElementById('sideAv').textContent = initial;
+  document.getElementById('sideName').textContent = name;
+  document.getElementById('sideEmail').textContent = u.email || '';
+
+  // 주문 내역 로드
+  const {data: orders} = await sb
+    .from('orders')
+    .select('*, gugus(product_name, influencer_id, profiles(channel_name, name))')
+    .eq('consumer_id', u.id)
+    .order('created_at', {ascending:false});
+
+  const all = orders || [];
+  const shipping = all.filter(o=>o.status==='shipped').length;
+  const done = all.filter(o=>o.status==='delivered').length;
+  const total = all.reduce((s,o)=>s+o.total_amount,0);
+
+  document.getElementById('sumTotal').textContent = all.length;
+  document.getElementById('sumShipping').textContent = shipping;
+  document.getElementById('sumDone').textContent = done;
+  document.getElementById('sumAmount').textContent = Number(total).toLocaleString()+'원';
+
+  renderOrders(all);
+})();
 </script>
 
 <!-- 모바일 하단 네비게이션 -->

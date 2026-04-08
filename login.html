@@ -133,52 +133,31 @@ input, select, textarea { font-size: 16px !important; }
   </div>
   <div class="divider"></div>
   <div class="form-box">
-    <div class="form-tabs">
-      <button class="ftab active" onclick="switchTab('login',this)">로그인</button>
-      <button class="ftab" onclick="switchTab('signup',this)">회원가입</button>
-    </div>
+    <div style="font-size:20px;font-weight:800;margin-bottom:6px">로그인</div>
+    <div style="font-size:13px;color:var(--t2);margin-bottom:24px">GUGU에 오신 것을 환영해요</div>
 
-    <!-- LOGIN -->
-    <div id="login-panel">
-      <div class="form-group">
-        <label class="form-label">이메일</label>
-        <input class="form-input" type="email" placeholder="email@example.com" id="loginEmail">
-      </div>
-      <div class="form-group">
-        <label class="form-label">비밀번호</label>
-        <input class="form-input" type="password" placeholder="••••••••" id="loginPassword">
-      </div>
-      <div id="loginError" style="display:none;color:#FF3B3B;font-size:13px;margin-bottom:12px;padding:10px;background:rgba(255,59,59,0.08);border-radius:8px"></div>
-      <div class="form-row">
-        <label class="form-check"><input type="checkbox" checked> 로그인 상태 유지</label>
-        <a class="form-link" href="#">비밀번호 찾기</a>
-      </div>
-      <button class="btn-submit" id="loginBtn" onclick="doLogin()">로그인</button>
-      <div class="social-divider"><span>또는</span></div>
-      <div class="social-btns">
-        <button class="social-btn">🟡 카카오</button>
-        <button class="social-btn">🟢 네이버</button>
-        <button class="social-btn">⬜ 구글</button>
-      </div>
-      <div class="form-bottom">계정이 없으신가요? <a href="#" onclick="switchTabByName('signup')">회원가입</a></div>
+    <div class="form-group">
+      <label class="form-label">이메일</label>
+      <input class="form-input" type="email" placeholder="email@example.com" id="loginEmail">
     </div>
+    <div class="form-group">
+      <label class="form-label">비밀번호</label>
+      <input class="form-input" type="password" placeholder="••••••••" id="loginPassword">
+    </div>
+    <div id="loginError" style="display:none;color:#FF3B3B;font-size:13px;margin-bottom:12px;padding:10px;background:rgba(255,59,59,0.08);border-radius:8px"></div>
+    <button class="btn-submit" id="loginBtn" onclick="doLogin()">로그인</button>
 
-    <!-- SIGNUP -->
-    <div id="signup-panel" style="display:none">
-      <div style="font-size:14px;color:var(--t2);margin-bottom:16px">어떤 계정으로 가입하시겠어요?</div>
-      <div class="type-select">
-        <button class="type-card" onclick="location.href='signup.html'">
-          <div class="tc-icon">🛍️</div>
-          <div class="tc-name">소비자</div>
-          <div class="tc-desc">공구 참여하기</div>
-        </button>
-        <button class="type-card" onclick="location.href='influencer-apply.html'">
-          <div class="tc-icon">✨</div>
-          <div class="tc-name">인플루언서</div>
-          <div class="tc-desc">공구 열고 수익내기</div>
-        </button>
-      </div>
-      <div class="form-bottom" style="margin-top:12px">이미 계정이 있으신가요? <a href="#" onclick="switchTabByName('login')">로그인</a></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px">
+      <button class="type-card" onclick="location.href='signup.html'" style="border-radius:10px;padding:14px">
+        <div class="tc-icon">🛍️</div>
+        <div class="tc-name">소비자 가입</div>
+        <div class="tc-desc">공구 참여하기</div>
+      </button>
+      <button class="type-card" onclick="location.href='influencer-login.html'" style="border-radius:10px;padding:14px">
+        <div class="tc-icon">✨</div>
+        <div class="tc-name">인플루언서</div>
+        <div class="tc-desc">공구 열고 수익내기</div>
+      </button>
     </div>
   </div>
 </div>
