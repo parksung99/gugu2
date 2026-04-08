@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GUGU. — 소비자 회원가입</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=Bebas+Neue&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#0A0A0A;--s1:#111114;--s2:#171719;--s3:#1e1e22;
+  --b1:#242428;--b2:#2e2e34;
+  --r:#FF3B3B;--o:#FF8A00;--g:#22c55e;--bl:#6366f1;
+  --t:#F2F2F5;--t2:#8a8a9a;--t3:#464650;
+}
+body{background:var(--bg);color:var(--t);font-family:'Noto Sans KR',sans-serif;min-height:100vh;display:flex;flex-direction:column;padding-top:56px}
+nav{position:fixed;top:0;width:100%;background:rgba(10,10,10,0.97);border-bottom:1px solid var(--b1);z-index:100}
+.nav-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;height:56px;padding:0 28px}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;text-decoration:none;color:var(--t)}
+.logo span{color:var(--r)}
+.main{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 20px;gap:80px}
+.left{display:flex;flex-direction:column;gap:20px;max-width:360px}
+.left-title{font-size:34px;font-weight:800;letter-spacing:-1px;line-height:1.2}
+.left-title .red{color:var(--r)}
+.left-sub{font-size:14px;color:var(--t2);line-height:1.7}
+.points{display:flex;flex-direction:column;gap:10px}
+.pt{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--t2)}
+.pt-dot{width:20px;height:20px;border-radius:50%;background:rgba(255,59,59,0.12);border:1px solid rgba(255,59,59,0.25);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--r);flex-shrink:0}
+.divider{width:1px;height:300px;background:var(--b1)}
+.box{width:400px;background:var(--s1);border:1px solid var(--b1);border-radius:16px;padding:32px}
+.box-title{font-size:20px;font-weight:800;margin-bottom:6px}
+.box-sub{font-size:13px;color:var(--t2);margin-bottom:28px}
+.form-group{margin-bottom:16px}
+.label{font-size:12px;color:var(--t2);margin-bottom:6px;display:block;font-weight:600}
+.label .req{color:var(--r)}
+.input{width:100%;padding:11px 14px;background:var(--s2);border:1px solid var(--b1);border-radius:8px;color:var(--t);font-size:14px;font-family:inherit;outline:none;transition:.2s}
+.input:focus{border-color:var(--r)}
+.input::placeholder{color:var(--t3)}
+.err{display:none;color:var(--r);font-size:13px;margin-bottom:14px;padding:10px 14px;background:rgba(255,59,59,0.08);border-radius:8px}
+.ok{display:none;color:var(--g);font-size:13px;margin-bottom:14px;padding:10px 14px;background:rgba(34,197,94,0.08);border-radius:8px}
+.btn-submit{width:100%;padding:13px;border-radius:10px;border:none;background:var(--r);color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:16px;transition:.2s}
+.btn-submit:hover{background:#e03333}
+.btn-submit:disabled{background:var(--t3);cursor:default}
+.bottom{text-align:center;font-size:13px;color:var(--t2)}
+.bottom a{color:var(--r);text-decoration:none;font-weight:600}
+.divider-line{display:flex;align-items:center;gap:10px;margin:18px 0}
+.divider-line span{font-size:12px;color:var(--t2);white-space:nowrap}
+.divider-line::before,.divider-line::after{content:'';flex:1;height:1px;background:var(--b1)}
+.inf-card{display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid var(--b1);border-radius:10px;background:none;width:100%;cursor:pointer;font-family:inherit;transition:.2s;text-align:left}
+.inf-card:hover{border-color:var(--r);background:rgba(255,59,59,0.04)}
+.inf-icon{font-size:24px}
+.inf-text .t{font-size:14px;font-weight:700;color:var(--t)}
+.inf-text .s{font-size:12px;color:var(--t2)}
+.inf-arrow{margin-left:auto;color:var(--t3);font-size:14px}
+@media(max-width:768px){
+  .main{flex-direction:column;gap:32px;padding:24px 16px 60px}
+  .left{max-width:100%}
+  .divider{display:none}
+  .box{width:100%;padding:24px 18px}
+}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-inner">
+    <a class="logo" href="index.html">GUGU<span>.</span></a>
+  </div>
+</nav>
+<div class="main">
+  <div class="left">
+    <div class="left-title">인플루언서 공구<br>한 곳에서 <span class="red">GUGU</span></div>
+    <div class="left-sub">팔로우하는 인플루언서의 공동구매를 놓치지 마세요.</div>
+    <div class="points">
+      <div class="pt"><div class="pt-dot">✓</div>인플루언서 단독 특가</div>
+      <div class="pt"><div class="pt-dot">✓</div>실시간 공구 참여 현황</div>
+      <div class="pt"><div class="pt-dot">✓</div>주문 · 배송 한눈에 확인</div>
+      <div class="pt"><div class="pt-dot">✓</div>공구 오픈 알림</div>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="box">
+    <div class="box-title">소비자 회원가입</div>
+    <div class="box-sub">공구에 참여하고 특가를 누리세요</div>
+
+    <div class="form-group">
+      <label class="label">이름 <span class="req">*</span></label>
+      <input class="input" type="text" id="name" placeholder="홍길동">
+    </div>
+    <div class="form-group">
+      <label class="label">이메일 <span class="req">*</span></label>
+      <input class="input" type="email" id="email" placeholder="email@example.com">
+    </div>
+    <div class="form-group">
+      <label class="label">비밀번호 <span class="req">*</span></label>
+      <input class="input" type="password" id="password" placeholder="8자 이상">
+    </div>
+    <div class="form-group">
+      <label class="label">휴대폰 번호</label>
+      <input class="input" type="tel" id="phone" placeholder="010-0000-0000">
+    </div>
+
+    <div class="err" id="errMsg"></div>
+    <div class="ok" id="okMsg"></div>
+
+    <button class="btn-submit" id="submitBtn" onclick="doSignup()">가입하기</button>
+    <div class="bottom">이미 계정이 있으신가요? <a href="login.html">로그인</a></div>
+
+    <div class="divider-line"><span>인플루언서이신가요?</span></div>
+    <button class="inf-card" onclick="location.href='influencer-apply.html'">
+      <div class="inf-icon">✨</div>
+      <div class="inf-text">
+        <div class="t">인플루언서로 가입하기</div>
+        <div class="s">공구 열고 수익 창출하기</div>
+      </div>
+      <div class="inf-arrow">→</div>
+    </button>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase.js"></script>
+<script>
+(async()=>{
+  const u = await getCurrentUser();
+  if(u) location.href = 'index.html';
+})();
+
+async function doSignup(){
+  const name = document.getElementById('name').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const pw = document.getElementById('password').value;
+  const phone = document.getElementById('phone').value.trim();
+  const err = document.getElementById('errMsg');
+  const ok = document.getElementById('okMsg');
+  const btn = document.getElementById('submitBtn');
+
+  err.style.display='none'; ok.style.display='none';
+  if(!name||!email||!pw){err.style.display='block';err.textContent='이름, 이메일, 비밀번호는 필수입니다.';return;}
+  if(pw.length<8){err.style.display='block';err.textContent='비밀번호는 8자 이상이어야 합니다.';return;}
+
+  btn.textContent='가입 중...'; btn.disabled=true;
+
+  const {data, error} = await sb.auth.signUp({
+    email, password: pw,
+    options: { data: { name, phone, role: 'consumer' } }
+  });
+
+  if(error){
+    err.style.display='block';
+    err.textContent = error.message.includes('already') ? '이미 사용 중인 이메일입니다.' : error.message;
+    btn.textContent='가입하기'; btn.disabled=false;
+    return;
+  }
+
+  // 이메일 인증 OFF 상태이면 바로 로그인
+  ok.style.display='block';
+  ok.textContent='가입 완료! 잠시 후 메인 페이지로 이동합니다.';
+  setTimeout(()=>location.href='index.html', 1500);
+}
+</script>
+</body>
+</html>

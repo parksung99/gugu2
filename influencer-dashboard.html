@@ -295,53 +295,21 @@ input, select, textarea { font-size: 16px !important; }
 
     <div class="bottom-grid">
       <div class="card">
-        <div class="card-header"><div class="card-title">정산 내역</div><div class="card-sub" style="color:var(--g);font-weight:600">다음 정산 D-8</div></div>
-        <div class="settle-list">
-          <div class="settle-item">
-            <div class="settle-date">03.15</div>
-            <div class="settle-info"><div class="settle-name">닥터자르트 공구 정산</div><div class="settle-detail">참여 4,812명 · GUGU 수수료 제외</div></div>
-            <div><div class="settle-amount plus">+1,832,400원</div></div>
-            <span class="settle-status ss-pending">정산예정</span>
-          </div>
-          <div class="settle-item">
-            <div class="settle-date">03.01</div>
-            <div class="settle-info"><div class="settle-name">롬앤 틴트 공구 정산</div><div class="settle-detail">참여 3,291명 · 완료</div></div>
-            <div><div class="settle-amount plus">+1,021,000원</div></div>
-            <span class="settle-status ss-done">정산완료</span>
-          </div>
-          <div class="settle-item">
-            <div class="settle-date">02.15</div>
-            <div class="settle-info"><div class="settle-name">설화수 에센스 공구 정산</div><div class="settle-detail">참여 2,847명 · 완료</div></div>
-            <div><div class="settle-amount plus">+1,967,600원</div></div>
-            <span class="settle-status ss-done">정산완료</span>
-          </div>
+        <div class="card-header">
+          <div class="card-title">최근 주문 내역</div>
+          <div class="card-sub" id="orderCount" style="color:var(--t2)">불러오는 중...</div>
+        </div>
+        <div class="settle-list" id="orderList">
+          <div style="text-align:center;padding:24px;color:var(--t2);font-size:13px">주문 데이터를 불러오는 중...</div>
         </div>
       </div>
       <div class="card">
-        <div class="card-header"><div class="card-title">알림</div><div style="font-size:11px;color:var(--r);font-weight:600;cursor:pointer">모두읽기</div></div>
-        <div class="notif-list">
-          <div class="notif-item">
-            <div class="notif-ic ni-red">🔥</div>
-            <div class="notif-body"><div class="t">롬앤 틴트 공구 마감 임박!</div><div class="s">1일 3시간 남았어요. 목표 94% 달성 중</div></div>
-            <div class="notif-time">5분전</div>
-            <div class="unread-dot"></div>
-          </div>
-          <div class="notif-item">
-            <div class="notif-ic ni-green">💰</div>
-            <div class="notif-body"><div class="t">정산 예정 알림</div><div class="s">3월 정산 D-8. 예상 금액 1,832,400원</div></div>
-            <div class="notif-time">2시간전</div>
-            <div class="unread-dot"></div>
-          </div>
-          <div class="notif-item">
-            <div class="notif-ic ni-orange">💬</div>
-            <div class="notif-body"><div class="t">새 문의 7건</div><div class="s">배송 관련 문의가 쌓여있어요</div></div>
-            <div class="notif-time">어제</div>
-          </div>
-          <div class="notif-item">
-            <div class="notif-ic ni-green">⭐</div>
-            <div class="notif-body"><div class="t">새 리뷰 23개</div><div class="s">시카페어 크림 평균 4.9점 유지 중</div></div>
-            <div class="notif-time">어제</div>
-          </div>
+        <div class="card-header">
+          <div class="card-title">공구별 매출 현황</div>
+          <div class="card-sub" id="totalRevLabel" style="color:var(--g);font-weight:600">집계 중...</div>
+        </div>
+        <div class="settle-list" id="guguRevenueList">
+          <div style="text-align:center;padding:24px;color:var(--t2);font-size:13px">불러오는 중...</div>
         </div>
       </div>
     </div>
@@ -451,7 +419,81 @@ function renderBarChart(gugus) {
 
   renderGuguTable(gugus);
   renderBarChart(gugus);
+  await renderOrders(gugus);
 })();
+
+async function renderOrders(gugus) {
+  const orderList = document.getElementById('orderList');
+  const guguRevenueList = document.getElementById('guguRevenueList');
+
+  if(!gugus.length){
+    orderList.innerHTML='<div style="text-align:center;padding:24px;color:var(--t2);font-size:13px">아직 주문이 없어요</div>';
+    guguRevenueList.innerHTML=orderList.innerHTML;
+    return;
+  }
+
+  const guguIds = gugus.map(g=>g.id);
+  const {data: orders} = await sb
+    .from('orders')
+    .select('*, gugus(product_name)')
+    .in('gugu_id', guguIds)
+    .neq('status','cancelled')
+    .order('created_at', {ascending:false})
+    .limit(20);
+
+  document.getElementById('orderCount').textContent = `총 ${orders?.length||0}건`;
+
+  if(!orders||!orders.length){
+    orderList.innerHTML='<div style="text-align:center;padding:24px;color:var(--t2);font-size:13px">아직 주문이 없어요.<br>공구에 소비자가 참여하면 여기에 표시돼요.</div>';
+  } else {
+    orderList.innerHTML = orders.map(o=>{
+      const d = new Date(o.created_at);
+      const dateStr = `${d.getMonth()+1}.${String(d.getDate()).padStart(2,'0')}`;
+      const statusLabel = {paid:'결제완료',preparing:'준비중',shipped:'배송중',delivered:'배송완료'}[o.status]||o.status;
+      const statusClass = o.status==='delivered'?'ss-done':'ss-pending';
+      return `<div class="settle-item">
+        <div class="settle-date">${dateStr}</div>
+        <div class="settle-info">
+          <div class="settle-name">${o.gugus?.product_name||'상품'}</div>
+          <div class="settle-detail">수량 ${o.quantity}개 · 순수익 ${Number(Math.round(o.total_amount*0.95)).toLocaleString()}원</div>
+        </div>
+        <div><div class="settle-amount plus">+${Number(o.total_amount).toLocaleString()}원</div></div>
+        <span class="settle-status ${statusClass}">${statusLabel}</span>
+      </div>`;
+    }).join('');
+  }
+
+  // 공구별 매출 집계
+  const revenueByGugu = {};
+  gugus.forEach(g=>{ revenueByGugu[g.id]={name:g.product_name, total:0, count:0}; });
+  (orders||[]).forEach(o=>{
+    if(revenueByGugu[o.gugu_id]){
+      revenueByGugu[o.gugu_id].total += Math.round(o.total_amount*0.95);
+      revenueByGugu[o.gugu_id].count += o.quantity;
+    }
+  });
+  const sorted = Object.values(revenueByGugu).sort((a,b)=>b.total-a.total);
+  const grandTotal = sorted.reduce((s,g)=>s+g.total,0);
+  document.getElementById('totalRevLabel').textContent = `총 ${Number(grandTotal).toLocaleString()}원`;
+
+  if(!grandTotal){
+    guguRevenueList.innerHTML='<div style="text-align:center;padding:24px;color:var(--t2);font-size:13px">매출 데이터가 없어요</div>';
+  } else {
+    guguRevenueList.innerHTML = sorted.map(g=>`
+      <div class="settle-item">
+        <div class="settle-info" style="flex:1">
+          <div class="settle-name">${g.name}</div>
+          <div style="height:4px;background:var(--b1);border-radius:2px;margin-top:6px">
+            <div style="height:100%;border-radius:2px;background:linear-gradient(90deg,var(--r),var(--o));width:${grandTotal?Math.round(g.total/grandTotal*100):0}%"></div>
+          </div>
+        </div>
+        <div style="text-align:right;flex-shrink:0;margin-left:12px">
+          <div class="settle-amount plus" style="font-size:13px">+${Number(g.total).toLocaleString()}원</div>
+          <div style="font-size:11px;color:var(--t2)">${g.count}개 판매</div>
+        </div>
+      </div>`).join('');
+  }
+}
 </script>
 
 <!-- 모바일 하단 네비게이션 -->

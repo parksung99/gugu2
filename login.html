@@ -162,38 +162,20 @@ input, select, textarea { font-size: 16px !important; }
 
     <!-- SIGNUP -->
     <div id="signup-panel" style="display:none">
+      <div style="font-size:14px;color:var(--t2);margin-bottom:16px">어떤 계정으로 가입하시겠어요?</div>
       <div class="type-select">
-        <button class="type-card active" onclick="selectType(this)">
+        <button class="type-card" onclick="location.href='signup.html'">
           <div class="tc-icon">🛍️</div>
           <div class="tc-name">소비자</div>
           <div class="tc-desc">공구 참여하기</div>
         </button>
-        <button class="type-card" onclick="selectType(this)">
+        <button class="type-card" onclick="location.href='influencer-apply.html'">
           <div class="tc-icon">✨</div>
           <div class="tc-name">인플루언서</div>
-          <div class="tc-desc">공구 열기</div>
+          <div class="tc-desc">공구 열고 수익내기</div>
         </button>
       </div>
-      <div class="form-group">
-        <label class="form-label">이름</label>
-        <input class="form-input" type="text" placeholder="홍길동" id="signupName">
-      </div>
-      <div class="form-group">
-        <label class="form-label">이메일</label>
-        <input class="form-input" type="email" placeholder="email@example.com" id="signupEmail">
-      </div>
-      <div class="form-group">
-        <label class="form-label">비밀번호</label>
-        <input class="form-input" type="password" placeholder="8자 이상" id="signupPassword">
-      </div>
-      <div class="form-group">
-        <label class="form-label">휴대폰 번호</label>
-        <input class="form-input" type="tel" placeholder="010-0000-0000" id="signupPhone">
-      </div>
-      <div id="signupError" style="display:none;color:#FF3B3B;font-size:13px;margin-bottom:12px;padding:10px;background:rgba(255,59,59,0.08);border-radius:8px"></div>
-      <div id="signupSuccess" style="display:none;color:#22c55e;font-size:13px;margin-bottom:12px;padding:10px;background:rgba(34,197,94,0.08);border-radius:8px"></div>
-      <button class="btn-submit" id="signupBtn" onclick="doSignup()">가입하기</button>
-      <div class="form-bottom">이미 계정이 있으신가요? <a href="#" onclick="switchTabByName('login')">로그인</a></div>
+      <div class="form-bottom" style="margin-top:12px">이미 계정이 있으신가요? <a href="#" onclick="switchTabByName('login')">로그인</a></div>
     </div>
   </div>
 </div>

@@ -214,10 +214,11 @@ input, select, textarea { font-size: 16px !important; }
     <div class="fs-title"><div class="fs-num">1</div>기본 정보</div>
     <div class="fs-desc">활동명과 연락처를 입력해주세요</div>
     <div class="form-grid">
-      <div class="fg"><label class="fl">활동명 (닉네임) <span class="req">*</span></label><input class="fi" type="text" placeholder="예: 지민뷰티"></div>
-      <div class="fg"><label class="fl">실명 <span class="req">*</span></label><input class="fi" type="text" placeholder="홍길동"></div>
-      <div class="fg"><label class="fl">이메일 <span class="req">*</span></label><input class="fi" type="email" placeholder="example@gmail.com"></div>
-      <div class="fg"><label class="fl">휴대폰 번호 <span class="req">*</span></label><input class="fi" type="tel" placeholder="010-0000-0000"></div>
+      <div class="fg"><label class="fl">활동명 (닉네임) <span class="req">*</span></label><input class="fi" type="text" id="channelName" placeholder="예: 지민뷰티"></div>
+      <div class="fg"><label class="fl">실명 <span class="req">*</span></label><input class="fi" type="text" id="realName" placeholder="홍길동"></div>
+      <div class="fg"><label class="fl">이메일 <span class="req">*</span></label><input class="fi" type="email" id="applyEmail" placeholder="example@gmail.com"></div>
+      <div class="fg"><label class="fl">휴대폰 번호 <span class="req">*</span></label><input class="fi" type="tel" id="applyPhone" placeholder="010-0000-0000"></div>
+      <div class="fg"><label class="fl">비밀번호 <span class="req">*</span></label><input class="fi" type="password" id="applyPassword" placeholder="8자 이상"></div>
       <div class="fg full"><label class="fl">주 활동 카테고리 <span class="req">*</span></label>
         <div class="cat-picks">
           <button class="cat-pick" onclick="togglePick(this)">💄 뷰티</button>
@@ -336,9 +337,20 @@ input, select, textarea { font-size: 16px !important; }
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase.js"></script>
 <script>
 let currentStep=1;
 function goStep(n){
+  // step1 유효성 검사
+  if(n>1 && currentStep===1){
+    const ch=document.getElementById('channelName').value.trim();
+    const rn=document.getElementById('realName').value.trim();
+    const em=document.getElementById('applyEmail').value.trim();
+    const pw=document.getElementById('applyPassword').value;
+    if(!ch||!rn||!em||!pw){alert('활동명, 실명, 이메일, 비밀번호는 필수입니다.');return;}
+    if(pw.length<8){alert('비밀번호는 8자 이상이어야 합니다.');return;}
+  }
   for(let i=1;i<=4;i++){
     document.getElementById('step'+i)?.classList.add('hidden');
     const si=document.getElementById('si'+i);
@@ -354,10 +366,43 @@ function togglePick(btn){btn.classList.toggle('on');}
 function togglePlatform(el){el.classList.toggle('on');}
 function toggleFollow(el){document.querySelectorAll('.fo-item').forEach(e=>e.classList.remove('on'));el.classList.add('on');}
 function toggleAll(cb){document.querySelectorAll('.agree-item').forEach(c=>c.checked=cb.checked);}
-function submitApply(){
+
+async function submitApply(){
   const required=document.querySelectorAll('#step4 .agree-row.required input');
   const allChecked=[...required].every(c=>c.checked);
   if(!allChecked){alert('필수 약관에 모두 동의해주세요.');return;}
+
+  const channelName = document.getElementById('channelName').value.trim();
+  const realName    = document.getElementById('realName').value.trim();
+  const email       = document.getElementById('applyEmail').value.trim();
+  const pw          = document.getElementById('applyPassword').value;
+  const phone       = document.getElementById('applyPhone').value.trim();
+
+  // 팔로워 규모
+  const followerEl = document.querySelector('.fo-item.on .fo-num');
+  const followerText = followerEl ? followerEl.textContent : '';
+
+  const btn = document.querySelector('#step4 .btn-r');
+  btn.textContent='가입 중...'; btn.disabled=true;
+
+  // Supabase 회원가입
+  const {data, error} = await sb.auth.signUp({
+    email, password: pw,
+    options: { data: { name: realName, phone, role: 'influencer', channel_name: channelName } }
+  });
+
+  if(error){
+    alert(error.message.includes('already') ? '이미 사용 중인 이메일입니다.' : error.message);
+    btn.textContent='신청 완료 →'; btn.disabled=false;
+    return;
+  }
+
+  // 프로필 channel_name 업데이트 (트리거가 먼저 생성 후)
+  if(data.user){
+    await sb.from('profiles').update({ channel_name: channelName, phone }).eq('id', data.user.id);
+  }
+
+  // 완료 화면
   document.getElementById('step4').classList.add('hidden');
   document.querySelector('.step-bar').style.display='none';
   document.querySelector('.page-header').style.display='none';
