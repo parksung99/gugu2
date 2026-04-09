@@ -372,23 +372,29 @@ async function submitApply(){
   const allChecked=[...required].every(c=>c.checked);
   if(!allChecked){alert('필수 약관에 모두 동의해주세요.');return;}
 
-  const channelName = document.getElementById('channelName').value.trim();
-  const realName    = document.getElementById('realName').value.trim();
-  const email       = document.getElementById('applyEmail').value.trim();
-  const pw          = document.getElementById('applyPassword').value;
-  const phone       = document.getElementById('applyPhone').value.trim();
+  const channelName  = document.getElementById('channelName').value.trim();
+  const realName     = document.getElementById('realName').value.trim();
+  const email        = document.getElementById('applyEmail').value.trim();
+  const pw           = document.getElementById('applyPassword').value;
+  const phone        = document.getElementById('applyPhone').value.trim();
+  const channelUrl   = document.getElementById('channelUrl')?.value.trim() || '';
+  const introduction = document.getElementById('introduction')?.value.trim() || '';
+  const portfolioUrl = document.getElementById('portfolioUrl')?.value.trim() || '';
+  const category     = document.querySelector('.pick-btn.on')?.dataset?.cat || document.getElementById('category')?.value || '뷰티';
 
-  // 팔로워 규모
-  const followerEl = document.querySelector('.fo-item.on .fo-num');
-  const followerText = followerEl ? followerEl.textContent : '';
+  // 팔로워 규모 → 숫자 변환
+  const followerEl = document.querySelector('.fo-item.on');
+  const followerText = followerEl ? followerEl.querySelector('.fo-num')?.textContent || '' : '';
+  const followerMatch = followerText.replace(/,/g,'').match(/\d+/);
+  const followerCount = followerMatch ? parseInt(followerMatch[0]) * (followerText.includes('만') ? 10000 : 1000) : 0;
 
   const btn = document.querySelector('#step4 .btn-r');
-  btn.textContent='가입 중...'; btn.disabled=true;
+  btn.textContent='신청 중...'; btn.disabled=true;
 
-  // Supabase 회원가입
+  // 1) Supabase 회원가입
   const {data, error} = await sb.auth.signUp({
     email, password: pw,
-    options: { data: { name: realName, phone, role: 'influencer', channel_name: channelName } }
+    options: { data: { name: realName, phone, role: 'consumer', channel_name: channelName } }
   });
 
   if(error){
@@ -397,12 +403,35 @@ async function submitApply(){
     return;
   }
 
-  // 프로필 channel_name 업데이트 (트리거가 먼저 생성 후)
+  // 2) 프로필 업데이트
   if(data.user){
     await sb.from('profiles').update({ channel_name: channelName, phone }).eq('id', data.user.id);
   }
 
-  // 완료 화면
+  // 3) 인플루언서 신청 API 호출
+  try {
+    const {data:{session}} = await sb.auth.getSession();
+    const token = session?.access_token || '';
+    const applyRes = await fetch('/api/influencers/apply', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json', 'Authorization':'Bearer '+token},
+      body: JSON.stringify({
+        channel_name: channelName,
+        channel_url: channelUrl,
+        channel_type: 'instagram',
+        follower_count: followerCount,
+        category,
+        introduction,
+        portfolio_url: portfolioUrl
+      })
+    });
+    if(!applyRes.ok){
+      const j = await applyRes.json().catch(()=>({}));
+      console.warn('신청 API 오류:', j);
+    }
+  } catch(e){ console.warn('신청 전송 실패:', e); }
+
+  // 4) 완료 화면
   document.getElementById('step4').classList.add('hidden');
   document.querySelector('.step-bar').style.display='none';
   document.querySelector('.page-header').style.display='none';

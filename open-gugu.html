@@ -426,24 +426,29 @@ async function submitGugu(){
 
   btn.textContent='등록 중...'; btn.disabled=true;
 
-  const { data, error } = await sb.from('gugus').insert({
-    influencer_id: currentUser.id,
-    product_name: productName,
-    description: desc,
-    category: category==='카테고리 선택' ? null : category,
-    original_price: origPrice,
-    sale_price: salePrice,
-    target_participants: target,
-    current_participants: 0,
-    status: 'active',
-    start_date: startDate,
-    end_date: endDate.toISOString().split('T')[0],
-    commission_rate: 0.05,
-  }).select().single();
+  const {data:{session}} = await sb.auth.getSession();
+  const token = session?.access_token || '';
 
-  if(error){
+  const res = await fetch('/api/gugus/manage', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json', 'Authorization':'Bearer '+token},
+    body: JSON.stringify({
+      title: productName,
+      description: desc,
+      category: category==='카테고리 선택' ? '기타' : category,
+      original_price: origPrice,
+      sale_price: salePrice,
+      target_participants: target||100,
+      start_date: startDate,
+      end_date: endDate.toISOString().split('T')[0],
+    })
+  });
+
+  const json = await res.json().catch(()=>({}));
+
+  if(!res.ok){
     errEl.style.display='block';
-    errEl.textContent='등록 중 오류가 발생했습니다: '+error.message;
+    errEl.textContent='등록 중 오류가 발생했습니다: '+(json.error||res.status);
     btn.textContent='공구 등록하기'; btn.disabled=false;
     return;
   }

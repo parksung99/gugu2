@@ -435,7 +435,7 @@ async function renderOrders(gugus) {
   const guguIds = gugus.map(g=>g.id);
   const {data: orders} = await sb
     .from('orders')
-    .select('*, gugus(product_name)')
+    .select('*, gugus(title)')
     .in('gugu_id', guguIds)
     .neq('status','cancelled')
     .order('created_at', {ascending:false})
@@ -454,7 +454,7 @@ async function renderOrders(gugus) {
       return `<div class="settle-item">
         <div class="settle-date">${dateStr}</div>
         <div class="settle-info">
-          <div class="settle-name">${o.gugus?.product_name||'상품'}</div>
+          <div class="settle-name">${o.gugus?.title||'상품'}</div>
           <div class="settle-detail">수량 ${o.quantity}개 · 순수익 ${Number(Math.round(o.total_amount*0.95)).toLocaleString()}원</div>
         </div>
         <div><div class="settle-amount plus">+${Number(o.total_amount).toLocaleString()}원</div></div>
@@ -465,7 +465,7 @@ async function renderOrders(gugus) {
 
   // 공구별 매출 집계
   const revenueByGugu = {};
-  gugus.forEach(g=>{ revenueByGugu[g.id]={name:g.product_name, total:0, count:0}; });
+  gugus.forEach(g=>{ revenueByGugu[g.id]={name:g.title, total:0, count:0}; });
   (orders||[]).forEach(o=>{
     if(revenueByGugu[o.gugu_id]){
       revenueByGugu[o.gugu_id].total += Math.round(o.total_amount*0.95);

@@ -754,38 +754,9 @@ async function doBuy() {
   }
 
   const qtyValue = parseInt(document.getElementById('qty')?.textContent || '1', 10) || 1;
-  const totalAmount = Number(currentGugu.sale_price || 0) * qtyValue;
-
-  btn.textContent = '주문 처리 중...';
-  btn.disabled = true;
-
-  const { error } = await sb.from('orders').insert({
-    gugu_id: currentGugu.id,
-    consumer_id: user.id,
-    quantity: qtyValue,
-    unit_price: Number(currentGugu.sale_price || 0),
-    total_amount: totalAmount,
-    status: 'paid'
-  });
-
-  if (error) {
-    err.style.display = 'block';
-    err.textContent = `주문 중 오류가 발생했어요: ${error.message}`;
-    btn.textContent = '지금 공구 참여하기 🛍️';
-    btn.disabled = false;
-    return;
-  }
-
-  await sb.rpc('increment_participants', { p_gugu_id: currentGugu.id });
-
-  ok.style.display = 'block';
-  ok.textContent = '공구 참여가 완료됐어요. 마이페이지에서 주문 상태를 확인할 수 있어요.';
-  btn.textContent = '주문 완료!';
-  btn.disabled = false;
-  btn.style.background = 'var(--g)';
-  setTimeout(() => location.href = 'order-complete.html', 1200);
+  // 결제 페이지로 이동 (토스페이먼츠 처리)
+  location.href = `checkout.html?gugu_id=${currentGugu.id}&qty=${qtyValue}`;
 }
 </script>
-<script src="js/page-data.js"></script>
 </body>
 </html>

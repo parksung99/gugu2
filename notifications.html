@@ -155,113 +155,138 @@ input, select, textarea { font-size: 16px !important; }
   </div>
 
   <div id="notif-list">
-    <div class="notif-date">오늘</div>
-
-    <a class="notif-item unread" href="product-detail.html" data-type="gugu">
-      <div class="ni-icon ni-new-gugu">🛍️</div>
-      <div class="ni-body">
-        <div class="ni-top"><div class="ni-title">지민뷰티가 새 공구를 열었어요</div><div class="ni-time">방금</div></div>
-        <div class="ni-desc">레티날 0.1% 나이트 세럼 30ml — 팔로워 전용 40% 할인</div>
-        <div class="ni-tag tag-r">🔥 새 공구</div>
-      </div>
-      <div class="ni-thumb">🧴</div>
-    </a>
-
-    <a class="notif-item unread" href="product-detail.html" data-type="deadline">
-      <div class="ni-icon ni-deadline">⏰</div>
-      <div class="ni-body">
-        <div class="ni-top"><div class="ni-title">찜한 공구가 2시간 후 마감돼요</div><div class="ni-time">14분 전</div></div>
-        <div class="ni-desc">효리핏 · 마이프로틴 웨이프로틴 2.5kg — 지금 바로 참여하세요</div>
-        <div class="ni-tag tag-o">⏰ 마감임박</div>
-      </div>
-      <div class="ni-thumb">🏋️</div>
-    </a>
-
-    <a class="notif-item unread" href="product-detail.html" data-type="gugu">
-      <div class="ni-icon ni-new-gugu">🛍️</div>
-      <div class="ni-body">
-        <div class="ni-top"><div class="ni-title">채링이가 새 공구를 열었어요</div><div class="ni-time">34분 전</div></div>
-        <div class="ni-desc">나이아신아마이드 10% 토너패드 100매 — 오늘 마감 특가</div>
-        <div class="ni-tag tag-r">🔥 새 공구</div>
-      </div>
-      <div class="ni-thumb">💊</div>
-    </a>
-
-    <a class="notif-item unread" href="order-complete.html" data-type="order">
-      <div class="ni-icon ni-order">📦</div>
-      <div class="ni-body">
-        <div class="ni-top"><div class="ni-title">주문하신 상품이 출발했어요</div><div class="ni-time">2시간 전</div></div>
-        <div class="ni-desc">엑소좀 앰플 + 크림 세트 · CJ대한통운 1234567890</div>
-        <div class="ni-tag tag-g">🚚 배송 시작</div>
-      </div>
-      <div class="ni-thumb">📦</div>
-    </a>
-
-    <div class="notif-date" style="margin-top:16px">어제</div>
-
-    <a class="notif-item unread" href="product-detail.html" data-type="gugu">
-      <div class="ni-icon ni-new-gugu">🛍️</div>
-      <div class="ni-body">
-        <div class="ni-top"><div class="ni-title">나리스타일이 새 공구를 열었어요</div><div class="ni-time">어제 오후 6:22</div></div>
-        <div class="ni-desc">배럴핏 와이드 데님 3컬러 SS26 — 40% 할인</div>
-        <div class="ni-tag tag-r">🔥 새 공구</div>
-      </div>
-      <div class="ni-thumb">👗</div>
-    </a>
-
-    <a class="notif-item unread" href="product-detail.html" data-type="deadline">
-      <div class="ni-icon ni-deadline">⏰</div>
-      <div class="ni-body">
-        <div class="ni-top"><div class="ni-title">머슬박사 공구가 6시간 후 마감돼요</div><div class="ni-time">어제 오후 3:10</div></div>
-        <div class="ni-desc">제로슈거 웨이프로틴 초코맛 2kg — 91% 목표 달성</div>
-        <div class="ni-tag tag-o">⏰ 마감임박</div>
-      </div>
-      <div class="ni-thumb">💪</div>
-    </a>
-
-    <a class="notif-item" href="mypage.html" data-type="order">
-      <div class="ni-icon ni-order">✅</div>
-      <div class="ni-body">
-        <div class="ni-top"><div class="ni-title">배송이 완료됐어요</div><div class="ni-time">어제 오후 1:42</div></div>
-        <div class="ni-desc">롬앤 쥬시래스팅틴트 · 수령하셨나요? 리뷰를 남겨주세요</div>
-        <div class="ni-tag tag-g">✅ 배송 완료</div>
-      </div>
-      <div class="ni-thumb">💄</div>
-    </a>
-
-    <div class="notif-date" style="margin-top:16px">3일 전</div>
-
-    <a class="notif-item" href="#" data-type="system">
-      <div class="ni-icon ni-system">📢</div>
-      <div class="ni-body">
-        <div class="ni-top"><div class="ni-title">GUGU 서비스 업데이트 안내</div><div class="ni-time">3일 전</div></div>
-        <div class="ni-desc">공구 알림 기능이 추가됐어요. 팔로잉 인플루언서 새 공구 오픈 시 즉시 알림을 받을 수 있어요.</div>
-        <div class="ni-tag tag-b">📢 공지</div>
-      </div>
-    </a>
+    <div class="empty-state" id="notifEmpty" style="display:none">
+      <div class="es-icon">🔔</div>
+      <div class="es-title">알림이 없어요</div>
+      <div class="es-desc">팔로우한 인플루언서의 새 공구나 주문 소식을 여기서 확인할 수 있어요.</div>
+    </div>
   </div>
 </div>
 
 <script>
+let allNotifs = [];
+let currentType = 'all';
+
+const typeIconMap = {
+  new_gugu: {cls:'ni-new-gugu', icon:'🛍️', tag:'🔥 새 공구', tagCls:'tag-r'},
+  deadline: {cls:'ni-deadline', icon:'⏰', tag:'⏰ 마감임박', tagCls:'tag-o'},
+  order: {cls:'ni-order', icon:'📦', tag:'📦 주문', tagCls:'tag-g'},
+  shipped: {cls:'ni-order', icon:'🚚', tag:'🚚 배송 시작', tagCls:'tag-g'},
+  delivered: {cls:'ni-order', icon:'✅', tag:'✅ 배송 완료', tagCls:'tag-g'},
+  follow: {cls:'ni-follow', icon:'👤', tag:'팔로우', tagCls:'tag-b'},
+  system: {cls:'ni-system', icon:'📢', tag:'📢 공지', tagCls:'tag-b'},
+};
+
+function relTime(ts){
+  const d = new Date(ts);
+  const now = new Date();
+  const diff = Math.floor((now - d)/1000);
+  if(diff<60) return '방금';
+  if(diff<3600) return `${Math.floor(diff/60)}분 전`;
+  if(diff<86400) return `${Math.floor(diff/3600)}시간 전`;
+  if(diff<172800) return '어제';
+  return `${d.getMonth()+1}월 ${d.getDate()}일`;
+}
+
+function renderNotifs(notifs){
+  const list = document.getElementById('notif-list');
+  const empty = document.getElementById('notifEmpty');
+  const filtered = currentType==='all' ? notifs : notifs.filter(n=>n.type===currentType||
+    (currentType==='order'&&['order','shipped','delivered'].includes(n.type))||
+    (currentType==='gugu'&&['new_gugu','deadline'].includes(n.type)));
+
+  if(!filtered.length){ empty.style.display='block'; list.innerHTML=''; list.appendChild(empty); return; }
+  empty.style.display='none';
+
+  let html='';
+  let lastDateStr='';
+  filtered.forEach(n=>{
+    const d=new Date(n.created_at);
+    const today=new Date();
+    const yesterday=new Date(today);yesterday.setDate(today.getDate()-1);
+    let dateStr=d.toDateString()===today.toDateString()?'오늘':d.toDateString()===yesterday.toDateString()?'어제':`${d.getMonth()+1}월 ${d.getDate()}일`;
+    if(dateStr!==lastDateStr){html+=`<div class="notif-date" style="${lastDateStr?'margin-top:16px':''}">${dateStr}</div>`;lastDateStr=dateStr;}
+    const tm=typeIconMap[n.type]||typeIconMap['system'];
+    const unread=!n.is_read?'unread':'';
+    const link=n.link||'#';
+    html+=`<a class="notif-item ${unread}" href="${link}" data-type="${n.type}" data-id="${n.id}" onclick="markRead(event,'${n.id}')">
+      <div class="ni-icon ${tm.cls}">${tm.icon}</div>
+      <div class="ni-body">
+        <div class="ni-top"><div class="ni-title">${n.title}</div><div class="ni-time">${relTime(n.created_at)}</div></div>
+        ${n.content?`<div class="ni-desc">${n.content}</div>`:''}
+        <div class="ni-tag ${tm.tagCls}">${tm.tag}</div>
+      </div>
+    </a>`;
+  });
+  list.innerHTML=html;
+
+  const unreadCnt=notifs.filter(n=>!n.is_read).length;
+  document.querySelector('.na-left').innerHTML=`읽지 않은 알림 <span style="color:var(--r);font-weight:600">${unreadCnt}개</span>`;
+}
+
 function setTab(btn,type){
   document.querySelectorAll('.nt').forEach(t=>t.classList.remove('on'));
   btn.classList.add('on');
-  const items=document.querySelectorAll('.notif-item');
-  items.forEach(item=>{
-    if(type==='all'||item.dataset.type===type){item.style.display='flex';}
-    else{item.style.display='none';}
-  });
-  document.querySelectorAll('.notif-date').forEach(d=>{
-    d.style.display='block';
-  });
+  currentType=type;
+  renderNotifs(allNotifs);
 }
-function markAllRead(){
-  document.querySelectorAll('.notif-item.unread').forEach(item=>{
-    item.classList.remove('unread');
+
+async function markRead(e,id){
+  // mark single as read via API
+  const {data:{session}} = await sb.auth.getSession();
+  if(!session) return;
+  fetch('/api/notifications/list',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.access_token},
+    body:JSON.stringify({ids:[id]})
   });
-  document.querySelectorAll('.nt .cnt').forEach(c=>c.remove());
-  document.querySelector('.na-left').innerHTML='읽지 않은 알림 <span style="color:var(--t2)">0개</span>';
+  // update local state
+  allNotifs=allNotifs.map(n=>n.id===id?{...n,is_read:true}:n);
+  const el=e.currentTarget;
+  if(el){el.classList.remove('unread');}
+  const unreadCnt=allNotifs.filter(n=>!n.is_read).length;
+  document.querySelector('.na-left').innerHTML=`읽지 않은 알림 <span style="color:var(--r);font-weight:600">${unreadCnt}개</span>`;
 }
+
+async function markAllRead(){
+  const {data:{session}} = await sb.auth.getSession();
+  if(!session) return;
+  const ids=allNotifs.filter(n=>!n.is_read).map(n=>n.id);
+  if(!ids.length) return;
+  fetch('/api/notifications/list',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.access_token},
+    body:JSON.stringify({ids})
+  });
+  allNotifs=allNotifs.map(n=>({...n,is_read:true}));
+  renderNotifs(allNotifs);
+}
+
+(async()=>{
+  const u = await getCurrentUser();
+  if(!u){ location.href='login.html'; return; }
+
+  const {data:{session}} = await sb.auth.getSession();
+  // 알림 로드
+  const res = await fetch('/api/notifications/list',{
+    headers:{'Authorization':'Bearer '+session.access_token}
+  });
+  if(res.ok){
+    const json=await res.json();
+    allNotifs=json.notifications||[];
+    renderNotifs(allNotifs);
+  }
+
+  // 실시간 구독
+  sb.channel('notifs_'+u.id)
+    .on('postgres_changes',{event:'INSERT',schema:'public',table:'notifications',filter:`user_id=eq.${u.id}`},
+      payload=>{
+        allNotifs=[payload.new,...allNotifs];
+        renderNotifs(allNotifs);
+      }
+    )
+    .subscribe();
+})();
 </script>
 
 <!-- 모바일 하단 네비게이션 -->

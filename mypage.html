@@ -492,7 +492,7 @@ function renderOrders(orders){
     const dateStr = `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`;
     const sl = statusLabel[o.status]||o.status;
     const sc = statusClass[o.status]||'status-wait';
-    const productName = o.gugus?.product_name || '공구 상품';
+    const productName = o.gugus?.title || '공구 상품';
     const influencerName = o.gugus?.profiles?.channel_name || o.gugus?.profiles?.name || '인플루언서';
     return `
     <div class="order-card">
@@ -532,7 +532,7 @@ function renderOrders(orders){
   // 주문 내역 로드
   const {data: orders} = await sb
     .from('orders')
-    .select('*, gugus(product_name, influencer_id, profiles(channel_name, name))')
+    .select('*, gugus(title, influencer_id, profiles(channel_name, name))')
     .eq('consumer_id', u.id)
     .order('created_at', {ascending:false});
 
