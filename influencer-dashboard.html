@@ -4,550 +4,680 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GUGU. — 인플루언서 대시보드</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase.js"></script>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=Bebas+Neue&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&family=Bebas+Neue&display=swap');
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{
   --bg:#0A0A0A;--s1:#111114;--s2:#171719;--s3:#1e1e22;
   --b1:#242428;--b2:#2e2e34;
   --r:#FF3B3B;--o:#FF8A00;--g:#22c55e;--bl:#6366f1;
   --t:#F2F2F5;--t2:#8a8a9a;--t3:#464650;
-  --max:1100px;
 }
-body{overflow-x:hidden;background:var(--bg);color:var(--t);font-family:'Noto Sans KR',sans-serif;font-size:14px;padding-top:54px}
-nav {background:rgba(10,10,10,0.97);border-bottom:1px solid var(--b1);padding:0 24px;position:fixed;top:0;z-index:100}
-.nav-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;gap:16px;height:56px}
-.logo{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:2px}
-.logo span{color:var(--r)}
-.nav-badge{background:rgba(255,59,59,0.12);border:1px solid rgba(255,59,59,0.25);color:var(--r);font-size:10px;padding:2px 8px;border-radius:4px;font-weight:600}
-.nav-right{display:flex;align-items:center;gap:12px;margin-left:auto}
-.nav-av{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--r),var(--o));display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;cursor:pointer}
-.nav-name{font-size:13px;font-weight:500}
-.btn-new-gugu{padding:7px 16px;border-radius:7px;border:none;background:var(--r);color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit}
-.layout{display:grid;grid-template-columns:200px 1fr;min-height:calc(100vh - 56px)}
-.sidebar{border-right:1px solid var(--b1);padding:20px 0}
-.sb-section{margin-bottom:8px}
-.sb-label{font-size:10px;color:var(--t2);font-weight:600;letter-spacing:1px;padding:0 18px;margin-bottom:4px}
-.sb-item{display:flex;align-items:center;gap:10px;padding:10px 18px;font-size:13px;color:var(--t2);cursor:pointer;transition:.15s;border-left:2px solid transparent}
-.sb-item:hover{color:var(--t);background:var(--s1)}
-.sb-item.active{color:var(--t);background:var(--s1);border-left-color:var(--r)}
-.sb-item .ic{width:16px;text-align:center;font-size:14px}
-.sb-item .cnt{margin-left:auto;background:var(--r);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px}
+body{background:var(--bg);color:var(--t);font-family:'Noto Sans KR',sans-serif;font-size:14px;overflow-x:hidden}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;height:54px;background:rgba(10,10,10,.97);border-bottom:1px solid var(--b1);z-index:200;display:flex;align-items:center;padding:0 20px;gap:14px}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:2px;color:var(--t);text-decoration:none}
+.logo em{color:var(--r);font-style:normal}
+.nav-badge{background:rgba(255,59,59,.12);border:1px solid rgba(255,59,59,.25);color:var(--r);font-size:10px;padding:2px 8px;border-radius:4px;font-weight:700}
+.nav-r{margin-left:auto;display:flex;align-items:center;gap:10px}
+.nav-av{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--r),var(--o));display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff}
+.nav-name{font-size:13px;font-weight:600}
+.btn-sm{padding:6px 14px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;border:none}
+.btn-r{background:var(--r);color:#fff}
+.btn-ghost{background:none;border:1px solid var(--b2);color:var(--t2)}
+
+/* LAYOUT */
+.layout{display:grid;grid-template-columns:200px 1fr;min-height:100vh;padding-top:54px}
+
+/* SIDEBAR */
+.sidebar{border-right:1px solid var(--b1);padding:16px 0;position:sticky;top:54px;height:calc(100vh - 54px);overflow-y:auto}
+.sb-label{font-size:10px;color:var(--t3);font-weight:700;letter-spacing:1.5px;padding:12px 18px 4px;text-transform:uppercase}
+.sb-item{display:flex;align-items:center;gap:10px;padding:10px 18px;font-size:13px;color:var(--t2);cursor:pointer;transition:.15s;border-left:2px solid transparent;user-select:none}
+.sb-item:hover{color:var(--t);background:rgba(255,255,255,.03)}
+.sb-item.active{color:var(--t);background:rgba(255,59,59,.06);border-left-color:var(--r)}
+.sb-item .ic{width:18px;text-align:center;font-size:15px;flex-shrink:0}
+.sb-item .badge{margin-left:auto;background:var(--r);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px;min-width:18px;text-align:center}
+.sb-sep{height:1px;background:var(--b1);margin:8px 12px}
+
+/* MAIN */
 .main{padding:28px 32px;overflow-y:auto}
-.page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
-.page-title{font-size:20px;font-weight:700}
-.period-select{display:flex;gap:6px}
-.period-btn{padding:5px 12px;border-radius:6px;font-size:12px;cursor:pointer;border:1px solid var(--b1);background:none;color:var(--t2);font-family:inherit}
-.period-btn.active{background:var(--s2);color:var(--t);border-color:var(--t2)}
+.page-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+.page-title{font-size:18px;font-weight:700}
+
+/* SECTION HIDE */
+.sec{display:none}
+.sec.on{display:block}
+
+/* KPI */
 .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
 .kpi{background:var(--s1);border:1px solid var(--b1);border-radius:12px;padding:18px}
-.kpi-label{font-size:11px;color:var(--t2);margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
-.kpi-val{font-size:24px;font-weight:700;margin-bottom:4px;font-family:'Bebas Neue',sans-serif;letter-spacing:1px}
-.kpi-val.green{color:var(--g)}
-.kpi-val.orange{color:var(--o)}
-.kpi-val.red{color:var(--r)}
-.kpi-change{font-size:11px;display:flex;align-items:center;gap:4px}
-.kpi-change.up{color:var(--g)}
-.chart-grid{display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:24px}
-.card{background:var(--s1);border:1px solid var(--b1);border-radius:12px;padding:20px}
-.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
-.card-title{font-size:14px;font-weight:600}
-.card-sub{font-size:12px;color:var(--t2)}
-.bar-chart{display:flex;align-items:flex-end;gap:8px;height:140px}
-.bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%}
-.bar-track{flex:1;display:flex;align-items:flex-end;width:100%}
-.bar{width:100%;border-radius:4px 4px 0 0;transition:.3s;cursor:pointer}
-.bar:hover{filter:brightness(1.2)}
-.bar-label{font-size:10px;color:var(--t2);text-align:center}
-.donut-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;height:140px;position:relative}
-.donut-center{position:absolute;text-align:center}
-.donut-center .n{font-size:22px;font-weight:700;font-family:'Bebas Neue',sans-serif}
-.donut-center .l{font-size:10px;color:var(--t2)}
-.donut-legend{display:flex;flex-direction:column;gap:6px;margin-top:12px;width:100%}
-.dl-item{display:flex;align-items:center;gap:8px;font-size:11px}
-.dl-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.dl-name{color:var(--t2);flex:1}
-.dl-val{font-weight:600}
-.gugu-table{width:100%;border-collapse:collapse}
-.gugu-table th{font-size:11px;color:var(--t2);font-weight:500;text-align:left;padding:0 0 10px;border-bottom:1px solid var(--b1)}
-.gugu-table td{padding:12px 0;border-bottom:1px solid var(--b1);vertical-align:middle}
-.gugu-table tr:last-child td{border-bottom:none}
-.gt-product{display:flex;align-items:center;gap:10px}
-.gt-emoji{width:36px;height:36px;border-radius:8px;background:var(--s2);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
-.gt-name{font-size:13px;font-weight:600}
-.gt-cat{font-size:11px;color:var(--t2)}
-.gt-prog{width:100px}
-.prog-bar{height:4px;background:var(--b1);border-radius:2px;margin-top:4px}
+.kpi-lbl{font-size:11px;color:var(--t2);margin-bottom:8px}
+.kpi-val{font-size:26px;font-weight:800;font-family:'Bebas Neue',sans-serif;letter-spacing:1px;margin-bottom:4px}
+.kpi-sub{font-size:11px;color:var(--t3)}
+.kpi-val.g{color:var(--g)}.kpi-val.o{color:var(--o)}.kpi-val.r{color:var(--r)}
+
+/* TABLE */
+.tbl-wrap{background:var(--s1);border:1px solid var(--b1);border-radius:12px;overflow:hidden}
+.tbl-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--b1)}
+.tbl-title{font-size:14px;font-weight:700}
+.tbl-cnt{font-size:12px;color:var(--t2)}
+table{width:100%;border-collapse:collapse}
+th{padding:11px 14px;font-size:11px;font-weight:700;color:var(--t2);text-align:left;border-bottom:1px solid var(--b1);background:var(--s2);white-space:nowrap}
+td{padding:12px 14px;font-size:13px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,.02)}
+
+/* STATUS BADGE */
+.badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:5px;font-size:11px;font-weight:700;white-space:nowrap}
+.b-paid{background:rgba(99,102,241,.15);color:var(--bl)}
+.b-preparing{background:rgba(255,138,0,.15);color:var(--o)}
+.b-shipped{background:rgba(34,197,94,.15);color:var(--g)}
+.b-delivered{background:rgba(34,197,94,.2);color:var(--g)}
+.b-cancelled{background:rgba(255,59,59,.1);color:var(--r)}
+.b-active{background:rgba(34,197,94,.12);color:var(--g)}
+.b-closed{background:rgba(100,100,120,.12);color:var(--t2)}
+
+/* STATUS TABS */
+.status-tabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+.stab{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--b1);background:none;color:var(--t2);font-family:inherit;transition:.15s}
+.stab:hover{border-color:var(--t2);color:var(--t)}
+.stab.on{background:var(--r);border-color:var(--r);color:#fff}
+
+/* TRACKING INPUT */
+.track-row{display:flex;gap:6px;align-items:center}
+.track-select{padding:6px 10px;background:var(--s2);border:1px solid var(--b1);border-radius:6px;color:var(--t);font-size:12px;font-family:inherit;outline:none;cursor:pointer;min-width:90px}
+.track-input{padding:6px 10px;background:var(--s2);border:1px solid var(--b1);border-radius:6px;color:var(--t);font-size:12px;font-family:inherit;outline:none;width:130px}
+.track-input:focus,.track-select:focus{border-color:var(--r)}
+.track-btn{padding:6px 12px;border-radius:6px;border:none;background:var(--r);color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap}
+.track-btn:hover{background:#e03333}
+.track-done{font-size:12px;color:var(--g);font-weight:600}
+
+/* GUGU CARD */
+.gugu-row{display:flex;align-items:center;gap:12px}
+.gugu-emoji{width:40px;height:40px;border-radius:8px;background:var(--s2);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;border:1px solid var(--b1)}
+.gugu-info .name{font-size:13px;font-weight:600;margin-bottom:2px}
+.gugu-info .cat{font-size:11px;color:var(--t2)}
+
+/* PROGRESS */
+.prog-wrap{display:flex;align-items:center;gap:8px}
+.prog-bar{flex:1;height:5px;background:var(--b2);border-radius:2px;min-width:60px}
 .prog-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--r),var(--o))}
-.gt-status{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:3px 8px;border-radius:4px}
-.st-live{background:rgba(255,59,59,0.12);color:var(--r)}
-.st-end{background:rgba(136,136,136,0.12);color:var(--t2)}
-.st-ready{background:rgba(255,138,0,0.12);color:var(--o)}
-.gt-dot{width:5px;height:5px;border-radius:50%;background:currentColor;animation:pulse 1.5s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-.gt-action{display:flex;gap:6px}
-.gt-btn{padding:5px 10px;border-radius:6px;font-size:11px;cursor:pointer;font-family:inherit;border:1px solid var(--b1);background:none;color:var(--t)}
-.gt-btn:hover{background:var(--s2)}
-.bottom-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px}
-.settle-list{display:flex;flex-direction:column;gap:0}
-.settle-item{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--b1)}
-.settle-item:last-child{border-bottom:none}
-.settle-date{font-size:12px;color:var(--t2);width:70px;flex-shrink:0}
-.settle-info{flex:1}
-.settle-name{font-size:13px;font-weight:500}
-.settle-detail{font-size:11px;color:var(--t2)}
-.settle-amount{font-size:14px;font-weight:700}
-.settle-amount.plus{color:var(--g)}
-.settle-status{font-size:10px;padding:2px 7px;border-radius:4px;flex-shrink:0}
-.ss-done{background:rgba(34,197,94,0.12);color:var(--g)}
-.ss-pending{background:rgba(255,138,0,0.12);color:var(--o)}
-.notif-list{display:flex;flex-direction:column;gap:0}
-.notif-item{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--b1);cursor:pointer}
-.notif-item:last-child{border-bottom:none}
-.notif-ic{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
-.ni-red{background:rgba(255,59,59,0.12)}
-.ni-orange{background:rgba(255,138,0,0.12)}
-.ni-green{background:rgba(34,197,94,0.12)}
-.notif-body .t{font-size:13px;font-weight:500;margin-bottom:2px}
-.notif-body .s{font-size:11px;color:var(--t2)}
-.notif-time{font-size:11px;color:var(--t2);margin-left:auto;flex-shrink:0}
-.unread-dot{width:6px;height:6px;border-radius:50%;background:var(--r);flex-shrink:0;margin-top:4px}
+.prog-pct{font-size:11px;color:var(--t2);white-space:nowrap}
 
+/* ACTION BTNS */
+.act-btns{display:flex;gap:6px}
+.btn-edit{padding:5px 12px;border-radius:6px;border:1px solid var(--b2);background:none;color:var(--t2);font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;transition:.15s}
+.btn-edit:hover{color:var(--t);border-color:var(--t)}
+.btn-del{padding:5px 12px;border-radius:6px;border:1px solid rgba(255,59,59,.25);background:none;color:var(--r);font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;transition:.15s}
+.btn-del:hover{background:rgba(255,59,59,.08)}
 
-/* ══════════════════════════════════════
-   MOBILE RESPONSIVE — influencer-dashboard.html
-══════════════════════════════════════ */
+/* MODAL */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:500;align-items:center;justify-content:center}
+.modal-bg.open{display:flex}
+.modal{background:var(--s1);border:1px solid var(--b1);border-radius:16px;padding:28px;width:480px;max-width:calc(100vw - 32px);max-height:90vh;overflow-y:auto}
+.modal-title{font-size:17px;font-weight:700;margin-bottom:20px}
+.form-g{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+.form-g label{font-size:12px;color:var(--t2);font-weight:600}
+.form-g input,.form-g select,.form-g textarea{padding:10px 14px;background:var(--s2);border:1px solid var(--b1);border-radius:8px;color:var(--t);font-size:13px;font-family:inherit;outline:none;transition:.2s}
+.form-g input:focus,.form-g select:focus,.form-g textarea:focus{border-color:var(--r)}
+.form-g textarea{resize:vertical;min-height:80px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.modal-btns{display:flex;gap:8px;justify-content:flex-end;margin-top:20px}
+.btn-cancel{padding:9px 18px;border-radius:8px;border:1px solid var(--b2);background:none;color:var(--t2);font-size:13px;cursor:pointer;font-family:inherit}
+.btn-save{padding:9px 20px;border-radius:8px;border:none;background:var(--r);color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit}
 
+/* STATS */
+.chart-wrap{background:var(--s1);border:1px solid var(--b1);border-radius:12px;padding:20px;margin-bottom:16px}
+.chart-title{font-size:14px;font-weight:700;margin-bottom:16px}
+.rev-item{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.rev-name{font-size:13px;font-weight:600;width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:0}
+.rev-bar-bg{flex:1;height:8px;background:var(--b2);border-radius:4px}
+.rev-bar-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--r),var(--o))}
+.rev-amt{font-size:12px;color:var(--t2);white-space:nowrap;flex-shrink:0;min-width:70px;text-align:right}
 
+/* EMPTY */
+.empty{text-align:center;padding:48px 0;color:var(--t2)}
+.empty .ei{font-size:40px;margin-bottom:12px;opacity:.4}
+.empty .et{font-size:14px;font-weight:600;color:var(--t);margin-bottom:6px}
+.empty .es{font-size:13px}
 
-
-/* ══════ 공통 모바일 요소 ══════ */
-
-
-/* 햄버거 드로어 메뉴 */
-.mob-menu-btn { display:none; width:36px; height:36px; border-radius:8px; background:var(--s2,#171719); border:1px solid var(--b1,#242428); align-items:center; justify-content:center; cursor:pointer; font-size:18px; color:var(--t2,#8a8a9a); flex-shrink:0; }
-.mob-drawer{display:none;position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.82);align-items:flex-end;}
-.mob-drawer.open{display:flex;}
-.mob-drawer-inner { background:var(--s1,#111114); width:100%; border-radius:20px 20px 0 0; padding:20px 20px 40px; transform:translateY(100%); transition:transform .3s ease; }
-.mob-drawer.open .mob-drawer-inner { transform:translateY(0); }
-.mob-drawer-handle { width:36px; height:4px; background:var(--b2,#2e2e34); border-radius:2px; margin:0 auto 20px; }
-.mob-drawer-cats { display:flex; flex-direction:column; gap:6px; margin-bottom:20px; }
-.mob-drawer-cats a { padding:12px 16px; border-radius:10px; font-size:15px; font-weight:600; color:var(--t,#F2F2F5); text-decoration:none; border:1px solid var(--b1,#242428); background:var(--s2,#171719); display:flex; align-items:center; gap:10px; }
-.mob-drawer-btns { display:flex; gap:8px; }
-.mob-drawer-btns button { flex:1; padding:12px; border-radius:10px; font-size:14px; font-weight:700; cursor:pointer; font-family:inherit; }
-.mob-search-bar { display:none; align-items:center; gap:8px; background:var(--s2,#171719); border:1px solid var(--b1,#242428); border-radius:10px; padding:10px 14px; margin:6px 16px 0; }
-.mob-search-bar input { background:none; border:none; outline:none; color:var(--t,#F2F2F5); font-size:14px; font-family:inherit; width:100%; }
-
-
-
-
-
-
-
-@media (max-width:768px){
-.layout { grid-template-columns:1fr !important; }
-  .sidebar-wrap {
-    display:flex !important; flex-direction:row !important;
-    overflow-x:auto !important; border-right:none !important;
-    border-bottom:1px solid var(--b1) !important;
-    padding:8px 14px !important; gap:4px !important;
-  }
-  .sidebar-wrap::-webkit-scrollbar { display:none; }
-  .sb-item {
-    white-space:nowrap !important; border-radius:8px !important;
-    border:1px solid var(--b1) !important; padding:7px 12px !important; font-size:12px !important;
-  }
-  .sb-item .ic { display:none !important; }
-  .kpi-grid { grid-template-columns:repeat(2,1fr) !important; gap:10px !important; }
-  .chart-grid { grid-template-columns:1fr !important; gap:12px !important; }
-  .bottom-grid { grid-template-columns:1fr !important; }
-  .main-content { padding:14px !important; }
-  .gugu-table { font-size:12px !important; }
-  .gugu-table th,.gugu-table td { padding:9px 8px !important; }
-/* 네비 공통 */
-  .mob-menu-btn { display:flex !important; }
-  .mob-search-bar { display:flex !important; }
-  /* 하단 탭바 */
-  .mob-bottom-nav { display:flex !important; }
-  body { padding-bottom:60px; }
-.mob-menu-btn { display:flex !important; }
-  .mob-search-bar { display:flex !important; }
-.mob-bottom-nav { display: flex !important; }
-input, select, textarea { font-size: 16px !important; }
+@media(max-width:768px){
+  .layout{grid-template-columns:1fr}
+  .sidebar{display:none}
+  .kpi-grid{grid-template-columns:1fr 1fr}
+  .main{padding:16px}
+  .track-input{width:90px}
 }
 </style>
 </head>
 <body>
+
 <nav>
-  <div class="nav-inner">
-    <div class="logo">GUGU<span>.</span></div>
-    <span class="nav-badge">인플루언서</span>
-    <div class="nav-right">
-      <button class="btn-new-gugu" onclick="location.href='open-gugu.html'">+ 공구 열기</button>
-      <div class="nav-av" id="navAv">-</div>
-      <div class="nav-name" id="navName">로딩중...</div>
-      <button onclick="signOut()" style="padding:6px 12px;border-radius:7px;border:1px solid var(--b1);background:none;color:var(--t2);font-size:12px;cursor:pointer;font-family:inherit">로그아웃</button>
-    </div>
+  <a class="logo" href="index.html">GUGU<em>.</em></a>
+  <span class="nav-badge">인플루언서</span>
+  <div class="nav-r">
+    <div class="nav-av" id="navAv">?</div>
+    <span class="nav-name" id="navName"></span>
+    <button class="btn-sm btn-r" onclick="location.href='open-gugu.html'">+ 공구 등록</button>
+    <button class="btn-sm btn-ghost" onclick="doSignOut()">로그아웃</button>
   </div>
 </nav>
 
 <div class="layout">
-  <div class="sidebar">
-    <div class="sb-section">
-      <div class="sb-label">메인</div>
-      <div class="sb-item active"><span class="ic">📊</span>대시보드</div>
-      <div class="sb-item"><span class="ic">🛍️</span>내 공구<span class="cnt">3</span></div>
-      <div class="sb-item"><span class="ic">💰</span>정산내역</div>
-      <div class="sb-item"><span class="ic">📈</span>성과 분석</div>
-    </div>
-    <div class="sb-section">
-      <div class="sb-label">관리</div>
-      <div class="sb-item"><span class="ic">💬</span>문의/CS<span class="cnt">7</span></div>
-      <div class="sb-item"><span class="ic">⭐</span>리뷰 관리</div>
-      <div class="sb-item"><span class="ic">👤</span>프로필</div>
-    </div>
-    <div class="sb-section">
-      <div class="sb-label">지원</div>
-      <div class="sb-item"><span class="ic">📖</span>공구 가이드</div>
-      <div class="sb-item"><span class="ic">⚙️</span>설정</div>
-    </div>
-  </div>
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sb-label">운영</div>
+    <div class="sb-item active" onclick="showSec('dashboard',this)"><span class="ic">🏠</span>대시보드</div>
+    <div class="sb-item" onclick="showSec('orders',this)" id="sbOrders"><span class="ic">📦</span>주문<span class="badge" id="pendingBadge" style="display:none">0</span></div>
+    <div class="sb-item" onclick="showSec('gugus',this)"><span class="ic">🛍️</span>공구(상품)</div>
+    <div class="sb-sep"></div>
+    <div class="sb-label">분석</div>
+    <div class="sb-item" onclick="showSec('stats',this)"><span class="ic">📊</span>통계</div>
+    <div class="sb-sep"></div>
+    <div class="sb-label">계정</div>
+    <div class="sb-item" onclick="location.href='mypage.html'"><span class="ic">👤</span>마이페이지</div>
+    <div class="sb-item" onclick="location.href='index.html'"><span class="ic">🌐</span>사이트 보기</div>
+  </aside>
 
+  <!-- MAIN -->
   <div class="main">
-    <div class="page-header">
-      <div>
-        <div class="page-title" id="greetingTitle">안녕하세요 👋</div>
-        <div style="font-size:13px;color:var(--t2);margin-top:3px" id="greetingSub">공구 현황을 불러오는 중...</div>
+
+    <!-- ① 대시보드 -->
+    <div class="sec on" id="sec-dashboard">
+      <div class="page-hd">
+        <div>
+          <div class="page-title" id="greetTitle">안녕하세요 👋</div>
+          <div style="font-size:13px;color:var(--t2);margin-top:4px" id="greetSub"></div>
+        </div>
+        <button class="btn-sm btn-r" onclick="location.href='open-gugu.html'">+ 새 공구 열기</button>
       </div>
-      <div class="period-select">
-        <button class="period-btn">오늘</button>
-        <button class="period-btn active">이번달</button>
-        <button class="period-btn">3개월</button>
-        <button class="period-btn">전체</button>
+
+      <div class="kpi-grid">
+        <div class="kpi">
+          <div class="kpi-lbl">이번달 예상 수익</div>
+          <div class="kpi-val g" id="kpiRev">0</div>
+          <div class="kpi-sub">수수료 5% 제외</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-lbl">누적 참여자</div>
+          <div class="kpi-val o" id="kpiPart">0</div>
+          <div class="kpi-sub" id="kpiPartSub">전체 공구 합산</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-lbl">진행 중 공구</div>
+          <div class="kpi-val r" id="kpiActive">0</div>
+          <div class="kpi-sub" id="kpiActiveSub">완료 0개</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-lbl">평균 달성률</div>
+          <div class="kpi-val" id="kpiAvg">0%</div>
+          <div class="kpi-sub">전체 공구 평균</div>
+        </div>
+      </div>
+
+      <!-- 최근 주문 -->
+      <div class="tbl-wrap">
+        <div class="tbl-head">
+          <span class="tbl-title">최근 주문</span>
+          <a onclick="showSec('orders',document.querySelector('[onclick*=orders]'))" style="font-size:12px;color:var(--r);cursor:pointer;font-weight:600">전체 보기 →</a>
+        </div>
+        <table>
+          <thead><tr>
+            <th>주문번호</th><th>상품</th><th>소비자</th><th>금액</th><th>상태</th><th>주문일</th>
+          </tr></thead>
+          <tbody id="recentOrdersTbody">
+            <tr><td colspan="6" style="text-align:center;padding:24px;color:var(--t2)">불러오는 중...</td></tr>
+          </tbody>
+        </table>
       </div>
     </div>
 
-    <div class="kpi-grid">
-      <div class="kpi">
-        <div class="kpi-label">이번달 수익 💰</div>
-        <div class="kpi-val green" id="kpiRevenue">-</div>
-        <div style="font-size:11px;color:var(--t2);margin-bottom:4px">원</div>
-        <div class="kpi-change" id="kpiRevenueSub" style="color:var(--t2)">집계 중...</div>
+    <!-- ② 주문 관리 -->
+    <div class="sec" id="sec-orders">
+      <div class="page-hd">
+        <div class="page-title">주문 관리</div>
+        <span class="tbl-cnt" id="orderTotalCnt"></span>
       </div>
-      <div class="kpi">
-        <div class="kpi-label">총 참여자 👥</div>
-        <div class="kpi-val orange" id="kpiParticipants">-</div>
-        <div style="font-size:11px;color:var(--t2);margin-bottom:4px">명</div>
-        <div class="kpi-change" id="kpiParticipantsSub" style="color:var(--t2)">집계 중...</div>
+
+      <div class="status-tabs">
+        <button class="stab on" onclick="filterOrders('all',this)">전체</button>
+        <button class="stab" onclick="filterOrders('paid',this)">결제완료</button>
+        <button class="stab" onclick="filterOrders('preparing',this)">상품준비중</button>
+        <button class="stab" onclick="filterOrders('shipped',this)">배송중</button>
+        <button class="stab" onclick="filterOrders('delivered',this)">배송완료</button>
+        <button class="stab" onclick="filterOrders('cancelled',this)">취소</button>
       </div>
-      <div class="kpi">
-        <div class="kpi-label">진행중 공구 🔥</div>
-        <div class="kpi-val red" id="kpiActive">-</div>
-        <div style="font-size:11px;color:var(--t2);margin-bottom:4px">개</div>
-        <div class="kpi-change" id="kpiActiveSub" style="color:var(--t2)">집계 중...</div>
-      </div>
-      <div class="kpi">
-        <div class="kpi-label">평균 달성률 🎯</div>
-        <div class="kpi-val" id="kpiAvgPct">-</div>
-        <div style="font-size:11px;color:var(--t2);margin-bottom:4px">%</div>
-        <div class="kpi-change" id="kpiAvgPctSub" style="color:var(--t2)">집계 중...</div>
+
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr>
+            <th>주문번호</th><th>상품</th><th>소비자</th><th>수량</th><th>금액</th>
+            <th>상태</th><th>배송사 / 송장번호</th><th>주문일</th>
+          </tr></thead>
+          <tbody id="ordersTbody">
+            <tr><td colspan="8" style="text-align:center;padding:32px;color:var(--t2)">불러오는 중...</td></tr>
+          </tbody>
+        </table>
       </div>
     </div>
 
-    <div class="chart-grid">
-      <div class="card">
-        <div class="card-header"><div class="card-title">월별 수익</div><div class="card-sub">최근 6개월</div></div>
-        <div class="bar-chart" id="barChart"></div>
+    <!-- ③ 공구(상품) 관리 -->
+    <div class="sec" id="sec-gugus">
+      <div class="page-hd">
+        <div class="page-title">공구 관리</div>
+        <button class="btn-sm btn-r" onclick="location.href='open-gugu.html'">+ 새 공구 등록</button>
       </div>
-      <div class="card">
-        <div class="card-header"><div class="card-title">카테고리 비중</div></div>
-        <div class="donut-wrap">
-          <svg width="120" height="120" viewBox="0 0 120 120">
-            <circle cx="60" cy="60" r="44" fill="none" stroke="#2A2A2A" stroke-width="16"/>
-            <circle cx="60" cy="60" r="44" fill="none" stroke="#FF3B3B" stroke-width="16" stroke-dasharray="166 110" stroke-dashoffset="0" transform="rotate(-90 60 60)"/>
-            <circle cx="60" cy="60" r="44" fill="none" stroke="#FF8A00" stroke-width="16" stroke-dasharray="77 199" stroke-dashoffset="-166" transform="rotate(-90 60 60)"/>
-            <circle cx="60" cy="60" r="44" fill="none" stroke="#22c55e" stroke-width="16" stroke-dasharray="33 243" stroke-dashoffset="-243" transform="rotate(-90 60 60)"/>
-          </svg>
-          <div class="donut-center"><div class="n">21</div><div class="l">공구</div></div>
-        </div>
-        <div class="donut-legend">
-          <div class="dl-item"><div class="dl-dot" style="background:var(--r)"></div><span class="dl-name">스킨케어</span><span class="dl-val">60%</span></div>
-          <div class="dl-item"><div class="dl-dot" style="background:var(--o)"></div><span class="dl-name">메이크업</span><span class="dl-val">28%</span></div>
-          <div class="dl-item"><div class="dl-dot" style="background:var(--g)"></div><span class="dl-name">기타</span><span class="dl-val">12%</span></div>
-        </div>
+
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr>
+            <th>상품</th><th>카테고리</th><th>공구가</th><th>참여 현황</th>
+            <th>마감일</th><th>상태</th><th>관리</th>
+          </tr></thead>
+          <tbody id="gugusTbody">
+            <tr><td colspan="7" style="text-align:center;padding:32px;color:var(--t2)">불러오는 중...</td></tr>
+          </tbody>
+        </table>
       </div>
     </div>
 
-    <div class="card" style="margin-bottom:24px">
-      <div class="card-header">
-        <div class="card-title">진행중인 공구</div>
-        <button style="padding:5px 12px;border-radius:6px;border:1px solid var(--b1);background:none;color:var(--t2);font-size:12px;cursor:pointer;font-family:inherit">전체보기</button>
+    <!-- ④ 통계 -->
+    <div class="sec" id="sec-stats">
+      <div class="page-hd"><div class="page-title">통계</div></div>
+
+      <div class="kpi-grid">
+        <div class="kpi">
+          <div class="kpi-lbl">총 매출</div>
+          <div class="kpi-val g" id="statTotalRev">0</div>
+          <div class="kpi-sub">순수익 기준</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-lbl">총 주문수</div>
+          <div class="kpi-val o" id="statTotalOrders">0</div>
+          <div class="kpi-sub">취소 제외</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-lbl">총 공구수</div>
+          <div class="kpi-val" id="statTotalGugus">0</div>
+          <div class="kpi-sub">진행중 + 완료</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-lbl">평균 주문금액</div>
+          <div class="kpi-val r" id="statAvgOrder">0</div>
+          <div class="kpi-sub">건당 평균</div>
+        </div>
       </div>
-      <table class="gugu-table">
-        <thead>
-          <tr><th>상품</th><th>참여자</th><th>진행률</th><th>예상수익</th><th>마감</th><th>상태</th><th></th></tr>
-        </thead>
-        <tbody id="guguTableBody">
-          <tr><td colspan="7" style="text-align:center;padding:24px;color:var(--t2)">공구 데이터를 불러오는 중...</td></tr>
-        </tbody>
-      </table>
+
+      <div class="chart-wrap">
+        <div class="chart-title">공구별 매출</div>
+        <div id="statChart"><div style="text-align:center;padding:24px;color:var(--t2)">데이터 불러오는 중...</div></div>
+      </div>
     </div>
 
-    <div class="bottom-grid">
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">최근 주문 내역</div>
-          <div class="card-sub" id="orderCount" style="color:var(--t2)">불러오는 중...</div>
-        </div>
-        <div class="settle-list" id="orderList">
-          <div style="text-align:center;padding:24px;color:var(--t2);font-size:13px">주문 데이터를 불러오는 중...</div>
-        </div>
+  </div><!-- /main -->
+</div><!-- /layout -->
+
+<!-- 공구 수정 모달 -->
+<div class="modal-bg" id="editModal">
+  <div class="modal">
+    <div class="modal-title">공구 수정</div>
+    <input type="hidden" id="editGuguId">
+    <div class="form-row">
+      <div class="form-g"><label>상품명</label><input id="editTitle" placeholder="상품명"></div>
+      <div class="form-g"><label>카테고리</label>
+        <select id="editCategory">
+          <option>뷰티</option><option>패션</option><option>피트니스</option>
+          <option>라이프</option><option>푸드</option><option>테크</option><option>기타</option>
+        </select>
       </div>
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">공구별 매출 현황</div>
-          <div class="card-sub" id="totalRevLabel" style="color:var(--g);font-weight:600">집계 중...</div>
-        </div>
-        <div class="settle-list" id="guguRevenueList">
-          <div style="text-align:center;padding:24px;color:var(--t2);font-size:13px">불러오는 중...</div>
-        </div>
-      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-g"><label>정가 (원)</label><input id="editOrigPrice" type="number"></div>
+      <div class="form-g"><label>공구가 (원)</label><input id="editSalePrice" type="number"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-g"><label>목표 인원</label><input id="editTarget" type="number"></div>
+      <div class="form-g"><label>마감일</label><input id="editEndDate" type="date"></div>
+    </div>
+    <div class="form-g"><label>상품 설명</label><textarea id="editDesc"></textarea></div>
+    <div id="editErr" style="display:none;color:var(--r);font-size:12px;margin-top:8px"></div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal('editModal')">취소</button>
+      <button class="btn-save" onclick="saveGugu()">저장</button>
     </div>
   </div>
 </div>
 
-<!-- Supabase CDN -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="js/supabase.js"></script>
 <script>
-document.querySelectorAll('.sb-item').forEach(t=>t.addEventListener('click',function(){document.querySelectorAll('.sb-item').forEach(x=>x.classList.remove('active'));this.classList.add('active')}));
-document.querySelectorAll('.period-btn').forEach(t=>t.addEventListener('click',function(){document.querySelectorAll('.period-btn').forEach(x=>x.classList.remove('active'));this.classList.add('active')}));
+const TOKEN_KEY = 'inf_token';
+let myGugus = [];
+let allOrders = [];
+let currentOrderFilter = 'all';
+let token = '';
 
-const statusMap = {
-  active: '<span class="gt-status st-live"><span class="gt-dot"></span> 진행중</span>',
-  ready:  '<span class="gt-status st-ready">준비중</span>',
-  closed: '<span class="gt-status st-end">종료</span>',
-  cancelled: '<span class="gt-status st-end">취소</span>',
-};
-const catEmoji = { '뷰티 · 스킨케어':'🧴','뷰티 · 메이크업':'💄','패션':'👗','푸드':'🍱','라이프':'🌿','피트니스':'💪' };
+const STATUS_LABEL = {paid:'결제완료',preparing:'상품준비중',shipped:'배송중',delivered:'배송완료',cancelled:'취소',refunded:'환불'};
+const STATUS_CLS   = {paid:'b-paid',preparing:'b-preparing',shipped:'b-shipped',delivered:'b-delivered',cancelled:'b-cancelled',refunded:'b-cancelled'};
+const CARRIERS = ['CJ대한통운','한진택배','롯데택배','우체국택배','로젠택배','드림택배','편의점택배'];
 
-function renderGuguTable(gugus) {
-  const tbody = document.getElementById('guguTableBody');
-  if(!gugus.length){
-    tbody.innerHTML='<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--t2)">아직 등록된 공구가 없어요.<br><a href="open-gugu.html" style="color:var(--r);text-decoration:none;font-weight:600">+ 첫 공구 열기</a></td></tr>';
+async function doSignOut(){ await sb.auth.signOut(); location.href='login.html'; }
+
+function showSec(id, el){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));
+  document.getElementById('sec-'+id).classList.add('on');
+  document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('active'));
+  if(el) el.classList.add('active');
+}
+
+function fmt(n){ return Number(n||0).toLocaleString(); }
+function fmtDate(s){ const d=new Date(s); return `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`; }
+function pct(cur,target){ return target>0 ? Math.min(100,Math.round(cur/target*100)) : 0; }
+
+// ─── 주문 테이블 렌더 ───
+function renderOrders(orders){
+  const tbody = document.getElementById('ordersTbody');
+  if(!orders.length){
+    tbody.innerHTML=`<tr><td colspan="8"><div class="empty"><div class="ei">📦</div><div class="et">주문이 없어요</div><div class="es">공구에 소비자가 참여하면 여기 표시돼요</div></div></td></tr>`;
     return;
   }
-  tbody.innerHTML = gugus.map(g => {
-    const pct = progressPct(g.current_participants, g.target_participants);
-    const rev = Math.round(g.sale_price * g.current_participants * 0.95);
-    const emoji = catEmoji[g.category] || '🛍️';
-    const dl = daysLeft(g.end_date);
+  tbody.innerHTML = orders.map(o=>{
+    const sc = STATUS_CLS[o.status]||'b-paid';
+    const sl = STATUS_LABEL[o.status]||o.status;
+    const hasTracking = o.tracking_number;
+    const isShippable = ['paid','preparing'].includes(o.status);
+    const carrierOpts = CARRIERS.map(c=>`<option${o.shipping_carrier===c?' selected':''}>${c}</option>`).join('');
+
+    let trackingCell = '';
+    if(hasTracking){
+      trackingCell = `<div class="track-done">✓ ${o.shipping_carrier||''}<br>${o.tracking_number}</div>`;
+    } else if(isShippable){
+      trackingCell = `<div class="track-row">
+        <select class="track-select" id="car_${o.id}"><option value="">택배사</option>${carrierOpts}</select>
+        <input class="track-input" id="trk_${o.id}" placeholder="송장번호" value="${o.tracking_number||''}">
+        <button class="track-btn" onclick="saveTracking('${o.id}')">저장</button>
+      </div>`;
+    } else {
+      trackingCell = `<span style="color:var(--t3);font-size:12px">—</span>`;
+    }
+
     return `<tr>
-      <td><div class="gt-product"><div class="gt-emoji">${emoji}</div><div>
-        <div class="gt-name">${g.product_name}</div>
-        <div class="gt-cat">${g.category||''} · ${Number(g.sale_price).toLocaleString()}원</div>
-      </div></div></td>
-      <td><strong>${Number(g.current_participants).toLocaleString()}</strong><br>
-        <span style="font-size:11px;color:var(--t2)">목표 ${Number(g.target_participants||0).toLocaleString()}</span></td>
-      <td><div class="gt-prog"><span style="font-size:12px;font-weight:600">${pct}%</span>
-        <div class="prog-bar"><div class="prog-fill" style="width:${pct}%"></div></div></div></td>
-      <td><strong style="color:var(--g)">${Number(rev).toLocaleString()}원</strong></td>
-      <td><span style="font-size:12px">${dl}</span></td>
-      <td>${statusMap[g.status]||''}</td>
-      <td><div class="gt-action">
-        <button class="gt-btn" onclick="location.href='open-gugu.html?id=${g.id}'">수정</button>
+      <td><span style="font-size:11px;color:var(--t2)">GG-${o.id.slice(0,8).toUpperCase()}</span></td>
+      <td><div class="gugu-row">
+        <div class="gugu-emoji">${o.gugus?.emoji||'🛍️'}</div>
+        <div class="gugu-info"><div class="name">${o.gugus?.title||'—'}</div></div>
+      </div></td>
+      <td><div style="font-size:13px">${o.profiles?.name||'—'}</div>
+          <div style="font-size:11px;color:var(--t2)">${o.profiles?.phone||''}</div></td>
+      <td style="text-align:center">${o.quantity}개</td>
+      <td><strong>${fmt(o.total_amount)}원</strong></td>
+      <td>
+        <span class="badge ${sc}">${sl}</span>
+        ${isShippable ? `<br><select class="track-select" id="sts_${o.id}" style="margin-top:4px;font-size:11px" onchange="changeStatus('${o.id}',this.value)">
+          <option value="">상태변경</option>
+          <option value="preparing">상품준비중</option>
+          <option value="shipped">배송시작</option>
+          <option value="delivered">배송완료</option>
+        </select>` : ''}
+      </td>
+      <td>${trackingCell}</td>
+      <td style="font-size:11px;color:var(--t2)">${fmtDate(o.created_at)}</td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('orderTotalCnt').textContent = `총 ${orders.length}건`;
+}
+
+function filterOrders(status, btn){
+  document.querySelectorAll('.stab').forEach(b=>b.classList.remove('on'));
+  if(btn) btn.classList.add('on');
+  currentOrderFilter = status;
+  const filtered = status==='all' ? allOrders : allOrders.filter(o=>o.status===status);
+  renderOrders(filtered);
+}
+
+async function saveTracking(orderId){
+  const carrier  = document.getElementById('car_'+orderId)?.value;
+  const tracking = document.getElementById('trk_'+orderId)?.value?.trim();
+  if(!carrier){ alert('택배사를 선택해주세요.'); return; }
+  if(!tracking){ alert('송장번호를 입력해주세요.'); return; }
+
+  const btn = document.querySelector(`button[onclick="saveTracking('${orderId}')"]`);
+  if(btn){ btn.textContent='저장 중...'; btn.disabled=true; }
+
+  const res = await fetch('/api/orders/list', {
+    method: 'PUT',
+    headers: {'Content-Type':'application/json','Authorization':'Bearer '+token},
+    body: JSON.stringify({order_id: orderId, shipping_carrier: carrier, tracking_number: tracking, status:'shipped'})
+  });
+
+  if(res.ok){
+    // 로컬 업데이트
+    const idx = allOrders.findIndex(o=>o.id===orderId);
+    if(idx>-1){
+      allOrders[idx].shipping_carrier = carrier;
+      allOrders[idx].tracking_number  = tracking;
+      allOrders[idx].status = 'shipped';
+    }
+    filterOrders(currentOrderFilter, null);
+  } else {
+    const j = await res.json().catch(()=>({}));
+    alert('오류: '+(j.error||'저장 실패'));
+    if(btn){ btn.textContent='저장'; btn.disabled=false; }
+  }
+}
+
+async function changeStatus(orderId, newStatus){
+  if(!newStatus) return;
+  const res = await fetch('/api/orders/list', {
+    method: 'PUT',
+    headers: {'Content-Type':'application/json','Authorization':'Bearer '+token},
+    body: JSON.stringify({order_id: orderId, status: newStatus})
+  });
+  if(res.ok){
+    const idx = allOrders.findIndex(o=>o.id===orderId);
+    if(idx>-1) allOrders[idx].status = newStatus;
+    filterOrders(currentOrderFilter, null);
+  } else alert('상태 변경 실패');
+}
+
+// ─── 공구 테이블 렌더 ───
+function renderGugus(gugus){
+  const tbody = document.getElementById('gugusTbody');
+  if(!gugus.length){
+    tbody.innerHTML=`<tr><td colspan="7"><div class="empty"><div class="ei">🛍️</div><div class="et">등록한 공구가 없어요</div><div class="es">첫 공구를 열어보세요!</div></div></td></tr>`;
+    return;
+  }
+  tbody.innerHTML = gugus.map(g=>{
+    const p = pct(g.current_participants, g.target_participants);
+    const statusCls = g.status==='active'?'b-active':'b-closed';
+    const statusTxt = g.status==='active'?'진행중':'마감';
+    return `<tr>
+      <td><div class="gugu-row">
+        <div class="gugu-emoji">${g.emoji||'🛍️'}</div>
+        <div class="gugu-info"><div class="name">${g.title}</div><div class="cat">${g.category||''}</div></div>
+      </div></td>
+      <td>${g.category||'—'}</td>
+      <td><strong>${fmt(g.sale_price)}원</strong><br><span style="font-size:11px;color:var(--t2);text-decoration:line-through">${fmt(g.original_price)}원</span></td>
+      <td><div class="prog-wrap">
+        <div class="prog-bar"><div class="prog-fill" style="width:${p}%"></div></div>
+        <span class="prog-pct">${g.current_participants}/${g.target_participants}명 (${p}%)</span>
+      </div></td>
+      <td style="font-size:12px">${g.end_date||'—'}</td>
+      <td><span class="badge ${statusCls}">${statusTxt}</span></td>
+      <td><div class="act-btns">
+        <button class="btn-edit" onclick="openEditModal(${JSON.stringify(g).replace(/"/g,'&quot;')})">수정</button>
+        <button class="btn-del" onclick="deleteGugu('${g.id}','${g.title}')">삭제</button>
       </div></td>
     </tr>`;
   }).join('');
 }
 
-function renderBarChart(gugus) {
-  // 최근 6개월 월별 예상수익
-  const now = new Date();
-  const months = [];
-  for(let i=5;i>=0;i--){
-    const d = new Date(now.getFullYear(), now.getMonth()-i, 1);
-    months.push({ label: `${d.getMonth()+1}월`, year: d.getFullYear(), month: d.getMonth() });
-  }
-  const vals = months.map(m => {
-    return gugus
-      .filter(g => { if(!g.created_at) return false; const d=new Date(g.created_at); return d.getFullYear()===m.year && d.getMonth()===m.month; })
-      .reduce((s,g) => s + Math.round(g.sale_price * g.current_participants * 0.95), 0);
+// ─── 공구 수정 모달 ───
+function openEditModal(g){
+  document.getElementById('editGuguId').value   = g.id;
+  document.getElementById('editTitle').value    = g.title||'';
+  document.getElementById('editCategory').value = g.category||'뷰티';
+  document.getElementById('editOrigPrice').value= g.original_price||'';
+  document.getElementById('editSalePrice').value= g.sale_price||'';
+  document.getElementById('editTarget').value   = g.target_participants||'';
+  document.getElementById('editEndDate').value  = g.end_date||'';
+  document.getElementById('editDesc').value     = g.description||'';
+  document.getElementById('editErr').style.display='none';
+  document.getElementById('editModal').classList.add('open');
+}
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+
+async function saveGugu(){
+  const id        = document.getElementById('editGuguId').value;
+  const title     = document.getElementById('editTitle').value.trim();
+  const salePrice = Number(document.getElementById('editSalePrice').value);
+  const origPrice = Number(document.getElementById('editOrigPrice').value);
+  const errEl     = document.getElementById('editErr');
+
+  if(!title){ errEl.style.display='block'; errEl.textContent='상품명을 입력하세요.'; return; }
+  if(salePrice>origPrice){ errEl.style.display='block'; errEl.textContent='공구가는 정가보다 낮아야 합니다.'; return; }
+
+  const res = await fetch('/api/gugus/manage', {
+    method: 'PUT',
+    headers: {'Content-Type':'application/json','Authorization':'Bearer '+token},
+    body: JSON.stringify({
+      gugu_id:            id,
+      title,
+      category:           document.getElementById('editCategory').value,
+      original_price:     origPrice,
+      sale_price:         salePrice,
+      target_participants:Number(document.getElementById('editTarget').value)||100,
+      end_date:           document.getElementById('editEndDate').value,
+      description:        document.getElementById('editDesc').value,
+    })
   });
-  const maxV = Math.max(...vals, 1);
-  const bc = document.getElementById('barChart');
-  bc.innerHTML = months.map((m,i)=>{
-    const pct = Math.round(vals[i]/maxV*100)||4;
-    const isLast = i===months.length-1;
-    return `<div class="bar-wrap"><div class="bar-track"><div class="bar" style="height:${pct}%;background:${isLast?'linear-gradient(180deg,var(--r),var(--o))':'var(--s2)'};border:1px solid ${isLast?'transparent':'var(--b1)'}"></div></div><div class="bar-label">${m.label}</div></div>`;
-  }).join('');
+
+  if(res.ok){
+    closeModal('editModal');
+    await loadAll();
+  } else {
+    const j = await res.json().catch(()=>({}));
+    errEl.style.display='block'; errEl.textContent=j.error||'수정 실패';
+  }
 }
 
-// 메인 진입
-(async()=>{
-  const u = await getCurrentUser();
-  if(!u){ location.href='login.html'; return; }
-  if(u.profile?.role !== 'influencer'){ location.href='index.html'; return; }
+async function deleteGugu(id, name){
+  if(!confirm(`"${name}" 공구를 삭제할까요?\n참여자가 있으면 삭제할 수 없어요.`)) return;
+  const res = await fetch('/api/gugus/manage', {
+    method: 'DELETE',
+    headers: {'Content-Type':'application/json','Authorization':'Bearer '+token},
+    body: JSON.stringify({gugu_id: id})
+  });
+  if(res.ok) await loadAll();
+  else { const j=await res.json().catch(()=>({})); alert(j.error||'삭제 실패'); }
+}
 
-  const name = u.profile?.channel_name || u.profile?.name || '인플루언서';
-  const initial = name[0] || '?';
+// ─── 통계 렌더 ───
+function renderStats(gugus, orders){
+  const paidOrders = orders.filter(o=>!['cancelled','refunded'].includes(o.status));
+  const totalRev   = paidOrders.reduce((s,o)=>s+Math.round(o.total_amount*0.95),0);
+  const avgOrder   = paidOrders.length ? Math.round(totalRev/paidOrders.length) : 0;
 
-  document.getElementById('navAv').textContent = initial;
-  document.getElementById('navName').textContent = name;
+  document.getElementById('statTotalRev').textContent    = fmt(totalRev)+'원';
+  document.getElementById('statTotalOrders').textContent = paidOrders.length+'건';
+  document.getElementById('statTotalGugus').textContent  = gugus.length+'개';
+  document.getElementById('statAvgOrder').textContent    = fmt(avgOrder)+'원';
 
-  // 공구 목록 조회
-  const gugus = await getInfluencerGugus(u.id);
+  // 공구별 매출
+  const rev = {};
+  gugus.forEach(g=>{ rev[g.id]={name:g.title,total:0,count:0}; });
+  paidOrders.forEach(o=>{ if(rev[o.gugu_id]){ rev[o.gugu_id].total+=Math.round(o.total_amount*0.95); rev[o.gugu_id].count+=o.quantity; } });
+  const sorted = Object.values(rev).sort((a,b)=>b.total-a.total);
+  const grand  = sorted.reduce((s,g)=>s+g.total,0);
 
-  const activeGugus = gugus.filter(g=>g.status==='active');
-  const closedGugus = gugus.filter(g=>g.status==='closed');
-  const totalParticipants = gugus.reduce((s,g)=>s+g.current_participants,0);
-  const thisMonthRev = gugus
-    .filter(g=>{ if(!g.created_at)return false; const d=new Date(g.created_at); const now=new Date(); return d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear(); })
-    .reduce((s,g)=>s+Math.round(g.sale_price*g.current_participants*0.95),0);
-  const avgPct = gugus.length ? Math.round(gugus.reduce((s,g)=>s+progressPct(g.current_participants,g.target_participants),0)/gugus.length) : 0;
+  const chart = document.getElementById('statChart');
+  if(!grand){ chart.innerHTML='<div style="text-align:center;padding:24px;color:var(--t2)">매출 데이터가 없어요</div>'; return; }
 
-  document.getElementById('greetingTitle').textContent = `안녕하세요, ${name}님 👋`;
-  document.getElementById('greetingSub').textContent = activeGugus.length ? `현재 ${activeGugus.length}개 공구가 진행 중이에요` : '진행중인 공구가 없어요. 새 공구를 열어보세요!';
-  document.getElementById('kpiRevenue').textContent = Number(thisMonthRev).toLocaleString();
-  document.getElementById('kpiRevenueSub').textContent = '이번달 예상 순수익 (수수료 제외)';
-  document.getElementById('kpiParticipants').textContent = Number(totalParticipants).toLocaleString();
-  document.getElementById('kpiParticipantsSub').textContent = `총 ${gugus.length}개 공구 합산`;
-  document.getElementById('kpiActive').textContent = activeGugus.length;
-  document.getElementById('kpiActiveSub').textContent = `총 ${closedGugus.length}개 완료`;
-  document.getElementById('kpiAvgPct').textContent = avgPct;
-  document.getElementById('kpiAvgPctSub').textContent = '전체 공구 평균 달성률';
+  chart.innerHTML = sorted.map(g=>`
+    <div class="rev-item">
+      <div class="rev-name">${g.name}</div>
+      <div class="rev-bar-bg"><div class="rev-bar-fill" style="width:${grand?Math.round(g.total/grand*100):0}%"></div></div>
+      <div class="rev-amt">+${fmt(g.total)}원<br><span style="font-size:10px;color:var(--t3)">${g.count}개 판매</span></div>
+    </div>`).join('');
+}
 
-  renderGuguTable(gugus);
-  renderBarChart(gugus);
-  await renderOrders(gugus);
-})();
+// ─── 전체 로드 ───
+async function loadAll(){
+  const {data:{session}} = await sb.auth.getSession();
+  if(!session){ location.href='login.html'; return; }
+  token = session.access_token;
+  const u = session.user;
 
-async function renderOrders(gugus) {
-  const orderList = document.getElementById('orderList');
-  const guguRevenueList = document.getElementById('guguRevenueList');
-
-  if(!gugus.length){
-    orderList.innerHTML='<div style="text-align:center;padding:24px;color:var(--t2);font-size:13px">아직 주문이 없어요</div>';
-    guguRevenueList.innerHTML=orderList.innerHTML;
+  // 프로필
+  const {data:profile} = await sb.from('profiles').select('name,channel_name,role').eq('id',u.id).single();
+  if(profile?.role !== 'influencer' && profile?.role !== 'admin'){
+    alert('인플루언서 계정만 접근 가능합니다.');
+    location.href='influencer-apply.html';
     return;
   }
+  const name = profile?.channel_name || profile?.name || '인플루언서';
+  document.getElementById('navAv').textContent  = name[0]||'?';
+  document.getElementById('navName').textContent = name;
 
-  const guguIds = gugus.map(g=>g.id);
-  const {data: orders} = await sb
-    .from('orders')
-    .select('*, gugus(title)')
-    .in('gugu_id', guguIds)
-    .neq('status','cancelled')
-    .order('created_at', {ascending:false})
-    .limit(20);
+  // 공구 로드
+  const {data:gugus} = await sb.from('gugus').select('*').eq('influencer_id',u.id).order('created_at',{ascending:false});
+  myGugus = gugus||[];
 
-  document.getElementById('orderCount').textContent = `총 ${orders?.length||0}건`;
+  // 주문 로드
+  const ordersRes = await fetch('/api/orders/list?role=inf', {headers:{'Authorization':'Bearer '+token}});
+  allOrders = ordersRes.ok ? (await ordersRes.json()).data||[] : [];
 
-  if(!orders||!orders.length){
-    orderList.innerHTML='<div style="text-align:center;padding:24px;color:var(--t2);font-size:13px">아직 주문이 없어요.<br>공구에 소비자가 참여하면 여기에 표시돼요.</div>';
+  // 배지
+  const pendingCnt = allOrders.filter(o=>['paid','preparing'].includes(o.status)).length;
+  const badge = document.getElementById('pendingBadge');
+  badge.textContent = pendingCnt;
+  badge.style.display = pendingCnt>0 ? 'flex' : 'none';
+
+  // 대시보드 KPI
+  const activeGugus = myGugus.filter(g=>g.status==='active');
+  const totalPart   = myGugus.reduce((s,g)=>s+g.current_participants,0);
+  const now = new Date();
+  const monthStart  = new Date(now.getFullYear(),now.getMonth(),1).toISOString();
+  const monthRev    = allOrders.filter(o=>!['cancelled','refunded'].includes(o.status)&&o.created_at>=monthStart)
+                               .reduce((s,o)=>s+Math.round(o.total_amount*0.95),0);
+  const avgPct      = myGugus.length ? Math.round(myGugus.reduce((s,g)=>s+pct(g.current_participants,g.target_participants),0)/myGugus.length) : 0;
+
+  document.getElementById('greetTitle').textContent = `안녕하세요, ${name}님 👋`;
+  document.getElementById('greetSub').textContent   = activeGugus.length ? `현재 ${activeGugus.length}개 공구가 진행 중이에요` : '진행중인 공구가 없어요. 새 공구를 열어보세요!';
+  document.getElementById('kpiRev').textContent     = fmt(monthRev)+'원';
+  document.getElementById('kpiPart').textContent    = fmt(totalPart);
+  document.getElementById('kpiPartSub').textContent = `총 ${myGugus.length}개 공구 합산`;
+  document.getElementById('kpiActive').textContent  = activeGugus.length;
+  document.getElementById('kpiActiveSub').textContent = `완료 ${myGugus.filter(g=>g.status!=='active').length}개`;
+  document.getElementById('kpiAvg').textContent     = avgPct+'%';
+
+  // 최근 주문 5건
+  const recent = allOrders.slice(0,5);
+  const rtbody = document.getElementById('recentOrdersTbody');
+  if(!recent.length){
+    rtbody.innerHTML=`<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--t2)">아직 주문이 없어요</td></tr>`;
   } else {
-    orderList.innerHTML = orders.map(o=>{
-      const d = new Date(o.created_at);
-      const dateStr = `${d.getMonth()+1}.${String(d.getDate()).padStart(2,'0')}`;
-      const statusLabel = {paid:'결제완료',preparing:'준비중',shipped:'배송중',delivered:'배송완료'}[o.status]||o.status;
-      const statusClass = o.status==='delivered'?'ss-done':'ss-pending';
-      return `<div class="settle-item">
-        <div class="settle-date">${dateStr}</div>
-        <div class="settle-info">
-          <div class="settle-name">${o.gugus?.title||'상품'}</div>
-          <div class="settle-detail">수량 ${o.quantity}개 · 순수익 ${Number(Math.round(o.total_amount*0.95)).toLocaleString()}원</div>
-        </div>
-        <div><div class="settle-amount plus">+${Number(o.total_amount).toLocaleString()}원</div></div>
-        <span class="settle-status ${statusClass}">${statusLabel}</span>
-      </div>`;
-    }).join('');
+    rtbody.innerHTML = recent.map(o=>`<tr>
+      <td style="font-size:11px;color:var(--t2)">GG-${o.id.slice(0,8).toUpperCase()}</td>
+      <td>${o.gugus?.title||'—'}</td>
+      <td>${o.profiles?.name||'—'}</td>
+      <td><strong>${fmt(o.total_amount)}원</strong></td>
+      <td><span class="badge ${STATUS_CLS[o.status]||'b-paid'}">${STATUS_LABEL[o.status]||o.status}</span></td>
+      <td style="font-size:11px;color:var(--t2)">${fmtDate(o.created_at)}</td>
+    </tr>`).join('');
   }
 
-  // 공구별 매출 집계
-  const revenueByGugu = {};
-  gugus.forEach(g=>{ revenueByGugu[g.id]={name:g.title, total:0, count:0}; });
-  (orders||[]).forEach(o=>{
-    if(revenueByGugu[o.gugu_id]){
-      revenueByGugu[o.gugu_id].total += Math.round(o.total_amount*0.95);
-      revenueByGugu[o.gugu_id].count += o.quantity;
-    }
-  });
-  const sorted = Object.values(revenueByGugu).sort((a,b)=>b.total-a.total);
-  const grandTotal = sorted.reduce((s,g)=>s+g.total,0);
-  document.getElementById('totalRevLabel').textContent = `총 ${Number(grandTotal).toLocaleString()}원`;
-
-  if(!grandTotal){
-    guguRevenueList.innerHTML='<div style="text-align:center;padding:24px;color:var(--t2);font-size:13px">매출 데이터가 없어요</div>';
-  } else {
-    guguRevenueList.innerHTML = sorted.map(g=>`
-      <div class="settle-item">
-        <div class="settle-info" style="flex:1">
-          <div class="settle-name">${g.name}</div>
-          <div style="height:4px;background:var(--b1);border-radius:2px;margin-top:6px">
-            <div style="height:100%;border-radius:2px;background:linear-gradient(90deg,var(--r),var(--o));width:${grandTotal?Math.round(g.total/grandTotal*100):0}%"></div>
-          </div>
-        </div>
-        <div style="text-align:right;flex-shrink:0;margin-left:12px">
-          <div class="settle-amount plus" style="font-size:13px">+${Number(g.total).toLocaleString()}원</div>
-          <div style="font-size:11px;color:var(--t2)">${g.count}개 판매</div>
-        </div>
-      </div>`).join('');
-  }
+  // 공구 테이블
+  renderGugus(myGugus);
+  // 주문 테이블
+  filterOrders('all', document.querySelector('.stab'));
+  // 통계
+  renderStats(myGugus, allOrders);
 }
+
+loadAll();
 </script>
-
-<!-- 모바일 하단 네비게이션 -->
-<nav class="mob-bottom-nav" id="mobBottomNav">
-  <a class="mbn-item" href="index.html">
-    <span class="mbn-icon">🏠</span>
-    <span class="mbn-label">홈</span>
-  </a>
-  <a class="mbn-item" href="category.html">
-    <span class="mbn-icon">🔍</span>
-    <span class="mbn-label">탐색</span>
-  </a>
-  <a class="mbn-item" href="search.html">
-    <span class="mbn-icon">⌕</span>
-    <span class="mbn-label">검색</span>
-  </a>
-  <a class="mbn-item" href="notifications.html">
-    <span class="mbn-icon" style="position:relative">🔔<span class="mbn-badge"></span></span>
-    <span class="mbn-label">알림</span>
-  </a>
-  <a class="mbn-item" href="mypage.html">
-    <span class="mbn-icon">👤</span>
-    <span class="mbn-label">마이</span>
-  </a>
-</nav>
-<style>
-.mob-bottom-nav {
-  display: none;
-  position: fixed; bottom: 0; left: 0; right: 0;
-  background: rgba(10,10,10,.97);
-  
-  border-top: 1px solid var(--b1, #242428);
-  z-index: 300;
-  padding: 0 8px;
-  padding-bottom: env(safe-area-inset-bottom, 0px);
-}
-.mob-bottom-nav .mbn-item {
-  flex: 1; display: flex; flex-direction: column;
-  align-items: center; gap: 3px;
-  padding: 10px 4px;
-  text-decoration: none; color: var(--t2, #8a8a9a);
-  transition: .15s;
-}
-.mob-bottom-nav .mbn-item:hover,
-.mob-bottom-nav .mbn-item.active { color: var(--r, #FF3B3B); }
-.mbn-icon { font-size: 18px; position: relative; }
-.mbn-label { font-size: 10px; font-weight: 600; white-space: nowrap; }
-.mbn-badge {
-  position: absolute; top: -3px; right: -5px;
-  width: 8px; height: 8px; border-radius: 50%;
-  background: var(--r, #FF3B3B);
-  border: 1.5px solid var(--bg, #0A0A0A);
-}
-
-</style>
 </body>
 </html>
