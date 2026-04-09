@@ -366,5 +366,89 @@ function resetFilters(){document.querySelectorAll('.filter-item input').forEach(
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase.js"></script>
 <script src="js/nav.js"></script>
+<script>
+let searchAllGugus = [];
+
+window.addEventListener('load', () => {
+  initializeSearchPage();
+});
+
+async function initializeSearchPage() {
+  const params = new URLSearchParams(location.search);
+  const query = (params.get('q') || document.getElementById('searchInput')?.value || '').trim();
+  if (document.getElementById('searchInput')) document.getElementById('searchInput').value = query;
+
+  const { data, error } = await sb
+    .from('gugus')
+    .select('*, profiles!gugus_influencer_id_fkey(id, name, channel_name)')
+    .order('created_at', { ascending: false });
+
+  if (error) return;
+
+  searchAllGugus = (data || []).filter(isActiveGugu);
+  runSearch(query);
+}
+
+function doSearch() {
+  const q = document.getElementById('searchInput')?.value.trim() || '';
+  const next = q ? `search.html?q=${encodeURIComponent(q)}` : 'search.html';
+  location.href = next;
+}
+
+function runSearch(query) {
+  const normalized = (query || '').toLowerCase();
+  const results = normalized
+    ? searchAllGugus.filter((gugu) => {
+        const name = getDisplayName(gugu.profiles).toLowerCase();
+        return [
+          gugu.product_name,
+          gugu.description,
+          gugu.category,
+          gugu.brand,
+          name
+        ].some((value) => String(value || '').toLowerCase().includes(normalized));
+      })
+    : searchAllGugus.slice(0, 12);
+
+  const queryEl = document.getElementById('queryText');
+  if (queryEl) queryEl.textContent = query || '전체';
+  const countEl = document.getElementById('resultCount');
+  if (countEl) countEl.textContent = results.length.toLocaleString('ko-KR');
+
+  const grid = document.getElementById('productGrid');
+  const empty = document.getElementById('emptySearch');
+  if (!grid || !empty) return;
+
+  if (!results.length) {
+    grid.innerHTML = '';
+    empty.style.display = 'flex';
+    return;
+  }
+
+  empty.style.display = 'none';
+  grid.innerHTML = results.map((gugu, index) => `
+    <a class="product-card" href="product-detail.html?id=${gugu.id}">
+      <div class="product-card-img">
+        ${gugu.image_url ? `<img src="${escapeHtml(gugu.image_url)}" alt="${escapeHtml(gugu.product_name)}" style="width:100%;height:100%;object-fit:cover">` : ['IMG','NEW','HOT','BAG','LIFE','CARE'][index % 6]}
+        <div class="badge ${progressPct(gugu) >= 80 ? 'badge-live' : 'badge-end'}">${progressPct(gugu) >= 80 ? '마감임박' : '진행중'}</div>
+      </div>
+      <div class="product-card-body" style="padding:12px">
+        <div class="pc-inf">
+          <div class="pc-av" style="background:#e83e8c">${escapeHtml(getAvatarLetter(gugu.profiles))}</div>
+          <span class="pc-inf-name">${escapeHtml(getDisplayName(gugu.profiles))}</span>
+        </div>
+        <div class="pc-name">${escapeHtml(gugu.product_name)}</div>
+        <div class="pc-price-row">
+          <span class="pc-orig">${formatKRW(gugu.original_price)}</span>
+          <span class="pc-sale">${formatKRW(gugu.sale_price)}</span>
+          <span class="pc-disc">-${getDiscountRate(gugu)}%</span>
+        </div>
+        <div class="pc-bar"><div class="pc-fill" style="width:${progressPct(gugu)}%"></div></div>
+        <div class="pc-meta"><span>${Number(gugu.current_participants || 0).toLocaleString('ko-KR')}명</span><span>${escapeHtml(daysLeft(gugu.end_date))}</span></div>
+      </div>
+    </a>`).join('');
+}
+</script>
+<script src="js/page-data.js"></script>
 </body>
 </html>

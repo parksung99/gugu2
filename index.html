@@ -623,5 +623,407 @@ document.querySelectorAll('input[type=text]').forEach(i=>{
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase.js"></script>
 <script src="js/nav.js"></script>
+<script>
+// ── 공통 색상/배경 팔레트 ──
+const _COLORS = ['#e83e8c','#fd7e14','#28a745','#6f42c1','#17a2b8','#dc3545','#6610f2','#0d6efd'];
+const _BKGS   = [['#1a0808','#260d0d'],['#0a0a1a','#0d0d26'],['#0a1400','#0d2000'],['#1a0800','#261200']];
+
+(async function loadIndexData() {
+  // 모든 활성 공구 로드 (참여자 많은 순)
+  const { data: allGugus } = await sb
+    .from('gugus')
+    .select('*, profiles(channel_name, name, role)')
+    .eq('status', 'active')
+    .gte('end_date', new Date().toISOString())
+    .order('current_participants', { ascending: false });
+
+  if (!allGugus || allGugus.length === 0) return; // 데이터 없으면 데모 유지
+
+  // 진행 중 개수 배지 업데이트
+  const badge = document.querySelector('.hero-badge');
+  if (badge) badge.innerHTML = `<span class="live-dot"></span>지금 ${allGugus.length}개 공구 진행 중`;
+
+  // 히어로 카드 — 가장 인기 공구
+  renderHeroCard(allGugus[0]);
+
+  // 인플루언서 스트립
+  renderInfluencerStrip(allGugus);
+
+  // 오늘마감 섹션
+  const todayEnd = new Date(); todayEnd.setHours(23, 59, 59, 999);
+  const flashGugus = allGugus.filter(g => new Date(g.end_date) <= todayEnd).slice(0, 3);
+  if (flashGugus.length > 0) renderFlash(flashGugus);
+
+  // 신규오픈 섹션 — 최신순
+  const { data: newGugus } = await sb
+    .from('gugus')
+    .select('*, profiles(channel_name, name)')
+    .eq('status', 'active')
+    .order('created_at', { ascending: false })
+    .limit(6);
+  if (newGugus && newGugus.length > 0) renderNew(newGugus);
+
+  // 핫한 공구 + 카테고리 필터
+  window._allGugus = allGugus;
+  renderHotGrid('전체');
+
+  document.querySelectorAll('.ct').forEach(btn => {
+    btn.onclick = function() {
+      document.querySelectorAll('.ct').forEach(b => b.classList.remove('on'));
+      this.classList.add('on');
+      renderHotGrid(this.textContent.trim());
+    };
+  });
+})();
+
+function renderHeroCard(g) {
+  const heroCard = document.querySelector('.hero-card');
+  if (!heroCard) return;
+  const p = g.profiles;
+  const name = p?.channel_name || p?.name || '인플루언서';
+  const disc = g.original_price > 0 ? Math.round((1 - g.sale_price / g.original_price) * 100) : 0;
+  const pct  = progressPct(g);
+  const days = daysLeft(g);
+  heroCard.innerHTML = `
+    <div class="hc-img">${g.emoji || '🛍️'}<div class="hc-badge">🔥 ${pct >= 80 ? '마감임박' : '진행중'}</div></div>
+    <div class="hc-body">
+      <div class="hc-inf">
+        <div class="av" style="background:var(--r)">${name[0]||'?'}</div>
+        <div class="hc-name-row">
+          <div class="hc-inf-name">${name}</div>
+          <div class="hc-inf-sub">${g.category||'인플루언서'}</div>
+        </div>
+        <div class="verified">✓ 인증</div>
+      </div>
+      <div class="hc-title">${g.title}</div>
+      <div class="price-row">
+        <span class="p-orig">${formatKRW(g.original_price)}원</span>
+        <span class="p-sale">${formatKRW(g.sale_price)}원</span>
+        <span class="p-disc">-${disc}%</span>
+      </div>
+      <div class="prog-lbl">
+        <span>${(g.current_participants||0).toLocaleString()}명 참여</span>
+        <span style="color:var(--r)">${100-pct}% 남음</span>
+      </div>
+      <div class="prog-bar"><div class="prog-fill" style="width:${pct}%"></div></div>
+      <button class="btn-buy" onclick="location.href='product-detail.html?id=${g.id}'">지금 참여하기 →</button>
+      <div class="timer-row">종료까지 <span class="tc">${days}일</span> 남음</div>
+    </div>`;
+}
+
+function renderInfluencerStrip(gugus) {
+  const strip = document.querySelector('.inf-strip');
+  if (!strip) return;
+  const seen = new Set();
+  const list = [];
+  gugus.forEach(g => {
+    if (g.influencer_id && !seen.has(g.influencer_id)) {
+      seen.add(g.influencer_id);
+      list.push({ id: g.influencer_id, profile: g.profiles });
+    }
+  });
+  if (list.length === 0) return;
+  strip.innerHTML = list.map((inf, i) => {
+    const name = inf.profile?.channel_name || inf.profile?.name || '인플루언서';
+    const isLive = i < 2;
+    return `<a class="inf-chip ${isLive?'live':''}" href="influencer-profile.html?id=${inf.id}">
+      <div class="ic-av"${isLive?' style="border-color:var(--r);background:rgba(255,59,59,.08)"':''}>
+        ${name[0]||'?'}${isLive?'<div class="ic-live"></div>':''}
+      </div>
+      <div class="ic-name"${isLive?' style="color:var(--r)"':''}>${name}</div>
+      <div class="ic-cnt">공구중</div>
+    </a>`;
+  }).join('');
+}
+
+function renderFlash(gugus) {
+  const grid = document.querySelector('.flash-grid');
+  if (!grid) return;
+  grid.innerHTML = gugus.map(g => {
+    const name = g.profiles?.channel_name || g.profiles?.name || '인플루언서';
+    const disc = g.original_price > 0 ? Math.round((1 - g.sale_price / g.original_price) * 100) : 0;
+    const pct  = progressPct(g);
+    return `<a class="flash-card" href="product-detail.html?id=${g.id}">
+      <div class="fc-img">${g.emoji||'🛍️'}</div>
+      <div class="fc-info">
+        <div class="fc-inf">${name} · ${g.category||''}</div>
+        <div class="fc-name">${g.title}</div>
+        <div class="fc-pr">
+          <span class="fc-orig">${formatKRW(g.original_price)}원</span>
+          <span class="fc-sale">${formatKRW(g.sale_price)}원</span>
+          <span class="fc-disc">-${disc}%</span>
+        </div>
+        <div class="fc-bar"><div class="fc-fill" style="width:${pct}%"></div></div>
+        <div class="fc-meta">${(g.current_participants||0).toLocaleString()}명 · ${100-pct}% 남음</div>
+      </div>
+    </a>`;
+  }).join('');
+}
+
+function renderNew(gugus) {
+  const grid = document.querySelector('.new-grid');
+  if (!grid) return;
+  grid.innerHTML = gugus.map(g => {
+    const name = g.profiles?.channel_name || g.profiles?.name || '인플루언서';
+    const disc = g.original_price > 0 ? Math.round((1 - g.sale_price / g.original_price) * 100) : 0;
+    const minAgo = Math.floor((Date.now() - new Date(g.created_at)) / 60000);
+    const timeStr = minAgo < 1 ? '방금 오픈' : minAgo < 60 ? `${minAgo}분 전` : minAgo < 1440 ? `${Math.floor(minAgo/60)}시간 전` : '어제';
+    return `<a class="new-card" href="product-detail.html?id=${g.id}">
+      <div class="nc-img">${g.emoji||'🛍️'}<div class="nc-new">NEW</div></div>
+      <div class="nc-info">
+        <div class="nc-inf">${name} · ${g.category||''}</div>
+        <div class="nc-name">${g.title}</div>
+        <div class="nc-pr">
+          <span class="nc-orig">${formatKRW(g.original_price)}원</span>
+          <span class="nc-sale">${formatKRW(g.sale_price)}원</span>
+          <span class="nc-disc">-${disc}%</span>
+        </div>
+        <div class="nc-time"><span class="nc-dot"></span>${timeStr}</div>
+      </div>
+    </a>`;
+  }).join('');
+}
+
+function renderHotGrid(category) {
+  const grid = document.querySelector('.prod-grid');
+  if (!grid || !window._allGugus) return;
+  let filtered = window._allGugus;
+  if (category !== '전체') filtered = filtered.filter(g => g.category === category);
+  filtered = filtered.slice(0, 8);
+  if (filtered.length === 0) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--t2);padding:40px">이 카테고리에 진행 중인 공구가 없어요</div>';
+    return;
+  }
+  grid.innerHTML = filtered.map((g, i) => {
+    const name = g.profiles?.channel_name || g.profiles?.name || '인플루언서';
+    const disc = g.original_price > 0 ? Math.round((1 - g.sale_price / g.original_price) * 100) : 0;
+    const pct  = progressPct(g);
+    const [bg1, bg2] = _BKGS[i % _BKGS.length];
+    const badgeClass = pct >= 80 ? 'bdg-r' : pct <= 30 ? 'bdg-b' : 'bdg-o';
+    const badgeText  = pct >= 80 ? '마감임박' : pct <= 30 ? 'NEW' : 'BEST';
+    return `<a class="prod-card" href="product-detail.html?id=${g.id}">
+      <div class="pc-img" style="background:linear-gradient(135deg,${bg1},${bg2})">
+        ${g.emoji||'🛍️'}
+        <div class="pc-bdg ${badgeClass}">${badgeText}</div>
+      </div>
+      <div class="pc-body">
+        <div class="pc-inf-row">
+          <div class="pc-av" style="background:${_COLORS[i%_COLORS.length]}">${name[0]||'?'}</div>
+          <span class="pc-inf-name">${name}</span>
+        </div>
+        <div class="pc-name">${g.title}</div>
+        <div class="pc-pr">
+          <span class="pc-orig">${formatKRW(g.original_price)}원</span>
+          <span class="pc-sale">${formatKRW(g.sale_price)}원</span>
+          <span class="pc-disc">-${disc}%</span>
+        </div>
+        <div class="pc-bar"><div class="pc-fill" style="width:${pct}%"></div></div>
+        <div class="pc-meta"><span>${(g.current_participants||0).toLocaleString()}명</span><span>${100-pct}% 남음</span></div>
+      </div>
+    </a>`;
+  }).join('');
+}
+</script>
+<script>
+const HOME_COLORS = ['#e83e8c', '#fd7e14', '#28a745', '#6f42c1', '#17a2b8', '#dc3545', '#6610f2', '#0d6efd'];
+const HOME_BACKGROUNDS = [['#1a0808', '#260d0d'], ['#0a0a1a', '#0d0d26'], ['#0a1400', '#0d2000'], ['#1a0800', '#261200']];
+let homeGugus = [];
+
+window.addEventListener('load', () => {
+  setupHomeFilters();
+  loadIndexDataV2();
+});
+
+async function loadIndexDataV2() {
+  const { data, error } = await sb
+    .from('gugus')
+    .select('*, profiles!gugus_influencer_id_fkey(id, name, channel_name, follower_count, avatar_url)')
+    .order('created_at', { ascending: false });
+
+  if (error) return;
+
+  homeGugus = (data || []).filter(isActiveGugu);
+  if (!homeGugus.length) return;
+
+  const sortedByPopularity = [...homeGugus].sort((a, b) => (b.current_participants || 0) - (a.current_participants || 0));
+  const newest = [...homeGugus].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+  const endingSoon = [...homeGugus]
+    .filter((gugu) => gugu.end_date)
+    .sort((a, b) => new Date(a.end_date) - new Date(b.end_date))
+    .slice(0, 3);
+
+  const badge = document.querySelector('.hero-badge');
+  if (badge) badge.innerHTML = `<span class="live-dot"></span>지금 ${homeGugus.length}개 공구 진행 중`;
+
+  renderHeroCardV2(sortedByPopularity[0]);
+  renderInfluencerStripV2(sortedByPopularity);
+  renderFlashV2(endingSoon.length ? endingSoon : sortedByPopularity.slice(0, 3));
+  renderNewV2(newest.slice(0, 6));
+  renderHotGridV2('전체');
+}
+
+function setupHomeFilters() {
+  document.querySelectorAll('.ct').forEach((btn) => {
+    btn.onclick = () => {
+      document.querySelectorAll('.ct').forEach((item) => item.classList.remove('on'));
+      btn.classList.add('on');
+      renderHotGridV2(btn.textContent.trim());
+    };
+  });
+}
+
+function getHomeEmojiV2(gugu, index = 0) {
+  const fallback = ['IMG', 'NEW', 'HOT', 'BAG', 'LIFE', 'FOOD', 'CARE', 'ITEM'];
+  if (gugu.image_url) {
+    return `<img src="${escapeHtml(gugu.image_url)}" alt="${escapeHtml(gugu.product_name)}" style="width:100%;height:100%;object-fit:cover">`;
+  }
+  return fallback[index % fallback.length];
+}
+
+function renderHeroCardV2(gugu) {
+  const heroCard = document.querySelector('.hero-card');
+  if (!heroCard || !gugu) return;
+
+  const name = getDisplayName(gugu.profiles);
+  const pct = progressPct(gugu);
+
+  heroCard.innerHTML = `
+    <div class="hc-img">${getHomeEmojiV2(gugu)}<div class="hc-badge">${pct >= 80 ? '마감임박' : '진행중'}</div></div>
+    <div class="hc-body">
+      <div class="hc-inf">
+        <div class="av" style="background:var(--r)">${escapeHtml(getAvatarLetter(gugu.profiles))}</div>
+        <div class="hc-name-row">
+          <div class="hc-inf-name">${escapeHtml(name)}</div>
+          <div class="hc-inf-sub">${escapeHtml(gugu.category || '공구 진행중')}</div>
+        </div>
+        <div class="verified">인증</div>
+      </div>
+      <div class="hc-title">${escapeHtml(gugu.product_name)}</div>
+      <div class="price-row">
+        <span class="p-orig">${formatKRW(gugu.original_price)}</span>
+        <span class="p-sale">${formatKRW(gugu.sale_price)}</span>
+        <span class="p-disc">-${getDiscountRate(gugu)}%</span>
+      </div>
+      <div class="prog-lbl">
+        <span>${Number(gugu.current_participants || 0).toLocaleString('ko-KR')}명 참여</span>
+        <span style="color:var(--r)">${pct >= 100 ? '달성 완료' : `${100 - pct}% 남음`}</span>
+      </div>
+      <div class="prog-bar"><div class="prog-fill" style="width:${pct}%"></div></div>
+      <button class="btn-buy" onclick="location.href='product-detail.html?id=${gugu.id}'">지금 참여하기</button>
+      <div class="timer-row">종료까지 <span class="tc">${escapeHtml(daysLeft(gugu.end_date))}</span></div>
+    </div>`;
+}
+
+function renderInfluencerStripV2(gugus) {
+  const strip = document.querySelector('.inf-strip');
+  if (!strip) return;
+
+  const seen = new Set();
+  const items = [];
+  gugus.forEach((gugu) => {
+    if (!gugu.influencer_id || seen.has(gugu.influencer_id)) return;
+    seen.add(gugu.influencer_id);
+    items.push({ id: gugu.influencer_id, profile: gugu.profiles });
+  });
+
+  strip.innerHTML = items.slice(0, 10).map((item, index) => `
+    <a class="inf-chip ${index < 2 ? 'live' : ''}" href="influencer-profile.html?id=${item.id}">
+      <div class="ic-av">${escapeHtml(getAvatarLetter(item.profile))}${index < 2 ? '<div class="ic-live"></div>' : ''}</div>
+      <div class="ic-name">${escapeHtml(getDisplayName(item.profile))}</div>
+      <div class="ic-cnt">공구 보기</div>
+    </a>
+  `).join('');
+}
+
+function renderFlashV2(gugus) {
+  const grid = document.querySelector('.flash-grid');
+  if (!grid) return;
+
+  grid.innerHTML = gugus.map((gugu, index) => `
+    <a class="flash-card" href="product-detail.html?id=${gugu.id}">
+      <div class="fc-img">${getHomeEmojiV2(gugu, index)}</div>
+      <div class="fc-info">
+        <div class="fc-inf">${escapeHtml(getDisplayName(gugu.profiles))} · ${escapeHtml(gugu.category || '공구')}</div>
+        <div class="fc-name">${escapeHtml(gugu.product_name)}</div>
+        <div class="fc-pr">
+          <span class="fc-orig">${formatKRW(gugu.original_price)}</span>
+          <span class="fc-sale">${formatKRW(gugu.sale_price)}</span>
+          <span class="fc-disc">-${getDiscountRate(gugu)}%</span>
+        </div>
+        <div class="fc-bar"><div class="fc-fill" style="width:${progressPct(gugu)}%"></div></div>
+        <div class="fc-meta">${Number(gugu.current_participants || 0).toLocaleString('ko-KR')}명 · ${escapeHtml(daysLeft(gugu.end_date))}</div>
+      </div>
+    </a>
+  `).join('');
+}
+
+function renderNewV2(gugus) {
+  const grid = document.querySelector('.new-grid');
+  if (!grid) return;
+
+  grid.innerHTML = gugus.map((gugu, index) => {
+    const diffMinutes = Math.max(0, Math.floor((Date.now() - new Date(gugu.created_at).getTime()) / 60000));
+    const timeText = diffMinutes < 1 ? '방금 등록' : diffMinutes < 60 ? `${diffMinutes}분 전` : diffMinutes < 1440 ? `${Math.floor(diffMinutes / 60)}시간 전` : `${Math.floor(diffMinutes / 1440)}일 전`;
+    return `
+      <a class="new-card" href="product-detail.html?id=${gugu.id}">
+        <div class="nc-img">${getHomeEmojiV2(gugu, index)}<div class="nc-new">NEW</div></div>
+        <div class="nc-info">
+          <div class="nc-inf">${escapeHtml(getDisplayName(gugu.profiles))} · ${escapeHtml(gugu.category || '공구')}</div>
+          <div class="nc-name">${escapeHtml(gugu.product_name)}</div>
+          <div class="nc-pr">
+            <span class="nc-orig">${formatKRW(gugu.original_price)}</span>
+            <span class="nc-sale">${formatKRW(gugu.sale_price)}</span>
+            <span class="nc-disc">-${getDiscountRate(gugu)}%</span>
+          </div>
+          <div class="nc-time"><span class="nc-dot"></span>${escapeHtml(timeText)}</div>
+        </div>
+      </a>`;
+  }).join('');
+}
+
+function renderHotGridV2(category) {
+  const grid = document.querySelector('.prod-grid');
+  if (!grid) return;
+
+  let filtered = [...homeGugus];
+  if (category !== '전체') filtered = filtered.filter((gugu) => gugu.category === category);
+  filtered = filtered.sort((a, b) => (b.current_participants || 0) - (a.current_participants || 0)).slice(0, 8);
+
+  if (!filtered.length) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--t2);padding:40px">이 카테고리에는 진행 중인 공구가 아직 없어요.</div>';
+    return;
+  }
+
+  grid.innerHTML = filtered.map((gugu, index) => {
+    const pct = progressPct(gugu);
+    const [bg1, bg2] = HOME_BACKGROUNDS[index % HOME_BACKGROUNDS.length];
+    const badgeText = pct >= 80 ? '마감임박' : index < 2 ? 'BEST' : 'NEW';
+    const badgeClass = pct >= 80 ? 'bdg-r' : index < 2 ? 'bdg-o' : 'bdg-b';
+
+    return `
+      <a class="prod-card" href="product-detail.html?id=${gugu.id}">
+        <div class="pc-img" style="background:linear-gradient(135deg,${bg1},${bg2})">
+          ${getHomeEmojiV2(gugu, index)}
+          <div class="pc-bdg ${badgeClass}">${badgeText}</div>
+        </div>
+        <div class="pc-body">
+          <div class="pc-inf-row">
+            <div class="pc-av" style="background:${HOME_COLORS[index % HOME_COLORS.length]}">${escapeHtml(getAvatarLetter(gugu.profiles))}</div>
+            <span class="pc-inf-name">${escapeHtml(getDisplayName(gugu.profiles))}</span>
+          </div>
+          <div class="pc-name">${escapeHtml(gugu.product_name)}</div>
+          <div class="pc-pr">
+            <span class="pc-orig">${formatKRW(gugu.original_price)}</span>
+            <span class="pc-sale">${formatKRW(gugu.sale_price)}</span>
+            <span class="pc-disc">-${getDiscountRate(gugu)}%</span>
+          </div>
+          <div class="pc-bar"><div class="pc-fill" style="width:${pct}%"></div></div>
+          <div class="pc-meta"><span>${Number(gugu.current_participants || 0).toLocaleString('ko-KR')}명</span><span>${escapeHtml(daysLeft(gugu.end_date))}</span></div>
+        </div>
+      </a>`;
+  }).join('');
+}
+</script>
+<script src="js/page-data.js"></script>
 </body>
 </html>

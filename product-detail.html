@@ -499,5 +499,174 @@ async function doBuy(){
   setTimeout(()=>location.href='order-complete.html', 1500);
 }
 </script>
+<script src="js/nav.js"></script>
+<script>
+let currentGugu = null;
+
+window.addEventListener('load', () => {
+  loadProductDetail();
+});
+
+async function loadProductDetail() {
+  if (!GUGU_ID) return;
+
+  const { data, error } = await sb
+    .from('gugus')
+    .select('*, profiles!gugus_influencer_id_fkey(id, name, channel_name, follower_count, avatar_url)')
+    .eq('id', GUGU_ID)
+    .single();
+
+  if (error || !data) return;
+
+  currentGugu = data;
+  price = Number(data.sale_price || 0);
+  changeQty(0);
+  renderProductDetailV2(data);
+  loadRelatedGugusV2(data.influencer_id, data.id);
+}
+
+function renderProductDetailV2(gugu) {
+  const profile = gugu.profiles || {};
+  const pct = progressPct(gugu);
+  const name = getDisplayName(profile);
+
+  document.title = `GUGU. ${gugu.product_name}`;
+  const bcCur = document.querySelector('.bc-cur');
+  if (bcCur) bcCur.textContent = gugu.product_name;
+  const categoryLink = document.querySelectorAll('.breadcrumb a')[1];
+  if (categoryLink) categoryLink.textContent = gugu.category || '카테고리';
+
+  const mainImage = document.querySelector('.pd-img-main');
+  if (mainImage) {
+    mainImage.innerHTML = gugu.image_url
+      ? `<img src="${escapeHtml(gugu.image_url)}" alt="${escapeHtml(gugu.product_name)}" style="width:100%;height:100%;object-fit:cover">`
+      : 'IMG';
+  }
+
+  const titleEl = document.querySelector('.pd-title');
+  if (titleEl) titleEl.textContent = gugu.product_name;
+  const origEl = document.querySelector('.pd-orig');
+  if (origEl) origEl.textContent = formatKRW(gugu.original_price);
+  const saleEl = document.querySelector('.pd-sale');
+  if (saleEl) saleEl.textContent = formatKRW(gugu.sale_price);
+  const discEl = document.querySelector('.pd-disc');
+  if (discEl) discEl.textContent = `-${getDiscountRate(gugu)}%`;
+
+  const pdAv = document.querySelector('.pd-av');
+  if (pdAv) pdAv.textContent = getAvatarLetter(profile);
+  const infName = document.querySelector('.pd-inf-name');
+  if (infName) infName.textContent = name;
+  const infSub = document.querySelector('.pd-inf-sub');
+  if (infSub) infSub.textContent = `${profile.follower_count ? `팔로워 ${Number(profile.follower_count).toLocaleString('ko-KR')}명` : '인플루언서'} · ${gugu.category || '공구'}`;
+
+  const progRow = document.querySelector('.pd-prog-row');
+  if (progRow) progRow.innerHTML = `<span>${Number(gugu.current_participants || 0).toLocaleString('ko-KR')}명 참여</span><span style="color:var(--r);font-weight:600">${escapeHtml(daysLeft(gugu.end_date))}</span>`;
+  const progFill = document.querySelector('.pd-prog-fill');
+  if (progFill) progFill.style.width = `${pct}%`;
+  const viewers = document.querySelector('.pd-viewers');
+  if (viewers) viewers.innerHTML = `지금 <span>${Math.max(12, Math.round((gugu.current_participants || 0) / 5))}명</span>이 이 공구를 보고 있어요`;
+
+  const descRoot = document.querySelector('#tab-desc .prod-desc');
+  if (descRoot) {
+    descRoot.innerHTML = `
+      <h4>상품 소개</h4>
+      <p>${escapeHtml(gugu.description || '인플루언서가 직접 큐레이션한 공구 상품입니다.')}</p>
+      <h4>상품 정보</h4>
+      <div class="desc-list">
+        <div class="dl-item"><div class="dl-dot"></div>카테고리: ${escapeHtml(gugu.category || '미정')}</div>
+        <div class="dl-item"><div class="dl-dot"></div>브랜드: ${escapeHtml(gugu.brand || '브랜드 정보 준비중')}</div>
+        <div class="dl-item"><div class="dl-dot"></div>최소 주문 수량: ${Number(gugu.min_per_person || 1)}개</div>
+        <div class="dl-item"><div class="dl-dot"></div>최대 주문 수량: ${Number(gugu.max_per_person || 3)}개</div>
+      </div>`;
+  }
+
+  const deliveryValues = document.querySelectorAll('.pd-del-v');
+  if (deliveryValues[0]) deliveryValues[0].textContent = gugu.shipping_days || '공구 마감 후 순차 발송';
+  if (deliveryValues[1]) deliveryValues[1].textContent = Number(gugu.shipping_cost || 0) === 0 ? '무료배송' : formatKRW(gugu.shipping_cost);
+  if (deliveryValues[2]) deliveryValues[2].textContent = gugu.return_policy || '수령 후 7일 이내';
+}
+
+async function loadRelatedGugusV2(influencerId, excludeId) {
+  const { data } = await sb
+    .from('gugus')
+    .select('id, product_name, sale_price, original_price, image_url')
+    .eq('influencer_id', influencerId)
+    .neq('id', excludeId)
+    .order('created_at', { ascending: false })
+    .limit(4);
+
+  const grid = document.querySelector('.related-grid');
+  if (!grid || !data) return;
+
+  grid.innerHTML = data.map((gugu, index) => `
+    <a class="rc" href="product-detail.html?id=${gugu.id}">
+      <div class="rc-img">${gugu.image_url ? `<img src="${escapeHtml(gugu.image_url)}" alt="${escapeHtml(gugu.product_name)}" style="width:100%;height:100%;object-fit:cover">` : ['IMG','NEW','HOT','BAG'][index % 4]}</div>
+      <div class="rc-body">
+        <div class="rc-name">${escapeHtml(gugu.product_name)}</div>
+        <div class="rc-price">${formatKRW(gugu.sale_price)} <span class="rc-disc">-${getDiscountRate(gugu)}%</span></div>
+      </div>
+    </a>`).join('');
+}
+
+async function doBuy() {
+  const btn = document.getElementById('buyBtn');
+  const err = document.getElementById('buyErr');
+  const ok = document.getElementById('buyOk');
+  err.style.display = 'none';
+  ok.style.display = 'none';
+
+  const user = await getCurrentUser();
+  if (!user) {
+    err.style.display = 'block';
+    err.innerHTML = '구매하려면 로그인이 필요해요. <a href="login.html" style="color:var(--r);font-weight:700">로그인하기</a>';
+    return;
+  }
+
+  if (user.profile?.role === 'influencer') {
+    err.style.display = 'block';
+    err.textContent = '인플루언서 계정으로는 구매할 수 없어요.';
+    return;
+  }
+
+  if (!currentGugu) {
+    err.style.display = 'block';
+    err.textContent = '상품 정보를 불러오지 못했어요.';
+    return;
+  }
+
+  const qtyValue = parseInt(document.getElementById('qty')?.textContent || '1', 10) || 1;
+  const totalAmount = Number(currentGugu.sale_price || 0) * qtyValue;
+
+  btn.textContent = '주문 처리 중...';
+  btn.disabled = true;
+
+  const { error } = await sb.from('orders').insert({
+    gugu_id: currentGugu.id,
+    consumer_id: user.id,
+    quantity: qtyValue,
+    unit_price: Number(currentGugu.sale_price || 0),
+    total_amount: totalAmount,
+    status: 'paid'
+  });
+
+  if (error) {
+    err.style.display = 'block';
+    err.textContent = `주문 중 오류가 발생했어요: ${error.message}`;
+    btn.textContent = '지금 공구 참여하기 🛍️';
+    btn.disabled = false;
+    return;
+  }
+
+  await sb.rpc('increment_participants', { p_gugu_id: currentGugu.id });
+
+  ok.style.display = 'block';
+  ok.textContent = '공구 참여가 완료됐어요. 마이페이지에서 주문 상태를 확인할 수 있어요.';
+  btn.textContent = '주문 완료!';
+  btn.disabled = false;
+  btn.style.background = 'var(--g)';
+  setTimeout(() => location.href = 'order-complete.html', 1200);
+}
+</script>
+<script src="js/page-data.js"></script>
 </body>
 </html>

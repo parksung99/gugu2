@@ -317,5 +317,118 @@ document.querySelectorAll('.profile-tab').forEach(t=>t.addEventListener('click',
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase.js"></script>
 <script src="js/nav.js"></script>
+<script>
+window.addEventListener('load', () => {
+  initializeInfluencerProfile();
+});
+
+async function initializeInfluencerProfile() {
+  const params = new URLSearchParams(location.search);
+  const influencerId = params.get('id');
+  if (!influencerId) return;
+
+  const [{ data: profile }, { data: gugus }] = await Promise.all([
+    sb.from('profiles').select('*').eq('id', influencerId).single(),
+    sb.from('gugus').select('*').eq('influencer_id', influencerId).order('created_at', { ascending: false })
+  ]);
+
+  if (!profile) return;
+
+  renderInfluencerProfile(profile, gugus || []);
+}
+
+function renderInfluencerProfile(profile, gugus) {
+  const activeGugus = gugus.filter(isActiveGugu);
+  const closedGugus = gugus.filter((gugu) => !isActiveGugu(gugu));
+  const totalParticipants = gugus.reduce((sum, gugu) => sum + Number(gugu.current_participants || 0), 0);
+  const avgProgress = gugus.length ? Math.round(gugus.reduce((sum, gugu) => sum + progressPct(gugu), 0) / gugus.length) : 0;
+
+  document.title = `GUGU. ${getDisplayName(profile)} 프로필`;
+  const heroName = document.querySelector('.profile-name');
+  if (heroName) {
+    heroName.innerHTML = `${escapeHtml(getDisplayName(profile))} <div class="verified">✓</div> ${activeGugus.length ? '<span class="live-now"><span class="dot"></span> 공구 진행중</span>' : ''}`;
+  }
+
+  const heroHandle = document.querySelector('.profile-handle');
+  if (heroHandle) heroHandle.textContent = `${profile.channel_url || '@gugu_influencer'} · ${profile.channel_name ? `${profile.channel_name} 운영자` : '인플루언서'}`;
+  const avatar = document.querySelector('.profile-av');
+  if (avatar) avatar.textContent = getAvatarLetter(profile);
+
+  const metaStats = document.querySelectorAll('.meta-stat .n');
+  if (metaStats[0]) metaStats[0].textContent = profile.follower_count ? Number(profile.follower_count).toLocaleString('ko-KR') : '-';
+  if (metaStats[1]) metaStats[1].textContent = activeGugus.length.toLocaleString('ko-KR');
+  if (metaStats[2]) metaStats[2].textContent = avgProgress ? `${avgProgress}%` : '-';
+  if (metaStats[3]) metaStats[3].textContent = totalParticipants.toLocaleString('ko-KR');
+
+  const tags = document.querySelector('.profile-tags');
+  if (tags) {
+    const categories = [...new Set(gugus.map((gugu) => gugu.category).filter(Boolean))].slice(0, 5);
+    tags.innerHTML = categories.length
+      ? categories.map((category) => `<span class="tag"># ${escapeHtml(category)}</span>`).join('')
+      : '<span class="tag"># 공구</span>';
+  }
+
+  renderInfluencerGugus(activeGugus, closedGugus);
+
+  const statItems = document.querySelectorAll('.stat-item .n');
+  if (statItems[0]) statItems[0].textContent = `${avgProgress}%`;
+  if (statItems[1]) statItems[1].textContent = `${gugus.length}개`;
+  if (statItems[2]) statItems[2].textContent = `${activeGugus.length}개`;
+  if (statItems[3]) statItems[3].textContent = `${totalParticipants.toLocaleString('ko-KR')}명`;
+
+  const recentList = document.querySelector('.recent-list');
+  if (recentList) {
+    recentList.innerHTML = closedGugus.slice(0, 3).map((gugu, index) => `
+      <div class="recent-item">
+        <div class="recent-emoji">${gugu.image_url ? `<img src="${escapeHtml(gugu.image_url)}" alt="${escapeHtml(gugu.product_name)}" style="width:100%;height:100%;object-fit:cover;border-radius:6px">` : ['IMG','NEW','HOT'][index % 3]}</div>
+        <div class="recent-info">
+          <div class="name">${escapeHtml(gugu.product_name)}</div>
+          <div class="price">${formatKRW(gugu.sale_price)} · ${Number(gugu.current_participants || 0).toLocaleString('ko-KR')}명 참여</div>
+        </div>
+      </div>`).join('') || '<div style="color:var(--t2);font-size:12px">아직 종료된 공구가 없어요.</div>';
+  }
+}
+
+function renderInfluencerGugus(activeGugus, closedGugus) {
+  const tabs = document.querySelectorAll('.profile-tab');
+  const grid = document.querySelector('.pg-grid');
+  if (!grid) return;
+
+  const render = (list, done = false) => {
+    grid.innerHTML = list.map((gugu, index) => `
+      <a class="pc" href="product-detail.html?id=${gugu.id}">
+        <div class="pc-img">
+          ${gugu.image_url ? `<img src="${escapeHtml(gugu.image_url)}" alt="${escapeHtml(gugu.product_name)}" style="width:100%;height:100%;object-fit:cover">` : ['IMG','NEW','HOT','BAG'][index % 4]}
+          <div class="pc-badge ${done ? 'done' : ''}">${done ? '종료' : '진행중'}</div>
+        </div>
+        <div class="pc-body" style="padding:12px">
+          <div class="pc-name">${escapeHtml(gugu.product_name)}</div>
+          <div class="pc-price-row">
+            <span class="pc-orig">${formatKRW(gugu.original_price)}</span>
+            <span class="pc-sale">${formatKRW(gugu.sale_price)}</span>
+            <span class="pc-disc">-${getDiscountRate(gugu)}%</span>
+          </div>
+          <div class="pc-bar"><div class="pc-fill" style="width:${done ? 100 : progressPct(gugu)}%"></div></div>
+          <div class="pc-meta"><span>${Number(gugu.current_participants || 0).toLocaleString('ko-KR')}명</span><span>${done ? '종료' : escapeHtml(daysLeft(gugu.end_date))}</span></div>
+        </div>
+      </a>`).join('') || '<div style="grid-column:1/-1;color:var(--t2);padding:32px 0">표시할 공구가 없어요.</div>';
+  };
+
+  render(activeGugus);
+
+  tabs.forEach((tab, index) => {
+    tab.onclick = () => {
+      tabs.forEach((item) => item.classList.remove('active'));
+      tab.classList.add('active');
+      if (index === 0) render(activeGugus);
+      if (index === 1) render(closedGugus, true);
+      if (index === 2) {
+        grid.innerHTML = '<div style="grid-column:1/-1;color:var(--t2);padding:32px 0">후기 기능은 다음 단계에서 연결할게요.</div>';
+      }
+    };
+  });
+}
+</script>
+<script src="js/page-data.js"></script>
 </body>
 </html>

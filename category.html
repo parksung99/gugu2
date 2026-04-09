@@ -241,5 +241,96 @@ document.querySelectorAll('.sub-tab').forEach(t=>t.addEventListener('click',func
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase.js"></script>
 <script src="js/nav.js"></script>
+<script>
+let categoryAllGugus = [];
+let categoryCurrent = '전체';
+
+window.addEventListener('load', () => {
+  initializeCategoryPage();
+});
+
+async function initializeCategoryPage() {
+  const params = new URLSearchParams(location.search);
+  categoryCurrent = params.get('category') || '뷰티';
+
+  const { data, error } = await sb
+    .from('gugus')
+    .select('*, profiles!gugus_influencer_id_fkey(id, name, channel_name)')
+    .order('created_at', { ascending: false });
+
+  if (error) return;
+
+  categoryAllGugus = (data || []).filter(isActiveGugu);
+  setupCategoryTabs();
+  renderCategoryPage();
+}
+
+function setupCategoryTabs() {
+  document.querySelectorAll('.sub-tab').forEach((tab) => {
+    tab.onclick = () => {
+      document.querySelectorAll('.sub-tab').forEach((item) => item.classList.remove('active'));
+      tab.classList.add('active');
+      categoryCurrent = tab.textContent.trim();
+      renderCategoryPage();
+    };
+  });
+
+  const matchingTab = [...document.querySelectorAll('.sub-tab')].find((tab) => tab.textContent.trim() === categoryCurrent);
+  if (matchingTab) {
+    document.querySelectorAll('.sub-tab').forEach((item) => item.classList.remove('active'));
+    matchingTab.classList.add('active');
+  }
+}
+
+function renderCategoryPage() {
+  const filtered = categoryCurrent === '전체'
+    ? categoryAllGugus
+    : categoryAllGugus.filter((gugu) => gugu.category === categoryCurrent);
+
+  const titleEl = document.querySelector('.cat-title');
+  if (titleEl) titleEl.textContent = categoryCurrent;
+
+  const countEls = document.querySelectorAll('.result-count strong, .cat-count strong');
+  countEls.forEach((el) => {
+    el.textContent = filtered.length.toLocaleString('ko-KR');
+  });
+
+  const grid = document.querySelector('.product-grid');
+  if (!grid) return;
+
+  if (!filtered.length) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--t2);padding:48px 0">이 카테고리에는 현재 진행 중인 공구가 없어요.</div>';
+    return;
+  }
+
+  grid.innerHTML = filtered.map((gugu, index) => {
+    const pct = progressPct(gugu);
+    const badgeClass = pct >= 80 ? 'badge-live' : pct >= 50 ? 'badge-hot' : 'badge-end';
+    const badgeText = pct >= 80 ? '마감임박' : pct >= 50 ? 'HOT' : '진행중';
+    return `
+      <a class="product-card" href="product-detail.html?id=${gugu.id}">
+        <div class="product-card-img">
+          ${gugu.image_url ? `<img src="${escapeHtml(gugu.image_url)}" alt="${escapeHtml(gugu.product_name)}" style="width:100%;height:100%;object-fit:cover">` : ['IMG','NEW','HOT','BAG','LIFE','CARE'][index % 6]}
+          <div class="badge ${badgeClass}">${badgeText}</div>
+        </div>
+        <div class="product-card-body" style="padding:12px">
+          <div class="pc-inf">
+            <div class="pc-av" style="background:#e83e8c">${escapeHtml(getAvatarLetter(gugu.profiles))}</div>
+            <span class="pc-inf-name">${escapeHtml(getDisplayName(gugu.profiles))}</span>
+          </div>
+          <div class="pc-name">${escapeHtml(gugu.product_name)}</div>
+          <div class="pc-price-row">
+            <span class="pc-orig">${formatKRW(gugu.original_price)}</span>
+            <span class="pc-sale">${formatKRW(gugu.sale_price)}</span>
+            <span class="pc-disc">-${getDiscountRate(gugu)}%</span>
+          </div>
+          <div class="pc-bar"><div class="pc-fill" style="width:${pct}%"></div></div>
+          <div class="pc-meta"><span>${Number(gugu.current_participants || 0).toLocaleString('ko-KR')}명</span><span>${escapeHtml(daysLeft(gugu.end_date))}</span></div>
+        </div>
+      </a>`;
+  }).join('');
+}
+</script>
+<script src="js/page-data.js"></script>
 </body>
 </html>
