@@ -5,7 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>GUGU. — 인플루언서 공구 플랫폼</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800;900&family=Bebas+Neue&display=swap" rel="stylesheet">
-<script>document.documentElement.classList.add('sb-loading');</script>
+<script>
+document.documentElement.classList.add('sb-loading');
+document.documentElement.classList.add('home-db-loading');
+</script>
 <style>
 /* ── RESET & VARIABLES ── */
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -43,9 +46,20 @@ nav {position:fixed;top:0;left:0;right:0;z-index:200;background:rgba(10,10,10,.9
 .notif-btn .nb{position:absolute;top:5px;right:5px;width:6px;height:6px;border-radius:50%;background:var(--r);border:1.5px solid var(--bg)}
 html.sb-loading .hero-card,
 html.sb-loading .inf-strip,
+html.sb-loading .flash-banner,
 html.sb-loading .flash-grid,
 html.sb-loading .new-grid,
-html.sb-loading .prod-grid{visibility:hidden}
+html.sb-loading .prod-grid,
+html.sb-loading .cat-showcase,
+html.sb-loading .feed-grid{visibility:hidden}
+html.home-db-loading .hero-card,
+html.home-db-loading .inf-strip,
+html.home-db-loading .flash-banner,
+html.home-db-loading .flash-grid,
+html.home-db-loading .new-grid,
+html.home-db-loading .prod-grid,
+html.home-db-loading .cat-showcase,
+html.home-db-loading .feed-grid{visibility:hidden}
 html.nav-loading #navLoginBtn,
 html.nav-loading #navSignupBtn,
 html.nav-loading #navUserArea{visibility:hidden}
@@ -1035,5 +1049,311 @@ function renderHotGridV2(category) {
 }
 </script>
 <script src="js/page-data.js"></script>
+<script>
+if (location.pathname.endsWith('index.html') || location.pathname === '/' || location.pathname === '') {
+  const HOME_DB_COLORS = ['#e83e8c', '#fd7e14', '#28a745', '#6f42c1', '#17a2b8', '#dc3545', '#6610f2', '#0d6efd'];
+  const HOME_DB_BACKGROUNDS = [['#1a0808', '#260d0d'], ['#0a0a1a', '#0d0d26'], ['#0a1400', '#0d2000'], ['#1a0800', '#261200']];
+  const HOME_DB_FALLBACKS = ['IMG', 'NEW', 'HOT', 'BAG', 'LIFE', 'FOOD', 'CARE', 'ITEM'];
+  let HOME_DB_GUGUS = [];
+
+  const homeDbTitle = (gugu) => gugu?.title || gugu?.product_name || '상품';
+  const homeDbCategory = (gugu) => gugu?.category || '기타';
+  const homeDbToday = () => {
+    const now = new Date();
+    const y = now.getFullYear();
+    const m = String(now.getMonth() + 1).padStart(2, '0');
+    const d = String(now.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  };
+  const homeDbMedia = (gugu, index = 0) => {
+    if (gugu?.image_url) {
+      return `<img src="${escapeHtml(gugu.image_url)}" alt="${escapeHtml(homeDbTitle(gugu))}" style="width:100%;height:100%;object-fit:cover">`;
+    }
+    return escapeHtml(gugu?.emoji || HOME_DB_FALLBACKS[index % HOME_DB_FALLBACKS.length]);
+  };
+  const homeDbRelativeTime = (createdAt) => {
+    const diffMinutes = Math.max(0, Math.floor((Date.now() - new Date(createdAt).getTime()) / 60000));
+    if (diffMinutes < 1) return '방금 등록';
+    if (diffMinutes < 60) return `${diffMinutes}분 전`;
+    if (diffMinutes < 1440) return `${Math.floor(diffMinutes / 60)}시간 전`;
+    return `${Math.floor(diffMinutes / 1440)}일 전`;
+  };
+
+  function homeDbStartCountdown() {
+    const h = document.getElementById('fh');
+    const m = document.getElementById('fm');
+    const s = document.getElementById('fs');
+    if (!h || !m || !s) return;
+    const tick = () => {
+      const now = new Date();
+      const tomorrow = new Date(now);
+      tomorrow.setHours(24, 0, 0, 0);
+      const diff = Math.max(0, tomorrow.getTime() - now.getTime());
+      const hh = Math.floor(diff / 3600000);
+      const mm = Math.floor((diff % 3600000) / 60000);
+      const ss = Math.floor((diff % 60000) / 1000);
+      h.textContent = String(hh).padStart(2, '0');
+      m.textContent = String(mm).padStart(2, '0');
+      s.textContent = String(ss).padStart(2, '0');
+    };
+    tick();
+    window.__guguTodayCountdown && clearInterval(window.__guguTodayCountdown);
+    window.__guguTodayCountdown = setInterval(tick, 1000);
+  }
+
+  function homeDbRenderHero(gugu) {
+    const heroCard = document.querySelector('.hero-card');
+    if (!heroCard || !gugu) return;
+    const pct = progressPct(gugu);
+    heroCard.innerHTML = `
+      <div class="hc-img">${homeDbMedia(gugu, 0)}<div class="hc-badge">${pct >= 80 ? '마감임박' : '진행중'}</div></div>
+      <div class="hc-body">
+        <div class="hc-inf">
+          <div class="av" style="background:var(--r)">${escapeHtml(getAvatarLetter(gugu.profiles))}</div>
+          <div class="hc-name-row">
+            <div class="hc-inf-name">${escapeHtml(getDisplayName(gugu.profiles))}</div>
+            <div class="hc-inf-sub">${escapeHtml(homeDbCategory(gugu))}</div>
+          </div>
+          <div class="verified">인증</div>
+        </div>
+        <div class="hc-title">${escapeHtml(homeDbTitle(gugu))}</div>
+        <div class="price-row">
+          <span class="p-orig">${formatKRW(gugu.original_price)}</span>
+          <span class="p-sale">${formatKRW(gugu.sale_price)}</span>
+          <span class="p-disc">-${getDiscountRate(gugu)}%</span>
+        </div>
+        <div class="prog-lbl">
+          <span>${Number(gugu.current_participants || 0).toLocaleString('ko-KR')}명 참여</span>
+          <span style="color:var(--r)">${escapeHtml(daysLeft(gugu.end_date))}</span>
+        </div>
+        <div class="prog-bar"><div class="prog-fill" style="width:${pct}%"></div></div>
+        <button class="btn-buy" onclick="location.href='product-detail.html?id=${gugu.id}'">지금 참여하기</button>
+        <div class="timer-row">종료까지 <span class="tc">${escapeHtml(daysLeft(gugu.end_date))}</span></div>
+      </div>`;
+  }
+
+  function homeDbRenderInfluencers(gugus) {
+    const strip = document.querySelector('.inf-strip');
+    if (!strip) return;
+    const seen = new Set();
+    const items = [];
+    gugus.forEach((gugu) => {
+      if (!gugu.influencer_id || seen.has(gugu.influencer_id)) return;
+      seen.add(gugu.influencer_id);
+      items.push({ id: gugu.influencer_id, profile: gugu.profiles });
+    });
+    strip.innerHTML = items.slice(0, 10).map((item, index) => `
+      <a class="inf-chip ${index < 2 ? 'live' : ''}" href="influencer-profile.html?id=${item.id}">
+        <div class="ic-av">${escapeHtml(getAvatarLetter(item.profile))}${index < 2 ? '<div class="ic-live"></div>' : ''}</div>
+        <div class="ic-name">${escapeHtml(getDisplayName(item.profile))}</div>
+        <div class="ic-cnt">${Number(item.profile?.follower_count || 0).toLocaleString('ko-KR')}명</div>
+      </a>
+    `).join('') || '<div style="color:var(--t2);padding:12px 0">진행 중인 인플루언서가 아직 없어요.</div>';
+  }
+
+  function homeDbRenderFlash(gugus) {
+    const banner = document.querySelector('.flash-banner');
+    const grid = document.querySelector('.flash-grid');
+    const section = grid?.closest('.sec');
+    if (!banner || !grid || !section) return;
+    if (!gugus.length) {
+      banner.style.display = 'none';
+      section.style.display = 'none';
+      return;
+    }
+    banner.style.display = 'flex';
+    section.style.display = '';
+    homeDbStartCountdown();
+    grid.innerHTML = gugus.map((gugu, index) => `
+      <a class="flash-card" href="product-detail.html?id=${gugu.id}">
+        <div class="fc-img">${homeDbMedia(gugu, index)}</div>
+        <div class="fc-info">
+          <div class="fc-inf">${escapeHtml(getDisplayName(gugu.profiles))} · ${escapeHtml(homeDbCategory(gugu))}</div>
+          <div class="fc-name">${escapeHtml(homeDbTitle(gugu))}</div>
+          <div class="fc-pr">
+            <span class="fc-orig">${formatKRW(gugu.original_price)}</span>
+            <span class="fc-sale">${formatKRW(gugu.sale_price)}</span>
+            <span class="fc-disc">-${getDiscountRate(gugu)}%</span>
+          </div>
+          <div class="fc-bar"><div class="fc-fill" style="width:${progressPct(gugu)}%"></div></div>
+          <div class="fc-meta">${Number(gugu.current_participants || 0).toLocaleString('ko-KR')}명 · 오늘 마감</div>
+        </div>
+      </a>
+    `).join('');
+  }
+
+  function homeDbRenderNew(gugus) {
+    const grid = document.querySelector('.new-grid');
+    if (!grid) return;
+    grid.innerHTML = gugus.map((gugu, index) => `
+      <a class="new-card" href="product-detail.html?id=${gugu.id}">
+        <div class="nc-img">${homeDbMedia(gugu, index)}<div class="nc-new">NEW</div></div>
+        <div class="nc-info">
+          <div class="nc-inf">${escapeHtml(getDisplayName(gugu.profiles))} · ${escapeHtml(homeDbCategory(gugu))}</div>
+          <div class="nc-name">${escapeHtml(homeDbTitle(gugu))}</div>
+          <div class="nc-pr">
+            <span class="nc-orig">${formatKRW(gugu.original_price)}</span>
+            <span class="nc-sale">${formatKRW(gugu.sale_price)}</span>
+            <span class="nc-disc">-${getDiscountRate(gugu)}%</span>
+          </div>
+          <div class="nc-time"><span class="nc-dot"></span>${escapeHtml(homeDbRelativeTime(gugu.created_at))}</div>
+        </div>
+      </a>
+    `).join('') || '<div style="grid-column:1/-1;text-align:center;color:var(--t2);padding:40px">새로 등록된 공구가 아직 없어요.</div>';
+  }
+
+  function homeDbRenderHot(category) {
+    const grid = document.querySelector('.prod-grid');
+    if (!grid) return;
+    let filtered = [...HOME_DB_GUGUS];
+    if (category && category !== '전체') {
+      filtered = filtered.filter((gugu) => homeDbCategory(gugu) === category);
+    }
+    filtered = filtered.sort((a, b) => (b.current_participants || 0) - (a.current_participants || 0)).slice(0, 8);
+    grid.innerHTML = filtered.map((gugu, index) => {
+      const pct = progressPct(gugu);
+      const [bg1, bg2] = HOME_DB_BACKGROUNDS[index % HOME_DB_BACKGROUNDS.length];
+      const badgeText = pct >= 80 ? '마감임박' : index < 2 ? 'BEST' : 'LIVE';
+      const badgeClass = pct >= 80 ? 'bdg-r' : index < 2 ? 'bdg-o' : 'bdg-b';
+      return `
+        <a class="prod-card" href="product-detail.html?id=${gugu.id}">
+          <div class="pc-img" style="background:linear-gradient(135deg,${bg1},${bg2})">
+            ${homeDbMedia(gugu, index)}
+            <div class="pc-bdg ${badgeClass}">${badgeText}</div>
+          </div>
+          <div class="pc-body">
+            <div class="pc-inf-row">
+              <div class="pc-av" style="background:${HOME_DB_COLORS[index % HOME_DB_COLORS.length]}">${escapeHtml(getAvatarLetter(gugu.profiles))}</div>
+              <span class="pc-inf-name">${escapeHtml(getDisplayName(gugu.profiles))}</span>
+            </div>
+            <div class="pc-name">${escapeHtml(homeDbTitle(gugu))}</div>
+            <div class="pc-pr">
+              <span class="pc-orig">${formatKRW(gugu.original_price)}</span>
+              <span class="pc-sale">${formatKRW(gugu.sale_price)}</span>
+              <span class="pc-disc">-${getDiscountRate(gugu)}%</span>
+            </div>
+            <div class="pc-bar"><div class="pc-fill" style="width:${pct}%"></div></div>
+            <div class="pc-meta"><span>${Number(gugu.current_participants || 0).toLocaleString('ko-KR')}명</span><span>${escapeHtml(daysLeft(gugu.end_date))}</span></div>
+          </div>
+        </a>`;
+    }).join('') || '<div style="grid-column:1/-1;text-align:center;color:var(--t2);padding:40px">이 카테고리에 진행 중인 공구가 없어요.</div>';
+  }
+
+  function homeDbRenderCategories(gugus) {
+    const wrap = document.querySelector('.cat-showcase');
+    if (!wrap) return;
+    const counts = gugus.reduce((acc, gugu) => {
+      const category = homeDbCategory(gugu);
+      acc[category] = (acc[category] || 0) + 1;
+      return acc;
+    }, {});
+    const top = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 5);
+    const emojis = ['🧴', '👗', '🍽', '🏠', '💪'];
+    const classes = ['cs1', 'cs2', 'cs3', 'cs4', 'cs5'];
+    wrap.innerHTML = top.map(([category, count], index) => `
+      <a class="cs-card ${classes[index % classes.length]}" href="category.html?cat=${encodeURIComponent(category)}">
+        <div class="cs-emoji">${emojis[index % emojis.length]}</div>
+        <div class="cs-name">${escapeHtml(category)}</div>
+        <div class="cs-cnt">${count.toLocaleString('ko-KR')}개 진행 중</div>
+        <div class="cs-hot">실데이터 기준</div>
+      </a>
+    `).join('') || '<div style="grid-column:1/-1;text-align:center;color:var(--t2);padding:40px">카테고리 데이터가 아직 없어요.</div>';
+  }
+
+  async function homeDbRenderFollowing() {
+    const grid = document.querySelector('.feed-grid');
+    if (!grid) return;
+    const user = await getCurrentUser();
+    if (!user) {
+      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--t2);padding:40px">로그인하면 내가 팔로우한 인플루언서의 새 공구만 모아서 보여드려요.</div>';
+      return;
+    }
+    const { data: follows } = await sb.from('follows').select('influencer_id').eq('consumer_id', user.id);
+    const ids = (follows || []).map((item) => item.influencer_id).filter(Boolean);
+    const list = HOME_DB_GUGUS
+      .filter((gugu) => ids.includes(gugu.influencer_id))
+      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+      .slice(0, 4);
+    grid.innerHTML = list.map((gugu, index) => `
+      <a class="feed-card" href="product-detail.html?id=${gugu.id}">
+        <div class="fd-top">
+          <div class="fd-av" style="background:${HOME_DB_COLORS[index % HOME_DB_COLORS.length]}">${escapeHtml(getAvatarLetter(gugu.profiles))}<div class="fd-new">NEW</div></div>
+          <div>
+            <div class="fd-name">${escapeHtml(getDisplayName(gugu.profiles))}</div>
+            <div class="fd-time">${escapeHtml(homeDbRelativeTime(gugu.created_at))}</div>
+          </div>
+        </div>
+        <div class="fd-img">${homeDbMedia(gugu, index)}</div>
+        <div class="fd-body">
+          <div class="fd-title">${escapeHtml(homeDbTitle(gugu))}</div>
+          <div class="fd-pr"><span class="fd-sale">${formatKRW(gugu.sale_price)}</span><span class="fd-disc">-${getDiscountRate(gugu)}%</span></div>
+          <div class="fd-prog"><div class="fd-fill" style="width:${progressPct(gugu)}%"></div></div>
+        </div>
+      </a>
+    `).join('') || '<div style="grid-column:1/-1;text-align:center;color:var(--t2);padding:40px">팔로잉 새 공구가 아직 없어요.</div>';
+  }
+
+  async function loadHomeDbOnly() {
+    try {
+      const today = homeDbToday();
+      const { data, error } = await sb
+        .from('gugus')
+        .select('*, profiles!gugus_influencer_id_fkey(id, name, channel_name, follower_count, avatar_url)')
+        .eq('status', 'active')
+        .gte('end_date', today)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      HOME_DB_GUGUS = (data || []).filter((gugu) => !!gugu && !!homeDbTitle(gugu));
+      const badge = document.querySelector('.hero-badge');
+      if (badge) badge.innerHTML = `<span class="live-dot"></span>지금 ${HOME_DB_GUGUS.length}개 공구 진행 중`;
+
+      document.querySelectorAll('.ct').forEach((btn) => {
+        btn.onclick = () => {
+          document.querySelectorAll('.ct').forEach((item) => item.classList.remove('on'));
+          btn.classList.add('on');
+          homeDbRenderHot(btn.textContent.trim());
+        };
+      });
+
+      if (!HOME_DB_GUGUS.length) {
+        const heroCard = document.querySelector('.hero-card');
+        if (heroCard) {
+          heroCard.innerHTML = '<div class="hc-body" style="padding:24px;text-align:center;color:var(--t2)">등록된 공구가 아직 없어요.</div>';
+        }
+        homeDbRenderFlash([]);
+        homeDbRenderNew([]);
+        homeDbRenderHot('전체');
+        homeDbRenderCategories([]);
+        await homeDbRenderFollowing();
+        return;
+      }
+
+      const sorted = [...HOME_DB_GUGUS].sort((a, b) => (b.current_participants || 0) - (a.current_participants || 0));
+      const newest = [...HOME_DB_GUGUS].sort((a, b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 6);
+      const todayClosing = [...HOME_DB_GUGUS]
+        .filter((gugu) => gugu.end_date === today)
+        .sort((a, b) => (a.end_date || '').localeCompare(b.end_date || ''))
+        .slice(0, 3);
+
+      homeDbRenderHero(sorted[0]);
+      homeDbRenderInfluencers(sorted);
+      homeDbRenderFlash(todayClosing);
+      homeDbRenderNew(newest);
+      homeDbRenderHot('전체');
+      homeDbRenderCategories(HOME_DB_GUGUS);
+      await homeDbRenderFollowing();
+    } catch (e) {
+      console.error('home db render failed', e);
+    } finally {
+      document.documentElement.classList.remove('home-db-loading');
+      document.documentElement.classList.remove('sb-loading');
+    }
+  }
+
+  window.addEventListener('load', loadHomeDbOnly);
+}
+</script>
 </body>
 </html>
