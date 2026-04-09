@@ -374,6 +374,20 @@ function showSec(id, el){
 function fmt(n){ return Number(n||0).toLocaleString(); }
 function fmtDate(s){ const d=new Date(s); return `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`; }
 function pct(cur,target){ return target>0 ? Math.min(100,Math.round(cur/target*100)) : 0; }
+function brandPortalUrl(g){
+  if(!g?.brand_token) return '';
+  return `${location.origin}/brand-portal.html?token=${encodeURIComponent(g.brand_token)}`;
+}
+async function copyBrandPortal(g){
+  const url = brandPortalUrl(g);
+  if(!url){ alert('브랜드 포털 링크가 아직 없습니다.'); return; }
+  try{
+    await navigator.clipboard.writeText(url);
+    alert(`브랜드 포털 링크를 복사했어요.\n\n${url}`);
+  }catch{
+    prompt('아래 링크를 복사해 브랜드사에 전달하세요.', url);
+  }
+}
 
 // ─── 주문 테이블 렌더 ───
 function renderOrders(orders){
@@ -518,13 +532,16 @@ function renderGugus(gugus){
     return;
   }
   tbody.innerHTML = gugus.map(g=>{
+    const portalBtn = g.brand_token
+      ? `<button class="btn-edit" onclick='copyBrandPortal(${JSON.stringify(g).replace(/"/g,'&quot;')})'>브랜드링크</button>`
+      : '';
     const p = pct(g.current_participants, g.target_participants);
     const statusCls = g.status==='active'?'b-active':'b-closed';
     const statusTxt = g.status==='active'?'진행중':'마감';
     return `<tr>
       <td><div class="gugu-row">
         <div class="gugu-emoji">${g.emoji||'🛍️'}</div>
-        <div class="gugu-info"><div class="name">${g.title}</div><div class="cat">${g.category||''}</div></div>
+        <div class="gugu-info"><div class="name">${g.title}</div><div class="cat">${g.category||''}${g.brand_name ? ` · ${g.brand_name}` : ''}</div></div>
       </div></td>
       <td>${g.category||'—'}</td>
       <td><strong>${fmt(g.sale_price)}원</strong><br><span style="font-size:11px;color:var(--t2);text-decoration:line-through">${fmt(g.original_price)}원</span></td>
@@ -535,6 +552,7 @@ function renderGugus(gugus){
       <td style="font-size:12px">${g.end_date||'—'}</td>
       <td><span class="badge ${statusCls}">${statusTxt}</span></td>
       <td><div class="act-btns">
+        ${portalBtn}
         <button class="btn-edit" onclick="openEditModal(${JSON.stringify(g).replace(/"/g,'&quot;')})">수정</button>
         <button class="btn-del" onclick="deleteGugu('${g.id}','${g.title}')">삭제</button>
       </div></td>
@@ -648,6 +666,14 @@ async function loadAll(){
   const name = profile?.channel_name || profile?.name || '인플루언서';
   document.getElementById('navAv').textContent  = name[0]||'?';
   document.getElementById('navName').textContent = name;
+  const latestBrandPortalToken = sessionStorage.getItem('latestBrandPortalToken');
+  if(latestBrandPortalToken){
+    sessionStorage.removeItem('latestBrandPortalToken');
+    const latestBrandPortalUrl = `${location.origin}/brand-portal.html?token=${encodeURIComponent(latestBrandPortalToken)}`;
+    setTimeout(() => {
+      alert(`釉뚮옖???ы꽭 留곹겕媛 ?앹꽦?섏뿀?듬땲??\n\n${latestBrandPortalUrl}`);
+    }, 300);
+  }
 
   // 공구 로드
   const {data:gugus} = await sb.from('gugus').select('*').eq('influencer_id',u.id).order('created_at',{ascending:false});

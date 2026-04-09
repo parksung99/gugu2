@@ -253,9 +253,9 @@ input, select, textarea { font-size: 16px !important; }
             <input class="form-input" type="text" id="sellerName" placeholder="예: 더마랩코리아">
           </div>
           <div class="form-group">
-            <label class="form-label">셀러 연락처</label>
-            <input class="form-input" type="text" placeholder="010-0000-0000 또는 이메일">
-            <div class="form-hint">GUGU 운영팀이 확인 연락드릴 수 있어요</div>
+            <label class="form-label">브랜드 이메일 <span style="color:var(--bl);font-size:11px">← 주문정보 자동 공유</span></label>
+            <input class="form-input" type="email" id="brandEmail" placeholder="brand@example.com">
+            <div class="form-hint">입력 시 브랜드사 전용 주문 조회 링크가 생성됩니다</div>
           </div>
           <div class="form-group">
             <label class="form-label">셀러 사업자번호</label>
@@ -549,10 +549,15 @@ async function submitGugu(){
       start_date:         finalStartDate,
       end_date:           finalEndDate,
       gugu_type:          currentGuguType,
+      brand_name:         document.getElementById('sellerName')?.value?.trim() || '',
+      brand_email:        document.getElementById('brandEmail')?.value?.trim() || '',
     })
   });
 
   const json = await res.json().catch(()=>({}));
+  if (json?.data?.brand_token) {
+    sessionStorage.setItem('latestBrandPortalToken', json.data.brand_token);
+  }
 
   if(!res.ok){
     errEl.style.display='block';

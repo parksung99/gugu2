@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GUGU. — 브랜드 파트너 포털</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&family=Bebas+Neue&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#0A0A0A;--s1:#111114;--s2:#171719;--s3:#1e1e22;
+  --b1:#242428;--b2:#2e2e34;
+  --r:#FF3B3B;--o:#FF8A00;--g:#22c55e;--bl:#6366f1;
+  --t:#F2F2F5;--t2:#8a8a9a;--t3:#464650;
+}
+body{background:var(--bg);color:var(--t);font-family:'Noto Sans KR',sans-serif;font-size:14px;min-height:100vh}
+nav{height:56px;background:rgba(10,10,10,.97);border-bottom:1px solid var(--b1);display:flex;align-items:center;padding:0 32px;gap:14px;position:sticky;top:0;z-index:100}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;color:var(--t);text-decoration:none}
+.logo em{color:var(--r);font-style:normal}
+.badge-brand{background:rgba(99,102,241,.12);border:1px solid rgba(99,102,241,.3);color:var(--bl);font-size:10px;font-weight:700;padding:3px 10px;border-radius:5px;letter-spacing:.5px}
+.nav-r{margin-left:auto;display:flex;align-items:center;gap:10px}
+.btn{padding:8px 18px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;border:none;display:inline-flex;align-items:center;gap:6px;text-decoration:none}
+.btn-pri{background:var(--r);color:#fff}
+.btn-sec{background:none;border:1px solid var(--b2);color:var(--t2)}
+.btn-grn{background:var(--g);color:#fff}
+.btn-bl{background:var(--bl);color:#fff}
+.wrap{max-width:1200px;margin:0 auto;padding:36px 24px}
+
+/* HERO CARD */
+.gugu-hero{background:var(--s1);border:1px solid var(--b1);border-radius:16px;padding:28px 32px;margin-bottom:24px;display:flex;align-items:center;gap:24px}
+.hero-emoji{width:72px;height:72px;border-radius:14px;background:var(--s2);border:1px solid var(--b1);display:flex;align-items:center;justify-content:center;font-size:36px;flex-shrink:0}
+.hero-info{flex:1}
+.hero-title{font-size:22px;font-weight:800;margin-bottom:6px}
+.hero-meta{display:flex;gap:16px;flex-wrap:wrap}
+.hero-meta span{font-size:13px;color:var(--t2)}
+.hero-meta strong{color:var(--t);font-weight:600}
+.hero-badge{display:inline-flex;padding:4px 10px;border-radius:6px;font-size:12px;font-weight:700}
+.b-active{background:rgba(34,197,94,.12);color:var(--g)}
+.b-closed{background:rgba(100,100,120,.15);color:var(--t2)}
+.b-failed{background:rgba(255,59,59,.1);color:var(--r)}
+.hero-actions{display:flex;gap:8px;flex-shrink:0}
+
+/* KPI */
+.kpi-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px}
+.kpi{background:var(--s1);border:1px solid var(--b1);border-radius:12px;padding:20px 22px}
+.kpi-lbl{font-size:11px;color:var(--t2);margin-bottom:10px;letter-spacing:.5px}
+.kpi-val{font-size:30px;font-weight:800;font-family:'Bebas Neue',sans-serif;letter-spacing:1px;margin-bottom:4px}
+.kpi-val.g{color:var(--g)}.kpi-val.o{color:var(--o)}.kpi-val.bl{color:var(--bl)}
+.kpi-sub{font-size:11px;color:var(--t3)}
+
+/* TABLE */
+.tbl-wrap{background:var(--s1);border:1px solid var(--b1);border-radius:12px;overflow:hidden}
+.tbl-head{padding:16px 20px;border-bottom:1px solid var(--b1);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.tbl-title{font-size:15px;font-weight:700}
+.tbl-tools{display:flex;gap:8px;align-items:center}
+.search-input{padding:7px 12px;background:var(--s2);border:1px solid var(--b1);border-radius:7px;color:var(--t);font-size:13px;font-family:inherit;outline:none;width:200px;transition:.2s}
+.search-input:focus{border-color:var(--bl)}
+.search-input::placeholder{color:var(--t3)}
+table{width:100%;border-collapse:collapse}
+th{padding:10px 14px;font-size:11px;font-weight:700;color:var(--t2);text-align:left;border-bottom:1px solid var(--b1);background:var(--s2);white-space:nowrap}
+td{padding:12px 14px;font-size:13px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,.025)}
+.status-badge{display:inline-flex;padding:3px 9px;border-radius:5px;font-size:11px;font-weight:700;white-space:nowrap}
+.s-paid{background:rgba(99,102,241,.15);color:var(--bl)}
+.s-preparing{background:rgba(255,138,0,.15);color:var(--o)}
+.s-shipped{background:rgba(34,197,94,.15);color:var(--g)}
+.s-delivered{background:rgba(34,197,94,.2);color:var(--g)}
+
+/* FILTER TABS */
+.filter-tabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+.ftab{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--b1);background:none;color:var(--t2);font-family:inherit;transition:.15s}
+.ftab:hover{border-color:var(--t2);color:var(--t)}
+.ftab.on{background:var(--bl);border-color:var(--bl);color:#fff}
+
+/* LOADING / ERROR */
+.loading{text-align:center;padding:80px 0;color:var(--t2)}
+.loading .spinner{width:40px;height:40px;border:3px solid var(--b2);border-top-color:var(--bl);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 16px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.error-card{text-align:center;padding:80px 24px}
+.error-card .ei{font-size:48px;margin-bottom:16px}
+.error-card .et{font-size:18px;font-weight:700;margin-bottom:8px}
+.error-card .es{font-size:14px;color:var(--t2)}
+
+/* TOKEN INPUT PAGE */
+.token-page{max-width:480px;margin:80px auto;padding:0 24px}
+.token-card{background:var(--s1);border:1px solid var(--b1);border-radius:16px;padding:40px 32px;text-align:center}
+.token-icon{font-size:48px;margin-bottom:20px}
+.token-title{font-size:22px;font-weight:800;margin-bottom:8px}
+.token-sub{font-size:14px;color:var(--t2);margin-bottom:28px;line-height:1.6}
+.token-input{width:100%;padding:12px 16px;background:var(--s2);border:1px solid var(--b1);border-radius:10px;color:var(--t);font-size:14px;font-family:inherit;outline:none;margin-bottom:12px;transition:.2s;text-align:center;letter-spacing:1px}
+.token-input:focus{border-color:var(--bl)}
+.token-input::placeholder{color:var(--t3)}
+.btn-full{width:100%;justify-content:center;padding:13px}
+
+/* EMPTY */
+.empty{text-align:center;padding:48px 0;color:var(--t2)}
+.empty .ei{font-size:40px;margin-bottom:12px;opacity:.4}
+.empty .et{font-size:14px;font-weight:600;color:var(--t);margin-bottom:6px}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .kpi-row{grid-template-columns:1fr 1fr}
+  .gugu-hero{flex-direction:column;align-items:flex-start;gap:16px}
+  .hero-actions{width:100%}
+  th:nth-child(5),td:nth-child(5),
+  th:nth-child(6),td:nth-child(6){display:none}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="logo" href="index.html">GUGU<em>.</em></a>
+  <span class="badge-brand">BRAND PORTAL</span>
+  <div class="nav-r">
+    <span id="navBrandName" style="font-size:13px;color:var(--t2)"></span>
+  </div>
+</nav>
+
+<!-- 로딩 화면 -->
+<div id="loadingView" class="wrap">
+  <div class="loading">
+    <div class="spinner"></div>
+    <div>데이터를 불러오는 중...</div>
+  </div>
+</div>
+
+<!-- 토큰 입력 화면 (URL에 토큰 없을 때) -->
+<div id="tokenView" style="display:none">
+  <div class="token-page">
+    <div class="token-card">
+      <div class="token-icon">🔑</div>
+      <div class="token-title">브랜드 포털 접속</div>
+      <div class="token-sub">인플루언서로부터 받은<br>공구 접근 코드를 입력해주세요.</div>
+      <input class="token-input" id="tokenInput" placeholder="접근 코드 입력..." maxlength="40">
+      <button class="btn btn-bl btn-full" onclick="enterWithToken()">접속하기</button>
+      <div id="tokenErr" style="display:none;color:var(--r);font-size:13px;margin-top:12px"></div>
+    </div>
+  </div>
+</div>
+
+<!-- 에러 화면 -->
+<div id="errorView" style="display:none" class="wrap">
+  <div class="error-card">
+    <div class="ei">🚫</div>
+    <div class="et">유효하지 않은 접근 코드</div>
+    <div class="es">코드가 올바른지 확인하고 다시 시도해주세요.<br>문제가 지속되면 인플루언서에게 문의하세요.</div>
+  </div>
+</div>
+
+<!-- 메인 포털 화면 -->
+<div id="mainView" style="display:none">
+  <div class="wrap">
+
+    <!-- 공구 헤더 -->
+    <div class="gugu-hero">
+      <div class="hero-emoji" id="heroEmoji">🛍️</div>
+      <div class="hero-info">
+        <div class="hero-title" id="heroTitle">—</div>
+        <div class="hero-meta" id="heroMeta"></div>
+      </div>
+      <div class="hero-actions">
+        <button class="btn btn-grn" onclick="downloadCSV()">⬇ CSV 다운로드</button>
+        <button class="btn btn-sec" onclick="location.reload()">↺ 새로고침</button>
+      </div>
+    </div>
+
+    <!-- KPI -->
+    <div class="kpi-row">
+      <div class="kpi">
+        <div class="kpi-lbl">총 주문수</div>
+        <div class="kpi-val bl" id="kpiOrders">0</div>
+        <div class="kpi-sub">취소 제외</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-lbl">총 주문금액</div>
+        <div class="kpi-val g" id="kpiAmount">0</div>
+        <div class="kpi-sub">소비자 결제 기준</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-lbl">배송 대기</div>
+        <div class="kpi-val o" id="kpiPending">0</div>
+        <div class="kpi-sub">발송 필요 건수</div>
+      </div>
+    </div>
+
+    <!-- 주문 테이블 -->
+    <div class="filter-tabs" id="filterTabs">
+      <button class="ftab on" onclick="filterOrders('all',this)">전체</button>
+      <button class="ftab" onclick="filterOrders('paid',this)">결제완료</button>
+      <button class="ftab" onclick="filterOrders('preparing',this)">상품준비중</button>
+      <button class="ftab" onclick="filterOrders('shipped',this)">배송중</button>
+      <button class="ftab" onclick="filterOrders('delivered',this)">배송완료</button>
+    </div>
+
+    <div class="tbl-wrap">
+      <div class="tbl-head">
+        <span class="tbl-title">주문 목록</span>
+        <div class="tbl-tools">
+          <input class="search-input" id="searchInput" placeholder="이름/주소 검색..." oninput="doSearch()">
+          <span id="orderCount" style="font-size:12px;color:var(--t2)"></span>
+        </div>
+      </div>
+      <div style="overflow-x:auto">
+        <table>
+          <thead><tr>
+            <th>#</th>
+            <th>수령인</th>
+            <th>연락처</th>
+            <th>배송지</th>
+            <th>수량</th>
+            <th>금액</th>
+            <th>상태</th>
+            <th>송장번호</th>
+            <th>주문일</th>
+          </tr></thead>
+          <tbody id="ordersTbody">
+            <tr><td colspan="9" style="text-align:center;padding:32px;color:var(--t2)">불러오는 중...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div style="margin-top:16px;padding:14px 16px;background:rgba(99,102,241,.06);border:1px solid rgba(99,102,241,.15);border-radius:10px;font-size:12px;color:var(--t2);line-height:1.7">
+      📋 이 페이지는 <strong style="color:var(--t)">인플루언서가 공유한 브랜드 전용 링크</strong>로만 접근 가능합니다.
+      주문 정보는 실시간으로 업데이트됩니다. CSV 다운로드 후 자사 발주 시스템에 업로드하세요.
+    </div>
+  </div>
+</div>
+
+<script>
+let allOrders = [];
+let filteredOrders = [];
+let currentFilter = 'all';
+let guguToken = '';
+
+const STATUS_LABEL = {
+  pending:'입금대기', paid:'결제완료', preparing:'상품준비중',
+  shipped:'배송중', delivered:'배달완료', cancelled:'취소', refunded:'환불'
+};
+const STATUS_CLS = {
+  paid:'s-paid', preparing:'s-preparing', shipped:'s-shipped', delivered:'s-delivered',
+  pending:'s-paid', cancelled:'s-paid', refunded:'s-paid'
+};
+
+function fmt(n){ return Number(n||0).toLocaleString(); }
+function fmtDate(s){
+  if(!s) return '—';
+  const d = new Date(s);
+  return `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`;
+}
+
+async function load(token){
+  guguToken = token;
+  const res = await fetch(`/api/gugus/manage?brand_token=${encodeURIComponent(token)}`);
+  const json = await res.json().catch(()=>({}));
+
+  if(!res.ok || !json.data){
+    document.getElementById('loadingView').style.display = 'none';
+    document.getElementById('errorView').style.display = 'block';
+    return;
+  }
+
+  const { gugu, summary, orders } = json.data;
+
+  // 헤더
+  document.title = `${gugu.brand_name||gugu.title} — GUGU. 브랜드 포털`;
+  document.getElementById('navBrandName').textContent = gugu.brand_name || '';
+  document.getElementById('heroEmoji').textContent = gugu.emoji || '🛍️';
+  document.getElementById('heroTitle').textContent = gugu.title;
+
+  const statusCls = gugu.status === 'active' ? 'b-active' : gugu.status === 'failed' ? 'b-failed' : 'b-closed';
+  const statusTxt = gugu.status === 'active' ? '공구 진행중' : gugu.status === 'failed' ? '미달 마감' : '공구 완료';
+  const typeTxt = gugu.gugu_type === 'quantity' ? '수량형' : gugu.gugu_type === 'funding' ? '펀딩형' : '기간형';
+
+  document.getElementById('heroMeta').innerHTML = `
+    <span><strong>${typeTxt} 공구</strong></span>
+    <span>공구가 <strong>${fmt(gugu.sale_price)}원</strong></span>
+    <span>참여 <strong>${gugu.current_participants}/${gugu.target_participants}명</strong></span>
+    <span>마감 <strong>${gugu.end_date || '—'}</strong></span>
+    <span class="hero-badge ${statusCls}">${statusTxt}</span>
+  `;
+
+  // KPI
+  document.getElementById('kpiOrders').textContent = summary.total_orders.toLocaleString();
+  document.getElementById('kpiAmount').textContent = fmt(summary.total_amount) + '원';
+  document.getElementById('kpiPending').textContent = summary.pending_ship.toLocaleString();
+
+  allOrders = orders;
+  renderOrders(orders);
+
+  document.getElementById('loadingView').style.display = 'none';
+  document.getElementById('mainView').style.display = 'block';
+}
+
+function renderOrders(orders){
+  const tbody = document.getElementById('ordersTbody');
+  document.getElementById('orderCount').textContent = `총 ${orders.length}건`;
+
+  if(!orders.length){
+    tbody.innerHTML = `<tr><td colspan="9"><div class="empty"><div class="ei">📦</div><div class="et">주문이 없어요</div></div></td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = orders.map((o, i) => {
+    const sc = STATUS_CLS[o.status] || 's-paid';
+    const sl = STATUS_LABEL[o.status] || o.status;
+    const addr = [o.shipping_address, o.shipping_detail].filter(Boolean).join(' ');
+    const tracking = o.tracking_number
+      ? `<span style="color:var(--g);font-size:12px">${o.shipping_carrier||''} ${o.tracking_number}</span>`
+      : `<span style="color:var(--t3)">—</span>`;
+
+    return `<tr>
+      <td style="color:var(--t2);font-size:12px">${i+1}</td>
+      <td><strong>${o.shipping_name || '—'}</strong></td>
+      <td style="color:var(--t2)">${o.shipping_phone || '—'}</td>
+      <td>
+        <div style="font-size:13px">${addr || '—'}</div>
+        ${o.shipping_zip ? `<div style="font-size:11px;color:var(--t3)">${o.shipping_zip}</div>` : ''}
+      </td>
+      <td style="text-align:center">${o.quantity}개</td>
+      <td><strong>${fmt(o.total_amount)}원</strong></td>
+      <td><span class="status-badge ${sc}">${sl}</span></td>
+      <td>${tracking}</td>
+      <td style="font-size:11px;color:var(--t2)">${fmtDate(o.created_at)}</td>
+    </tr>`;
+  }).join('');
+}
+
+function filterOrders(status, btn){
+  document.querySelectorAll('.ftab').forEach(b => b.classList.remove('on'));
+  if(btn) btn.classList.add('on');
+  currentFilter = status;
+  const base = status === 'all' ? allOrders : allOrders.filter(o => o.status === status);
+  const q = document.getElementById('searchInput').value.trim().toLowerCase();
+  filteredOrders = q ? base.filter(o =>
+    (o.shipping_name||'').toLowerCase().includes(q) ||
+    (o.shipping_address||'').toLowerCase().includes(q) ||
+    (o.shipping_phone||'').includes(q)
+  ) : base;
+  renderOrders(filteredOrders);
+}
+
+function doSearch(){
+  filterOrders(currentFilter, null);
+  document.querySelectorAll('.ftab').forEach((b,i) => {
+    if(i === (['all','paid','preparing','shipped','delivered'].indexOf(currentFilter))) b.classList.add('on');
+  });
+}
+
+function downloadCSV(){
+  const orders = filteredOrders.length ? filteredOrders : allOrders;
+  const headers = ['번호','수령인','연락처','주소','상세주소','우편번호','수량','금액','결제방식','상태','택배사','송장번호','주문일'];
+  const rows = orders.map((o, i) => [
+    i + 1,
+    o.shipping_name || '',
+    o.shipping_phone || '',
+    o.shipping_address || '',
+    o.shipping_detail || '',
+    o.shipping_zip || '',
+    o.quantity,
+    o.total_amount,
+    o.payment_method === 'bank_transfer' ? '무통장' : '카드',
+    STATUS_LABEL[o.status] || o.status,
+    o.shipping_carrier || '',
+    o.tracking_number || '',
+    fmtDate(o.created_at),
+  ]);
+
+  const csv = [headers, ...rows]
+    .map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(','))
+    .join('\r\n');
+
+  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `gugu_orders_${new Date().toISOString().split('T')[0]}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function enterWithToken(){
+  const t = document.getElementById('tokenInput').value.trim();
+  if(!t){ document.getElementById('tokenErr').style.display='block'; document.getElementById('tokenErr').textContent='코드를 입력해주세요.'; return; }
+  document.getElementById('tokenView').style.display = 'none';
+  document.getElementById('loadingView').style.display = 'block';
+  const url = new URL(location.href);
+  url.searchParams.set('token', t);
+  history.replaceState(null, '', url.toString());
+  load(t);
+}
+
+// ─── INIT ───
+(function(){
+  const token = new URLSearchParams(location.search).get('token');
+  if(token){
+    load(token);
+  } else {
+    document.getElementById('loadingView').style.display = 'none';
+    document.getElementById('tokenView').style.display = 'block';
+  }
+})();
+</script>
+
+</body>
+</html>
