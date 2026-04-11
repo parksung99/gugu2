@@ -22,7 +22,7 @@ class handler(BaseHTTPRequestHandler):
 
         db = get_db()
         result = db.table("influencer_applications") \
-            .select("*, profiles(name, email)") \
+            .select("*, profiles(name, phone)") \
             .eq("status", status) \
             .order("created_at", desc=True) \
             .execute()

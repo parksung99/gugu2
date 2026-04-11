@@ -39,7 +39,7 @@ class handler(BaseHTTPRequestHandler):
 
             q = db.table("orders").select(
                 "*, gugus(id, product_name, emoji, category, sale_price, end_date), "
-                "profiles!orders_consumer_id_fkey(name, email, phone)"
+                "profiles!orders_consumer_id_fkey(name, phone)"
             ).in_("gugu_id", gugu_ids).order("created_at", desc=True)
 
             if status_filter:

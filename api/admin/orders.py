@@ -51,7 +51,7 @@ class handler(BaseHTTPRequestHandler):
         db = get_db()
         q = db.table("orders").select(
             "*, gugus(product_name, emoji, category, influencer_id, profiles(channel_name,name)), "
-            "profiles!orders_consumer_id_fkey(name, email)"
+            "profiles!orders_consumer_id_fkey(name, phone)"
         ).order("created_at", desc=True).range(offset, offset + limit - 1)
 
         if status:
