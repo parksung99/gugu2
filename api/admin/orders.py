@@ -50,7 +50,7 @@ class handler(BaseHTTPRequestHandler):
 
         db = get_db()
         q = db.table("orders").select(
-            "*, gugus(title, emoji, category, influencer_id, profiles(channel_name,name)), "
+            "*, gugus(product_name, emoji, category, influencer_id, profiles(channel_name,name)), "
             "profiles!orders_consumer_id_fkey(name, email)"
         ).order("created_at", desc=True).range(offset, offset + limit - 1)
 
@@ -93,10 +93,11 @@ class handler(BaseHTTPRequestHandler):
 
         # 배송 시작 시 소비자 알림
         if updates.get("status") == "shipped":
-            o = db.table("orders").select("consumer_id, tracking_number, shipping_carrier, gugus(title)") \
+            o = db.table("orders").select("consumer_id, tracking_number, shipping_carrier, gugus(product_name)") \
                 .eq("id", order_id).single().execute().data
             if o:
-                title = o["gugus"]["title"][:30] if o.get("gugus") else "상품"
+                g = o.get("gugus") or {}
+                title = (g.get("product_name") or g.get("title") or "상품")[:30]
                 tracking = updates.get("tracking_number","")
                 carrier  = updates.get("shipping_carrier","")
                 db.table("notifications").insert({

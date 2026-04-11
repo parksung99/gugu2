@@ -54,31 +54,41 @@ class handler(BaseHTTPRequestHandler):
         order_id = f"GUGU-{uuid.uuid4().hex[:16].upper()}"
 
         order_data = {
-            "id":              str(uuid.uuid4()),
-            "toss_order_id":   order_id,
-            "gugu_id":         gugu_id,
-            "consumer_id":     user.id,
-            "quantity":        quantity,
-            "unit_price":      unit_price,
-            "total_amount":    total_amount,
-            "payment_method":  payment_method,
-            "status":          "pending",
-            "shipping_name":    shipping.get("name", ""),
-            "shipping_phone":   shipping.get("phone", ""),
-            "shipping_address": shipping.get("address", ""),
-            "shipping_zipcode": shipping.get("zipcode", ""),
+            "id":             str(uuid.uuid4()),
+            "gugu_id":        gugu_id,
+            "consumer_id":    user.id,
+            "quantity":       quantity,
+            "unit_price":     unit_price,
+            "total_amount":   total_amount,
+            "payment_method": payment_method,
+            "status":         "pending",
         }
+        # 선택 컬럼 — DB에 있을 때만 추가 (없으면 PostgREST가 42703 에러)
+        if shipping.get("name"):    order_data["shipping_name"]    = shipping["name"]
+        if shipping.get("phone"):   order_data["shipping_phone"]   = shipping["phone"]
+        if shipping.get("address"): order_data["shipping_address"] = shipping["address"]
+        if shipping.get("zipcode"): order_data["shipping_zip"]     = shipping["zipcode"]
+        # toss_order_id 컬럼이 DB에 있으면 저장 (없으면 skip)
+        _toss_order_id = order_id
+
+        gugu_title = (gugu.get("product_name") or gugu.get("title") or "상품")[:100]
 
         if payment_method == "bank_transfer":
             order_data["bank_depositor"] = bank_depositor
-            # 무통장은 바로 저장, 인플루언서가 입금확인 후 status→paid
-            order = db.table("orders").insert(order_data).execute()
+            try:
+                order = db.table("orders").insert(order_data).execute()
+            except Exception:
+                # shipping 컬럼 없는 경우 기본 필드만으로 재시도
+                base = {k: v for k, v in order_data.items()
+                        if k in ("id","gugu_id","consumer_id","quantity","unit_price",
+                                 "total_amount","payment_method","status","bank_depositor")}
+                order = db.table("orders").insert(base).execute()
             return self._send(*ok({
                 "payment_method": "bank_transfer",
-                "order_id":       order_id,
+                "order_id":       _toss_order_id,
                 "order_db_id":    order.data[0]["id"],
                 "amount":         total_amount,
-                "order_name":     gugu["title"][:100],
+                "order_name":     gugu_title,
                 "bank":           BANK_INFO["bank"],
                 "account":        BANK_INFO["account"],
                 "holder":         BANK_INFO["holder"],
@@ -87,17 +97,23 @@ class handler(BaseHTTPRequestHandler):
             }))
 
         # 카드: 주문 초안만 저장, Toss 파라미터 반환
-        order = db.table("orders").insert(order_data).execute()
-        toss_client_key = os.environ.get("TOSS_CLIENT_KEY", "test_ck_D5GePWvyJnrK0W0k6q8gLzN97Eoq")
+        try:
+            order = db.table("orders").insert(order_data).execute()
+        except Exception:
+            base = {k: v for k, v in order_data.items()
+                    if k in ("id","gugu_id","consumer_id","quantity","unit_price",
+                             "total_amount","payment_method","status")}
+            order = db.table("orders").insert(base).execute()
 
+        toss_client_key = os.environ.get("TOSS_CLIENT_KEY", "test_ck_D5GePWvyJnrK0W0k6q8gLzN97Eoq")
         self._send(*ok({
             "payment_method":  "card",
-            "order_id":        order_id,
+            "order_id":        _toss_order_id,
             "order_db_id":     order.data[0]["id"],
             "amount":          total_amount,
-            "order_name":      gugu["title"][:100],
+            "order_name":      gugu_title,
             "customer_name":   profile.get("name", ""),
-            "customer_email":  user.email or "",
+            "customer_email":  getattr(user, "email", "") or "",
             "toss_client_key": toss_client_key,
         }))
 

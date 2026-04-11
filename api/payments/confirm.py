@@ -84,13 +84,14 @@ class handler(BaseHTTPRequestHandler):
         db.rpc("increment_participants", {"p_gugu_id": order["gugu_id"]}).execute()
 
         # 인플루언서에게 알림
-        gugu = db.table("gugus").select("influencer_id, title").eq("id", order["gugu_id"]).single().execute().data
+        gugu = db.table("gugus").select("influencer_id, product_name").eq("id", order["gugu_id"]).single().execute().data
         if gugu:
+            gugu_title = (gugu.get("product_name") or gugu.get("title") or "상품")[:30]
             db.table("notifications").insert({
                 "user_id": gugu["influencer_id"],
                 "type":    "new_order",
                 "title":   "새 주문이 들어왔어요 🛍️",
-                "content": f"{profile.get('name','소비자')}님이 [{gugu['title'][:30]}]을 주문했어요",
+                "content": f"{profile.get('name','소비자')}님이 [{gugu_title}]을 주문했어요",
                 "link":    f"/influencer-dashboard.html",
                 "is_read": False,
             }).execute()

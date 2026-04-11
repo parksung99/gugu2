@@ -24,7 +24,7 @@ class handler(BaseHTTPRequestHandler):
 
         db = get_db()
         g = db.table("gugus").select(
-            "id,title,emoji,category,sale_price,original_price,"
+            "id,product_name,emoji,category,sale_price,original_price,"
             "current_participants,target_participants,status,end_date,"
             "gugu_type,brand_name,brand_email,brand_token"
         ).eq("brand_token", brand_token).execute()
@@ -48,7 +48,7 @@ class handler(BaseHTTPRequestHandler):
 
         self._send(*ok({
             "gugu": {
-                "title":                gugu["title"],
+                "title":                gugu.get("product_name") or gugu.get("title", ""),
                 "emoji":                gugu.get("emoji", "🛍️"),
                 "category":             gugu.get("category", ""),
                 "sale_price":           gugu["sale_price"],
@@ -78,7 +78,7 @@ class handler(BaseHTTPRequestHandler):
             return self._send(*err("인플루언서만 등록 가능합니다", 403))
 
         body = self._body()
-        required = ["title", "original_price", "sale_price", "target_participants", "end_date", "category"]
+        required = ["title", "original_price", "sale_price", "target_participants", "end_date"]
         for f in required:
             if not body.get(f):
                 return self._send(*err(f"{f} 필드 누락"))
@@ -97,7 +97,7 @@ class handler(BaseHTTPRequestHandler):
         gugu = db.table("gugus").insert({
             "id":                   str(uuid.uuid4()),
             "influencer_id":        user.id,
-            "title":                body["title"],
+            "product_name":         body["title"],
             "description":          body.get("description", ""),
             "category":             body["category"],
             "emoji":                body.get("emoji", "🛍️"),
@@ -142,8 +142,11 @@ class handler(BaseHTTPRequestHandler):
             body.pop("original_price", None)
             body.pop("sale_price", None)
 
-        allowed = {"title","description","category","emoji","target_participants",
+        allowed = {"product_name","description","category","emoji","target_participants",
                    "end_date","status","gugu_type","brand_name","brand_email"}
+        # 프론트에서 title로 보낸 경우 product_name으로 매핑
+        if "title" in body:
+            body["product_name"] = body.pop("title")
         updates = {k: v for k, v in body.items() if k in allowed}
         if not updates:
             return self._send(*err("수정할 필드 없음"))

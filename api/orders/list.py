@@ -38,7 +38,7 @@ class handler(BaseHTTPRequestHandler):
                 return self._send(*ok([]))
 
             q = db.table("orders").select(
-                "*, gugus(id, title, emoji, category, sale_price, end_date), "
+                "*, gugus(id, product_name, emoji, category, sale_price, end_date), "
                 "profiles!orders_consumer_id_fkey(name, email, phone)"
             ).in_("gugu_id", gugu_ids).order("created_at", desc=True)
 
@@ -50,7 +50,7 @@ class handler(BaseHTTPRequestHandler):
 
         # 소비자: 내가 구매한 주문
         q = db.table("orders").select(
-            "*, gugus(title, emoji, category, end_date, influencer_id, profiles(channel_name, name))"
+            "*, gugus(product_name, emoji, category, end_date, influencer_id, profiles(channel_name, name))"
         ).eq("consumer_id", user.id).order("created_at", desc=True)
 
         if status_filter:
@@ -80,7 +80,7 @@ class handler(BaseHTTPRequestHandler):
 
         # 본인 공구의 주문인지 확인
         order = db.table("orders").select(
-            "id, status, consumer_id, gugu_id, gugus(influencer_id, title)"
+            "id, status, consumer_id, gugu_id, gugus(influencer_id, product_name)"
         ).eq("id", order_id).single().execute().data
 
         if not order:
@@ -107,7 +107,8 @@ class handler(BaseHTTPRequestHandler):
 
         # 배송 시작 시 소비자 알림
         if updates.get("status") == "shipped":
-            title_str = (order.get("gugus") or {}).get("title", "상품")[:30]
+            g = order.get("gugus") or {}
+            title_str = (g.get("product_name") or g.get("title") or "상품")[:30]
             carrier = shipping_carrier or ""
             tracking = tracking_number or ""
             db.table("notifications").insert({
