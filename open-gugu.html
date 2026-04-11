@@ -83,6 +83,30 @@ nav {background:rgba(10,10,10,0.97);border-bottom:1px solid var(--b1);padding:0 
 .btn-back{padding:12px 24px;border-radius:10px;border:1px solid var(--b1);background:none;color:var(--t);font-size:14px;cursor:pointer;font-family:inherit}
 .btn-next{padding:12px 32px;border-radius:10px;border:none;background:var(--r);color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit}
 .btn-next:hover{background:#e63535}
+.success-panel{display:none;background:linear-gradient(145deg,rgba(34,197,94,.14),rgba(255,59,59,.06));border:1px solid rgba(34,197,94,.28);border-radius:18px;padding:24px;margin-bottom:24px;box-shadow:0 24px 70px rgba(0,0,0,.28)}
+.success-panel.on{display:block}
+.success-eyebrow{display:inline-flex;align-items:center;gap:8px;padding:5px 10px;border-radius:999px;background:rgba(34,197,94,.14);color:var(--g);font-size:12px;font-weight:800;margin-bottom:14px}
+.success-title{font-size:24px;font-weight:800;margin-bottom:6px}
+.success-sub{color:var(--t2);line-height:1.6;margin-bottom:18px}
+.success-card{background:rgba(17,17,20,.86);border:1px solid var(--b1);border-radius:14px;overflow:hidden;margin-bottom:16px}
+.success-card-top{display:flex;gap:16px;padding:18px;border-bottom:1px solid var(--b1)}
+.success-img{width:86px;height:86px;border-radius:14px;background:linear-gradient(135deg,#1a0505,#2a1010);display:flex;align-items:center;justify-content:center;font-size:38px;flex-shrink:0}
+.success-name{font-size:18px;font-weight:800;margin-bottom:8px}
+.success-price{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.success-orig{color:var(--t2);text-decoration:line-through}
+.success-sale{font-size:20px;font-weight:900;color:var(--r)}
+.success-disc{background:var(--r);color:#fff;font-size:11px;font-weight:800;padding:3px 7px;border-radius:5px}
+.success-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--b1)}
+.success-stat{background:rgba(17,17,20,.92);padding:14px}
+.success-stat .k{font-size:11px;color:var(--t2);margin-bottom:5px}
+.success-stat .v{font-size:13px;font-weight:800}
+.success-link{background:rgba(255,255,255,.04);border:1px solid var(--b1);border-radius:12px;padding:12px;margin-bottom:16px}
+.success-link-label{font-size:11px;color:var(--t2);margin-bottom:6px;font-weight:700}
+.success-link-url{font-size:12px;color:var(--t);word-break:break-all;line-height:1.5}
+.success-actions{display:flex;gap:10px;flex-wrap:wrap}
+.success-actions a,.success-actions button{padding:12px 16px;border-radius:10px;border:1px solid var(--b1);font-size:13px;font-weight:800;font-family:inherit;cursor:pointer;text-decoration:none}
+.success-actions .primary{background:var(--r);border-color:var(--r);color:#fff}
+.success-actions .secondary{background:var(--s2);color:var(--t)}
 
 
 /* ══════════════════════════════════════
@@ -126,6 +150,10 @@ nav {background:rgba(10,10,10,0.97);border-bottom:1px solid var(--b1);padding:0 
   .step-label { display:none !important; }
   .bottom-cta { flex-direction:column !important; gap:10px !important; }
   .bottom-cta button { width:100% !important; }
+  .success-card-top { flex-direction:column !important; }
+  .success-img { width:100% !important; height:130px !important; }
+  .success-grid { grid-template-columns:1fr 1fr !important; }
+  .success-actions a,.success-actions button { width:100% !important; text-align:center !important; }
   .channel-grid { grid-template-columns:repeat(2,1fr) !important; }
 /* 네비 공통 */
   .mob-menu-btn { display:flex !important; }
@@ -158,6 +186,8 @@ input, select, textarea { font-size: 16px !important; }
     <div style="font-size:22px;font-weight:700;margin-bottom:4px">새 공구 열기</div>
     <div style="font-size:14px;color:var(--t2)">제품 정보를 입력하면 나머지는 GUGU가 처리해드려요</div>
   </div>
+
+  <div class="success-panel" id="successPanel"></div>
 
   <div class="steps">
     <div class="step active"><div class="step-circle">1</div><div class="step-label">제품 정보</div></div>
@@ -478,6 +508,85 @@ function setGuguType(type, el){
 }
 function setPeriod(el){document.querySelectorAll('.period-opt').forEach(x=>x.classList.remove('active'));el.classList.add('active')}
 
+function escapeHtml(value){
+  return String(value ?? '').replace(/[&<>"']/g, ch => ({
+    '&':'&amp;',
+    '<':'&lt;',
+    '>':'&gt;',
+    '"':'&quot;',
+    "'":'&#39;'
+  }[ch]));
+}
+
+function formatWon(value){
+  return `${Number(value || 0).toLocaleString('ko-KR')}원`;
+}
+
+function guguTypeLabel(type){
+  return type === 'quantity' ? '수량형' : type === 'funding' ? '펀딩형' : '기간형';
+}
+
+function showSuccessPanel(gugu){
+  const panel = document.getElementById('successPanel');
+  const detailUrl = `product-detail.html?id=${encodeURIComponent(gugu.id)}`;
+  const brandUrl = gugu.brand_token
+    ? `${location.origin}/brand-portal.html?token=${encodeURIComponent(gugu.brand_token)}`
+    : '';
+  const discount = gugu.original_price > 0
+    ? Math.round((1 - Number(gugu.sale_price || 0) / Number(gugu.original_price || 1)) * 100)
+    : 0;
+
+  panel.innerHTML = `
+    <div class="success-eyebrow">등록 완료</div>
+    <div class="success-title">공구가 성공적으로 열렸어요</div>
+    <div class="success-sub">이제 고객 상세페이지에서 상품을 확인할 수 있고, 브랜드 포털 링크로 배송/정산 협업을 이어갈 수 있어요.</div>
+    <div class="success-card">
+      <div class="success-card-top">
+        <div class="success-img">${escapeHtml(gugu.emoji || 'IMG')}</div>
+        <div style="min-width:0;flex:1">
+          <div class="success-name">${escapeHtml(gugu.product_name || gugu.title || '새 공구')}</div>
+          <div class="success-price">
+            <span class="success-orig">${formatWon(gugu.original_price)}</span>
+            <span class="success-sale">${formatWon(gugu.sale_price)}</span>
+            <span class="success-disc">-${discount}%</span>
+          </div>
+        </div>
+      </div>
+      <div class="success-grid">
+        <div class="success-stat"><div class="k">카테고리</div><div class="v">${escapeHtml(gugu.category || '미정')}</div></div>
+        <div class="success-stat"><div class="k">공구 방식</div><div class="v">${guguTypeLabel(gugu.gugu_type)}</div></div>
+        <div class="success-stat"><div class="k">목표 참여</div><div class="v">${Number(gugu.target_participants || 0).toLocaleString('ko-KR')}명</div></div>
+        <div class="success-stat"><div class="k">마감일</div><div class="v">${escapeHtml(gugu.end_date || '-')}</div></div>
+      </div>
+    </div>
+    ${brandUrl ? `
+      <div class="success-link">
+        <div class="success-link-label">브랜드 포털 링크</div>
+        <div class="success-link-url" id="successBrandUrl">${escapeHtml(brandUrl)}</div>
+      </div>` : ''}
+    <div class="success-actions">
+      <a class="primary" href="${detailUrl}">공구 상세페이지 보기</a>
+      <a class="secondary" href="influencer-dashboard.html">대시보드로 이동</a>
+      ${brandUrl ? '<button class="secondary" type="button" id="copyBrandLinkBtn">브랜드 링크 복사</button>' : ''}
+    </div>
+  `;
+
+  panel.classList.add('on');
+  document.querySelector('.steps')?.setAttribute('style', 'display:none');
+  document.querySelector('.form-layout')?.setAttribute('style', 'display:none');
+  document.querySelector('.bottom-cta')?.setAttribute('style', 'display:none');
+  document.getElementById('submitError').style.display = 'none';
+
+  const copyBtn = document.getElementById('copyBrandLinkBtn');
+  if(copyBtn && brandUrl){
+    copyBtn.addEventListener('click', async () => {
+      await navigator.clipboard?.writeText(brandUrl);
+      copyBtn.textContent = '복사 완료';
+    });
+  }
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
 async function submitGugu(){
   const errEl = document.getElementById('submitError');
   const btn = document.getElementById('submitBtn');
@@ -580,8 +689,7 @@ async function submitGugu(){
     return;
   }
 
-  alert('공구가 성공적으로 등록되었습니다! 🎉');
-  location.href='influencer-dashboard.html';
+  showSuccessPanel(json.data || {});
 }
 </script>
 

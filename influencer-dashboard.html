@@ -28,6 +28,10 @@ nav{position:fixed;top:0;left:0;right:0;height:54px;background:rgba(10,10,10,.97
 .btn-sm{padding:6px 14px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;border:none}
 .btn-r{background:var(--r);color:#fff}
 .btn-ghost{background:none;border:1px solid var(--b2);color:var(--t2)}
+.toast{position:fixed;right:18px;bottom:18px;z-index:900;max-width:min(420px,calc(100vw - 36px));background:rgba(17,17,20,.97);border:1px solid var(--b1);border-left:3px solid var(--g);border-radius:12px;padding:14px 16px;box-shadow:0 18px 60px rgba(0,0,0,.35);transform:translateY(16px);opacity:0;pointer-events:none;transition:.2s}
+.toast.on{transform:translateY(0);opacity:1;pointer-events:auto}
+.toast-title{font-size:13px;font-weight:800;margin-bottom:5px}
+.toast-msg{font-size:12px;color:var(--t2);line-height:1.5;word-break:break-all}
 
 /* LAYOUT */
 .layout{display:grid;grid-template-columns:200px 1fr;min-height:100vh;padding-top:54px}
@@ -374,16 +378,32 @@ function showSec(id, el){
 function fmt(n){ return Number(n||0).toLocaleString(); }
 function fmtDate(s){ const d=new Date(s); return `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`; }
 function pct(cur,target){ return target>0 ? Math.min(100,Math.round(cur/target*100)) : 0; }
+function escapeToast(value){
+  return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+}
+function showToast(title, message){
+  let toast = document.getElementById('dashToast');
+  if(!toast){
+    toast = document.createElement('div');
+    toast.id = 'dashToast';
+    toast.className = 'toast';
+    document.body.appendChild(toast);
+  }
+  toast.innerHTML = `<div class="toast-title">${escapeToast(title)}</div><div class="toast-msg">${escapeToast(message)}</div>`;
+  toast.classList.add('on');
+  clearTimeout(showToast._timer);
+  showToast._timer = setTimeout(() => toast.classList.remove('on'), 4500);
+}
 function brandPortalUrl(g){
   if(!g?.brand_token) return '';
   return `${location.origin}/brand-portal.html?token=${encodeURIComponent(g.brand_token)}`;
 }
 async function copyBrandPortal(g){
   const url = brandPortalUrl(g);
-  if(!url){ alert('브랜드 포털 링크가 아직 없습니다.'); return; }
+  if(!url){ showToast('브랜드 포털 링크 없음', '아직 생성된 브랜드 포털 링크가 없습니다.'); return; }
   try{
     await navigator.clipboard.writeText(url);
-    alert(`브랜드 포털 링크를 복사했어요.\n\n${url}`);
+    showToast('브랜드 포털 링크 복사 완료', url);
   }catch{
     prompt('아래 링크를 복사해 브랜드사에 전달하세요.', url);
   }
@@ -575,7 +595,7 @@ function renderGugus(gugus){
 
 function copyBrandLink(url){
   navigator.clipboard.writeText(url).then(()=>{
-    alert('브랜드 포털 링크가 복사됐습니다!\n\n' + url);
+    showToast('브랜드 포털 링크 복사 완료', url);
   }).catch(()=>{
     prompt('링크를 복사하세요:', url);
   });
@@ -720,7 +740,7 @@ async function loadAll(){
     sessionStorage.removeItem('latestBrandPortalToken');
     const latestBrandPortalUrl = `${location.origin}/brand-portal.html?token=${encodeURIComponent(latestBrandPortalToken)}`;
     setTimeout(() => {
-      alert(`釉뚮옖???ы꽭 留곹겕媛 ?앹꽦?섏뿀?듬땲??\n\n${latestBrandPortalUrl}`);
+      showToast('브랜드 포털 링크가 생성됐어요', latestBrandPortalUrl);
     }, 300);
   }
 
