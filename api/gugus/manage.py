@@ -8,7 +8,7 @@ from http.server import BaseHTTPRequestHandler
 import json, uuid, datetime, secrets, os
 from urllib.parse import urlparse, parse_qs
 from api._db import get_db, ok, err
-from api._auth import get_user_with_profile
+from api._auth import get_bearer_token, get_user_with_profile
 
 
 class handler(BaseHTTPRequestHandler):
@@ -22,7 +22,7 @@ class handler(BaseHTTPRequestHandler):
         if not brand_token:
             return self._send(*err("brand_token 파라미터 필요"))
 
-        db = get_db()
+        db = get_db(get_bearer_token(self.headers))
         g = db.table("gugus").select(
             "id,product_name,emoji,category,sale_price,original_price,"
             "current_participants,target_participants,status,end_date,"
@@ -98,7 +98,7 @@ class handler(BaseHTTPRequestHandler):
         if gugu_type not in ("period", "quantity", "funding"):
             gugu_type = "period"
 
-        db = get_db()
+        db = get_db(get_bearer_token(self.headers))
         start_date = body.get("start_date") or datetime.datetime.utcnow().date().isoformat()
         try:
             gugu = db.table("gugus").insert({
@@ -143,7 +143,7 @@ class handler(BaseHTTPRequestHandler):
         if not gugu_id:
             return self._send(*err("id 누락"))
 
-        db = get_db()
+        db = get_db(get_bearer_token(self.headers))
         existing = db.table("gugus").select("influencer_id, current_participants").eq("id", gugu_id).single().execute()
         if not existing.data or existing.data["influencer_id"] != user.id:
             return self._send(*err("수정 권한이 없습니다", 403))
@@ -179,7 +179,7 @@ class handler(BaseHTTPRequestHandler):
         if not gugu_id:
             return self._send(*err("id 누락"))
 
-        db = get_db()
+        db = get_db(get_bearer_token(self.headers))
         existing = db.table("gugus").select("influencer_id, current_participants").eq("id", gugu_id).single().execute()
         if not existing.data or existing.data["influencer_id"] != user.id:
             return self._send(*err("삭제 권한 없음", 403))

@@ -12,6 +12,10 @@ SUPABASE_SERVICE_KEY = (
     or os.environ.get("SUPABASE_KEY")
     or ""
 )
+SUPABASE_ANON_KEY = os.environ.get(
+    "SUPABASE_ANON_KEY",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlhdHRscWRzbnJxZXF6dmN1dnV1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0Mzc4NDMsImV4cCI6MjA5MTAxMzg0M30.OXYzBYsMHg3ryW7DDr5xljXrgCkL92EIQS2LunAabag",
+)
 
 
 class _Result:
@@ -21,8 +25,9 @@ class _Result:
 
 
 class _Query:
-    def __init__(self, table, method="GET", payload=None):
+    def __init__(self, table, auth_token=None, method="GET", payload=None):
         self.table = table
+        self.auth_token = auth_token
         self.method = method
         self.payload = payload
         self.params = []
@@ -86,12 +91,12 @@ class _Query:
         return self
 
     def execute(self):
-        if not SUPABASE_SERVICE_KEY:
-            raise RuntimeError("Missing SUPABASE_SERVICE_KEY or SUPABASE_KEY environment variable")
+        api_key = SUPABASE_SERVICE_KEY or SUPABASE_ANON_KEY
+        bearer = SUPABASE_SERVICE_KEY or self.auth_token or SUPABASE_ANON_KEY
 
         headers = {
-            "apikey": SUPABASE_SERVICE_KEY,
-            "Authorization": f"Bearer {SUPABASE_SERVICE_KEY}",
+            "apikey": api_key,
+            "Authorization": f"Bearer {bearer}",
             "Content-Type": "application/json",
             **self.headers,
         }
@@ -126,15 +131,18 @@ class _Query:
 
 
 class _DB:
+    def __init__(self, auth_token=None):
+        self.auth_token = auth_token
+
     def table(self, name):
-        return _Query(name)
+        return _Query(name, auth_token=self.auth_token)
 
 
 _client = _DB()
 
 
-def get_db() -> _DB:
-    return _client
+def get_db(auth_token=None) -> _DB:
+    return _DB(auth_token) if auth_token else _client
 
 
 def ok(data, status=200):

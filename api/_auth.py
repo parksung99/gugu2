@@ -44,13 +44,20 @@ def get_user(headers: dict):
         return None
 
 
+def get_bearer_token(headers: dict) -> str:
+    auth = headers.get("authorization") or headers.get("Authorization", "")
+    if not auth.lower().startswith("bearer "):
+        return ""
+    return auth[7:].strip()
+
+
 def get_user_with_profile(headers: dict):
     """사용자 + profiles 테이블 데이터 반환."""
     from api._db import get_db
     user = get_user(headers)
     if not user:
         return None, None
-    db = get_db()
+    db = get_db(get_bearer_token(headers))
     profile = db.table("profiles").select("*").eq("id", user.id).single().execute()
     return user, profile.data
 
