@@ -48,7 +48,7 @@ class handler(BaseHTTPRequestHandler):
                         "client_id": KAKAO_CLIENT_ID,
                         "redirect_uri": redirect_uri,
                         "response_type": "code",
-                        "scope": "profile_nickname account_email",
+                        "scope": "profile_nickname",
                     }
                 )
                 return self._redirect(f"https://kauth.kakao.com/oauth/authorize?{params}")
