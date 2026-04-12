@@ -1,0 +1,8 @@
+.env
+.env.local
+.env*.local
+.mcp.json
+.claude/
+__pycache__/
+**/__pycache__/
+*.pyc

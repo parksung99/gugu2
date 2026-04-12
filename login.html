@@ -250,7 +250,10 @@ if(oauthError){
   const errEl = document.getElementById('loginError');
   const msgs = {
     kakao_token: '카카오 로그인 중 오류가 발생했어요. 다시 시도해주세요.',
-    kakao_user: '카카오 사용자 정보를 가져올 수 없어요.'
+    kakao_user: '카카오 사용자 정보를 가져올 수 없어요.',
+    kakao_session: '카카오 인증은 되었지만 로그인 세션을 만들지 못했어요. 잠시 후 다시 시도해주세요.',
+    kakao_server: '카카오 로그인 서버 처리 중 오류가 발생했어요.',
+    server_config: '카카오 로그인 서버 설정이 아직 완료되지 않았어요.'
   };
   errEl.style.display='block';
   errEl.textContent = msgs[oauthError] || '로그인 중 오류가 발생했어요.';
