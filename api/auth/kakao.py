@@ -83,11 +83,11 @@ class handler(BaseHTTPRequestHandler):
 
             self._link_profile(user_id, kakao_id, nickname)
 
-            action_link = self._generate_login_link(email, f"{base_url}/index.html")
-            if not action_link:
+            session = self._create_login_session(email)
+            if not session:
                 return self._redirect(f"{base_url}/login.html?error=kakao_session")
 
-            return self._redirect(action_link)
+            return self._redirect(self._session_redirect_url(base_url, session))
 
         except Exception as e:
             print(f"[kakao] unhandled error: {e}")
@@ -209,17 +209,64 @@ class handler(BaseHTTPRequestHandler):
         except Exception as e:
             print(f"[kakao] profile update failed: {e}")
 
-    def _generate_login_link(self, email, redirect_to):
+    def _create_login_session(self, email):
         resp = req.post(
             f"{SUPABASE_URL}/auth/v1/admin/generate_link",
             headers=self._admin_headers(),
-            json={"type": "magiclink", "email": email, "redirect_to": redirect_to},
+            json={"type": "magiclink", "email": email},
             timeout=10,
         )
         if resp.status_code not in (200, 201):
             print(f"[kakao] generate link failed: {resp.status_code} {resp.text}")
             return None
-        return resp.json().get("action_link")
+
+        link_data = resp.json()
+        hashed_token = link_data.get("hashed_token")
+        email_otp = link_data.get("email_otp")
+        verification_type = link_data.get("verification_type") or "magiclink"
+
+        attempts = []
+        if hashed_token:
+            attempts.extend(
+                [
+                    {"token_hash": hashed_token, "type": "email"},
+                    {"token_hash": hashed_token, "type": verification_type},
+                ]
+            )
+        if email_otp:
+            attempts.append({"email": email, "token": email_otp, "type": verification_type})
+            attempts.append({"email": email, "token": email_otp, "type": "email"})
+
+        for payload in attempts:
+            verify_resp = req.post(
+                f"{SUPABASE_URL}/auth/v1/verify",
+                headers={
+                    "apikey": SUPABASE_SERVICE_KEY,
+                    "Authorization": f"Bearer {SUPABASE_SERVICE_KEY}",
+                    "Content-Type": "application/json",
+                },
+                json=payload,
+                timeout=10,
+            )
+            if verify_resp.status_code == 200:
+                data = verify_resp.json()
+                if data.get("access_token") and data.get("refresh_token"):
+                    return data
+            print(f"[kakao] verify failed: {verify_resp.status_code} {verify_resp.text}")
+
+        return None
+
+    def _session_redirect_url(self, base_url, session):
+        params = urlencode(
+            {
+                "access_token": session["access_token"],
+                "refresh_token": session["refresh_token"],
+                "expires_in": session.get("expires_in", 3600),
+                "token_type": session.get("token_type", "bearer"),
+                "type": "magiclink",
+            }
+        )
+        return f"{base_url}/index.html#{params}"
 
     def _redirect(self, url):
         self.send_response(302)
