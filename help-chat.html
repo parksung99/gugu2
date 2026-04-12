@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GUGU. — CS 챗봇</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#F8F8F7;--white:#FFF;
+  --border:#E8E8E8;--border2:#D8D8D8;
+  --red:#EF4444;--orange:#F97316;--green:#10B981;--blue:#6366F1;
+  --t1:#111;--t2:#6B7280;--t3:#9CA3AF;
+}
+body{background:var(--bg);color:var(--t1);font-family:'Noto Sans KR',sans-serif;font-size:14px;height:100vh;display:flex;flex-direction:column}
+
+/* NAV */
+nav{height:54px;background:rgba(255,255,255,.88);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;gap:14px;flex-shrink:0}
+.logo{font-family:'Plus Jakarta Sans',sans-serif;font-size:22px;font-weight:800;letter-spacing:-.5px;color:var(--t1);text-decoration:none}
+.logo em{color:var(--red);font-style:normal}
+.nav-badge{background:rgba(99,102,241,.12);border:1px solid rgba(99,102,241,.25);color:var(--blue);font-size:10px;padding:2px 8px;border-radius:4px;font-weight:700}
+.back-btn{background:var(--white);border:1px solid var(--border);color:var(--t1);padding:6px 14px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;margin-left:auto}
+.back-btn:hover{color:var(--t1);border-color:var(--border2)}
+
+/* CHAT AREA */
+.chat-container{flex:1;display:flex;flex-direction:column;max-width:800px;width:100%;margin:0 auto;overflow:hidden}
+.chat-messages{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:12px}
+
+/* MESSAGES */
+.msg{display:flex;gap:10px;max-width:85%;animation:fadeIn .2s}
+.msg-bot{align-self:flex-start}
+.msg-user{align-self:flex-end;flex-direction:row-reverse}
+.msg-avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.msg-bot .msg-avatar{background:linear-gradient(135deg,var(--red),var(--orange))}
+.msg-user .msg-avatar{background:var(--blue)}
+.msg-bubble{padding:12px 16px;border-radius:14px;font-size:13px;line-height:1.7;word-break:break-word}
+.msg-bot .msg-bubble{background:var(--white);border:1px solid var(--border);border-top-left-radius:4px}
+.msg-user .msg-bubble{background:var(--red);color:#fff;border-top-right-radius:4px}
+.msg-time{font-size:10px;color:var(--t3);margin-top:4px}
+
+/* QUICK REPLIES */
+.quick-replies{display:flex;flex-wrap:wrap;gap:8px;padding:0 20px 12px}
+.qr-btn{padding:8px 16px;border-radius:20px;border:1px solid var(--border);background:var(--white);color:var(--t2);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:.15s}
+.qr-btn:hover{border-color:var(--red);color:var(--red);background:rgba(239,68,68,.06)}
+
+/* TYPING INDICATOR */
+.typing{display:flex;gap:4px;padding:8px 16px}
+.typing span{width:6px;height:6px;border-radius:50%;background:var(--t3);animation:bounce .6s infinite alternate}
+.typing span:nth-child(2){animation-delay:.15s}
+.typing span:nth-child(3){animation-delay:.3s}
+@keyframes bounce{to{opacity:.3;transform:translateY(-4px)}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* INPUT */
+.chat-input-wrap{border-top:1px solid var(--border);padding:16px 20px;background:var(--white);flex-shrink:0}
+.chat-input-row{display:flex;gap:10px;align-items:center;max-width:800px;margin:0 auto}
+.chat-input{flex:1;padding:12px 16px;background:var(--bg);border:1px solid var(--border);border-radius:12px;color:var(--t1);font-size:13px;font-family:inherit;outline:none;resize:none;max-height:100px;line-height:1.5}
+.chat-input:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(239,68,68,.08)}
+.chat-input::placeholder{color:var(--t3)}
+.send-btn{width:44px;height:44px;border-radius:50%;background:var(--red);border:none;color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:.15s}
+.send-btn:hover{background:#dc2626}
+.send-btn:disabled{opacity:.4;cursor:not-allowed}
+
+@media(max-width:768px){
+  .chat-messages{padding:12px}
+  .msg{max-width:92%}
+  .chat-input-wrap{padding:12px}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="logo" href="index.html">GUGU<em>.</em></a>
+  <span class="nav-badge">CS 챗봇</span>
+  <button class="back-btn" onclick="history.back()">← 돌아가기</button>
+</nav>
+
+<div class="chat-container">
+  <div class="chat-messages" id="chatMessages"></div>
+  <div class="quick-replies" id="quickReplies"></div>
+  <div class="chat-input-wrap">
+    <div class="chat-input-row">
+      <textarea class="chat-input" id="chatInput" placeholder="궁금한 점을 물어보세요..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMessage()}"></textarea>
+      <button class="send-btn" id="sendBtn" onclick="sendMessage()">➤</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── CS 챗봇 (프롬프트 엔지니어링은 추후) ───
+const chatEl = document.getElementById('chatMessages');
+const inputEl = document.getElementById('chatInput');
+const sendBtn = document.getElementById('sendBtn');
+const qrEl = document.getElementById('quickReplies');
+
+let chatHistory = [];
+let userName = '';
+
+// FAQ 데이터 (규칙 기반 - 추후 AI로 교체 가능)
+const FAQ = [
+  {
+    keywords: ['배송','택배','언제','도착','송장'],
+    answer: '배송은 결제 완료 후 인플루언서가 상품을 준비하고, 택배사에 발송하면 시작돼요. 보통 발송 후 1~3일 내 도착합니다.\n\n배송 상태는 마이페이지 → 주문내역에서 실시간으로 확인할 수 있어요. 송장번호가 등록되면 알림도 보내드려요!'
+  },
+  {
+    keywords: ['취소','환불','반품','교환','취소하고'],
+    answer: '주문 취소는 공구 마감 24시간 전까지 가능해요.\n\n마이페이지 → 주문내역에서 해당 주문의 "취소" 버튼을 눌러주세요. 카드 결제 시 즉시 환불되며, 무통장입금의 경우 1~2영업일 소요됩니다.\n\n배송 시작 후에는 인플루언서에게 직접 문의해주세요.'
+  },
+  {
+    keywords: ['결제','카드','무통장','입금','계좌','결제수단'],
+    answer: '현재 GUGU에서 지원하는 결제수단이에요:\n\n• 신용/체크카드\n• 카카오페이\n• 네이버페이\n• 무통장입금 (가상계좌)\n\n결제 관련 문제가 있으시면 구체적으로 알려주세요!'
+  },
+  {
+    keywords: ['공구','참여','구매','방법','어떻게'],
+    answer: '공구 참여 방법은 간단해요!\n\n1. 마음에 드는 공구 상품을 선택\n2. 수량을 정하고 "구매하기" 클릭\n3. 배송지 정보 입력\n4. 결제 완료!\n\n공구가 마감되기 전에 참여해야 해요. 남은 기간과 참여 현황은 상품 페이지에서 확인할 수 있습니다.'
+  },
+  {
+    keywords: ['인플루언서','신청','등록','채널'],
+    answer: '인플루언서로 활동하고 싶으시다면:\n\n1. 인플루언서 신청 페이지에서 채널 정보를 등록\n2. GUGU 관리팀이 검토 (1~2영업일)\n3. 승인되면 공구를 열 수 있어요!\n\n인플루언서 신청 → influencer-apply.html'
+  },
+  {
+    keywords: ['정산','수익','수수료','입금'],
+    answer: '인플루언서 정산 안내:\n\n• 수수료: 판매금액의 5%\n• 정산 시기: 공구 마감 후 7영업일 이내\n• 정산 방법: 등록된 계좌로 자동 입금\n\n정산 내역은 인플루언서 대시보드 → 정산 내역에서 확인할 수 있어요.'
+  },
+  {
+    keywords: ['비밀번호','로그인','계정','이메일'],
+    answer: '계정 관련 도움이 필요하시군요!\n\n• 비밀번호 분실: 로그인 페이지 → "비밀번호 찾기"\n• 소셜 로그인: 카카오 또는 Google 계정으로도 로그인 가능\n• 이메일 변경: 마이페이지에서 수정 가능\n\n그 외 계정 문제가 있으시면 자세히 알려주세요.'
+  },
+  {
+    keywords: ['안녕','하이','헬로','ㅎㅇ'],
+    answer: `안녕하세요! GUGU CS 챗봇이에요 😊\n\n궁금한 점이 있으시면 편하게 물어보세요. 아래 자주 묻는 질문도 확인해보세요!`
+  }
+];
+
+const QUICK_REPLIES_INIT = [
+  '배송은 언제 되나요?',
+  '주문 취소하고 싶어요',
+  '결제 수단이 궁금해요',
+  '공구 참여 방법',
+  '인플루언서 신청',
+  '정산은 어떻게 되나요?'
+];
+
+function addMessage(text, isUser=false){
+  const time = new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});
+  const msg = document.createElement('div');
+  msg.className = `msg ${isUser?'msg-user':'msg-bot'}`;
+  msg.innerHTML = `
+    <div class="msg-avatar">${isUser?'👤':'🤖'}</div>
+    <div>
+      <div class="msg-bubble">${text.replace(/\n/g,'<br>')}</div>
+      <div class="msg-time">${time}</div>
+    </div>`;
+  chatEl.appendChild(msg);
+  chatEl.scrollTop = chatEl.scrollHeight;
+  chatHistory.push({role:isUser?'user':'bot', text});
+}
+
+function showTyping(){
+  const el = document.createElement('div');
+  el.className='msg msg-bot';
+  el.id='typingIndicator';
+  el.innerHTML=`<div class="msg-avatar">🤖</div><div><div class="msg-bubble"><div class="typing"><span></span><span></span><span></span></div></div></div>`;
+  chatEl.appendChild(el);
+  chatEl.scrollTop=chatEl.scrollHeight;
+}
+
+function hideTyping(){
+  document.getElementById('typingIndicator')?.remove();
+}
+
+function showQuickReplies(replies){
+  qrEl.innerHTML=replies.map(r=>`<button class="qr-btn" onclick="quickReply('${r.replace(/'/g,"\\'")}')">${r}</button>`).join('');
+}
+
+function quickReply(text){
+  qrEl.innerHTML='';
+  inputEl.value=text;
+  sendMessage();
+}
+
+function findAnswer(text){
+  const lower=text.toLowerCase();
+  for(const faq of FAQ){
+    if(faq.keywords.some(k=>lower.includes(k))){
+      return faq.answer;
+    }
+  }
+  return null;
+}
+
+async function sendMessage(){
+  const text=inputEl.value.trim();
+  if(!text) return;
+  inputEl.value='';
+  qrEl.innerHTML='';
+
+  addMessage(text, true);
+  sendBtn.disabled=true;
+
+  showTyping();
+
+  // 규칙 기반 응답 (추후 AI API로 교체)
+  await new Promise(r=>setTimeout(r, 600+Math.random()*800));
+  hideTyping();
+
+  const answer = findAnswer(text);
+  if(answer){
+    addMessage(answer);
+  } else {
+    addMessage(`죄송해요, "${text}"에 대한 정확한 답변을 찾지 못했어요.\n\n아래 방법으로 추가 도움을 받을 수 있어요:\n\n• 고객센터 이메일: help@gugu.com\n• 카카오톡 채널: @GUGU\n\n자주 묻는 질문을 선택해보시겠어요?`);
+    showQuickReplies(QUICK_REPLIES_INIT);
+  }
+  sendBtn.disabled=false;
+  inputEl.focus();
+}
+
+// 초기 메시지
+(async function init(){
+  const user = await getCurrentUser();
+  userName = user?.profile?.name || '';
+  addMessage(`안녕하세요${userName?' '+userName+'님':''}! GUGU 고객센터 챗봇이에요.\n\n궁금한 점이 있으시면 편하게 물어보세요. 자주 묻는 질문을 선택하시면 빠르게 답변 드릴게요!`);
+  showQuickReplies(QUICK_REPLIES_INIT);
+})();
+
+// 자동 높이 조절
+inputEl.addEventListener('input',function(){
+  this.style.height='auto';
+  this.style.height=Math.min(this.scrollHeight,100)+'px';
+});
+</script>
+</body>
+</html>

@@ -5,68 +5,68 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GUGU. — 인플루언서 로그인</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&family=Bebas+Neue&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{
-  --bg:#0A0A0A;--s1:#111114;--s2:#171719;
-  --b1:#242428;--b2:#2e2e34;
-  --r:#FF3B3B;--o:#FF8A00;--g:#22c55e;
-  --t:#F2F2F5;--t2:#8a8a9a;--t3:#464650;
+  --bg:#F8F8F7;--white:#FFF;
+  --border:#E8E8E8;--border2:#D8D8D8;
+  --red:#EF4444;--red-light:#FEF2F2;--orange:#F97316;--green:#10B981;--green-light:#ECFDF5;
+  --t1:#111;--t2:#6B7280;--t3:#9CA3AF;
 }
-body{background:var(--bg);color:var(--t);font-family:'Noto Sans KR',sans-serif;min-height:100vh;display:flex;flex-direction:column}
-nav{background:rgba(10,10,10,0.97);border-bottom:1px solid var(--b1);padding:0 32px}
+body{background:var(--bg);color:var(--t1);font-family:'Noto Sans KR',sans-serif;min-height:100vh;display:flex;flex-direction:column}
+nav{background:rgba(255,255,255,.88);border-bottom:1px solid var(--border);padding:0 32px}
 .nav-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:56px}
-.logo{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;text-decoration:none;color:var(--t)}
-.logo span{color:var(--r)}
-.nav-badge{background:rgba(255,59,59,0.12);border:1px solid rgba(255,59,59,0.25);color:var(--r);font-size:11px;padding:3px 10px;border-radius:4px;font-weight:700;letter-spacing:1px}
+.logo{font-family:'Plus Jakarta Sans',sans-serif;font-size:22px;font-weight:800;letter-spacing:-.5px;text-decoration:none;color:var(--t1)}
+.logo span{color:var(--red)}
+.nav-badge{background:rgba(255,59,59,0.12);border:1px solid rgba(255,59,59,0.25);color:var(--red);font-size:11px;padding:3px 10px;border-radius:4px;font-weight:700;letter-spacing:1px}
 .consumer-link{font-size:13px;color:var(--t2);text-decoration:none;display:flex;align-items:center;gap:6px}
-.consumer-link:hover{color:var(--t)}
+.consumer-link:hover{color:var(--t1)}
 .main{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 20px;gap:80px}
 
 /* 왼쪽 */
 .left{display:flex;flex-direction:column;gap:24px;max-width:380px}
 .badge-row{display:flex;gap:8px;flex-wrap:wrap}
 .badge{padding:5px 12px;border-radius:99px;font-size:11px;font-weight:700;border:1px solid}
-.b-green{background:rgba(34,197,94,.1);border-color:rgba(34,197,94,.2);color:var(--g)}
-.b-orange{background:rgba(255,138,0,.1);border-color:rgba(255,138,0,.2);color:var(--o)}
-.b-red{background:rgba(255,59,59,.1);border-color:rgba(255,59,59,.2);color:var(--r)}
+.b-green{background:rgba(34,197,94,.1);border-color:rgba(16,185,129,.15);color:var(--green)}
+.b-orange{background:rgba(255,138,0,.1);border-color:rgba(255,138,0,.2);color:var(--orange)}
+.b-red{background:rgba(239,68,68,.1);border-color:rgba(255,59,59,.2);color:var(--red)}
 .left-title{font-size:38px;font-weight:800;letter-spacing:-1.5px;line-height:1.15}
-.left-title .red{color:var(--r)}
+.left-title .red{color:var(--red)}
 .left-sub{font-size:14px;color:var(--t2);line-height:1.75}
 .stats-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
-.stat-box{background:var(--s1);border:1px solid var(--b1);border-radius:10px;padding:14px;text-align:center}
-.stat-n{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px}
-.stat-n.red{color:var(--r)}.stat-n.green{color:var(--g)}.stat-n.orange{color:var(--o)}
+.stat-box{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center}
+.stat-n{font-family:'Plus Jakarta Sans',sans-serif;font-size:22px;letter-spacing:1px}
+.stat-n.red{color:var(--red)}.stat-n.green{color:var(--green)}.stat-n.orange{color:var(--orange)}
 .stat-l{font-size:11px;color:var(--t2);margin-top:2px}
 
 /* 구분선 */
-.divider{width:1px;height:320px;background:var(--b1)}
+.divider{width:1px;height:320px;background:var(--border)}
 
 /* 폼 */
-.box{width:400px;background:var(--s1);border:1px solid var(--b1);border-radius:16px;padding:32px}
-.box-tabs{display:flex;margin-bottom:28px;background:var(--s2);border-radius:8px;padding:3px}
+.box{width:400px;background:var(--white);border:1px solid var(--border);border-radius:16px;padding:32px}
+.box-tabs{display:flex;margin-bottom:28px;background:var(--bg);border-radius:8px;padding:3px}
 .tab{flex:1;padding:8px;text-align:center;border-radius:6px;font-size:14px;cursor:pointer;border:none;background:none;color:var(--t2);font-family:inherit;transition:.15s}
-.tab.active{background:var(--s1);color:var(--t);font-weight:700}
+.tab.active{background:var(--white);color:var(--t1);font-weight:700}
 .form-group{margin-bottom:16px}
 .label{font-size:12px;color:var(--t2);margin-bottom:6px;display:block;font-weight:600}
-.label .req{color:var(--r)}
-.input{width:100%;padding:11px 14px;background:var(--s2);border:1px solid var(--b1);border-radius:8px;color:var(--t);font-size:14px;font-family:inherit;outline:none;transition:.2s}
-.input:focus{border-color:var(--r)}
+.label .req{color:var(--red)}
+.input{width:100%;padding:11px 14px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--t1);font-size:14px;font-family:inherit;outline:none;transition:.2s}
+.input:focus{border-color:var(--red)}
 .input::placeholder{color:var(--t3)}
-.err{display:none;color:var(--r);font-size:13px;margin-bottom:14px;padding:10px 14px;background:rgba(255,59,59,0.08);border-radius:8px}
-.ok{display:none;color:var(--g);font-size:13px;margin-bottom:14px;padding:10px 14px;background:rgba(34,197,94,0.08);border-radius:8px}
-.btn-submit{width:100%;padding:13px;border-radius:10px;border:none;background:var(--r);color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:16px;transition:.2s}
+.err{display:none;color:var(--red);font-size:13px;margin-bottom:14px;padding:10px 14px;background:rgba(255,59,59,0.08);border-radius:8px}
+.ok{display:none;color:var(--green);font-size:13px;margin-bottom:14px;padding:10px 14px;background:rgba(34,197,94,0.08);border-radius:8px}
+.btn-submit{width:100%;padding:13px;border-radius:10px;border:none;background:var(--red);color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:16px;transition:.2s}
 .btn-submit:hover{background:#e03333}
 .btn-submit:disabled{background:var(--t3);cursor:default}
 .bottom{text-align:center;font-size:13px;color:var(--t2)}
-.bottom a{color:var(--r);text-decoration:none;font-weight:600}
+.bottom a{color:var(--red);text-decoration:none;font-weight:600}
 .divider-signup{display:flex;align-items:center;gap:10px;margin:20px 0 0}
-.divider-signup::before,.divider-signup::after{content:'';flex:1;height:1px;background:var(--b1)}
+.divider-signup::before,.divider-signup::after{content:'';flex:1;height:1px;background:var(--border)}
 .divider-signup span{font-size:12px;color:var(--t2);white-space:nowrap}
-.apply-btn{display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid var(--b1);border-radius:10px;background:none;width:100%;cursor:pointer;font-family:inherit;transition:.2s;text-align:left;margin-top:12px}
-.apply-btn:hover{border-color:var(--r);background:rgba(255,59,59,0.04)}
+.apply-btn{display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid var(--border);border-radius:10px;background:none;width:100%;cursor:pointer;font-family:inherit;transition:.2s;text-align:left;margin-top:12px}
+.apply-btn:hover{border-color:var(--red);background:rgba(255,59,59,0.04)}
 .apply-icon{font-size:22px}
-.apply-text .t{font-size:14px;font-weight:700;color:var(--t)}
+.apply-text .t{font-size:14px;font-weight:700;color:var(--t1)}
 .apply-text .s{font-size:12px;color:var(--t2)}
 .apply-arrow{margin-left:auto;color:var(--t3)}
 
@@ -130,7 +130,7 @@ nav{background:rgba(10,10,10,0.97);border-bottom:1px solid var(--b1);padding:0 3
     <!-- 신규 신청 패널 -->
     <div id="signupPanel" style="display:none">
       <div style="background:rgba(255,59,59,0.06);border:1px solid rgba(255,59,59,0.15);border-radius:10px;padding:14px;margin-bottom:20px">
-        <div style="font-size:13px;font-weight:700;color:var(--r);margin-bottom:4px">✨ 인플루언서 파트너 신청</div>
+        <div style="font-size:13px;font-weight:700;color:var(--red);margin-bottom:4px">✨ 인플루언서 파트너 신청</div>
         <div style="font-size:12px;color:var(--t2);line-height:1.6">더 자세한 정보 입력은 아래에서 해주세요. 기본 계정을 먼저 만들고 채널 정보를 추가할 수 있어요.</div>
       </div>
       <div class="form-group">

@@ -4,131 +4,131 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>레티날 0.1% 나이트 세럼 — GUGU.</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800;900&family=Bebas+Neue&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{
-  --bg:#0A0A0A;--s1:#111114;--s2:#171719;--s3:#1e1e22;
-  --b1:#242428;--b2:#2e2e34;
-  --r:#FF3B3B;--o:#FF8A00;--g:#22c55e;--bl:#6366f1;
-  --t:#F2F2F5;--t2:#8a8a9a;--t3:#464650;
+  --bg:#F8F8F7;--white:#FFF;
+  --border:#E8E8E8;--border2:#D8D8D8;
+  --red:#EF4444;--red-light:#FEF2F2;--orange:#F97316;--green:#10B981;--green-light:#ECFDF5;--blue:#6366F1;--blue-light:#EEF2FF;
+  --t1:#111;--t2:#6B7280;--t3:#9CA3AF;
   --max:1100px;
 }
 html{scroll-behavior:smooth;overflow-x:hidden}body{overflow-x:hidden}
-body {background:var(--bg);color:var(--t);font-family:'Noto Sans KR',sans-serif;font-size:14px;padding-top:54px}
+body {background:var(--bg);color:var(--t1);font-family:'Noto Sans KR',sans-serif;font-size:14px;padding-top:54px}
 .wrap{max-width:var(--max);margin:0 auto;padding:54px 28px 0}
-nav {position:fixed;top:0;z-index:200;background:rgba(10,10,10,.95);border-bottom:1px solid var(--b1)}
+nav {position:fixed;top:0;z-index:200;background:rgba(10,10,10,.95);border-bottom:1px solid var(--border)}
 .nav-inner{max-width:var(--max);margin:0 auto;display:flex;align-items:center;height:56px;padding:0 28px;gap:16px}
-.logo{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:3px;color:var(--t);text-decoration:none;flex-shrink:0}
-.logo em{color:var(--r);font-style:normal}
+.logo{font-family:'Plus Jakarta Sans',sans-serif;font-size:26px;letter-spacing:3px;color:var(--t1);text-decoration:none;flex-shrink:0}
+.logo em{color:var(--red);font-style:normal}
 .breadcrumb{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--t2);flex:1}
-.breadcrumb a{color:var(--t2);text-decoration:none;transition:.15s}.breadcrumb a:hover{color:var(--t)}
+.breadcrumb a{color:var(--t2);text-decoration:none;transition:.15s}.breadcrumb a:hover{color:var(--t1)}
 .bc-sep{font-size:11px;color:var(--t3)}
-.bc-cur{color:var(--t);font-weight:500}
+.bc-cur{color:var(--t1);font-weight:500}
 .nav-r{display:flex;align-items:center;gap:8px;flex-shrink:0}
 .btn-sm{padding:6px 14px;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
-.btn-line{background:none;border:1px solid var(--b2);color:var(--t)}.btn-fill{background:var(--r);border:none;color:#fff}
+.btn-line{background:none;border:1px solid var(--border2);color:var(--t1)}.btn-fill{background:var(--red);border:none;color:#fff}
 
 /* 레이아웃 */
 .pd-wrap{display:grid;grid-template-columns:1fr 380px;gap:32px;padding:28px 0 48px}
 /* 좌측 */
 .pd-left{}
-.pd-img-main{height:400px;background:linear-gradient(135deg,#180808,#260e0e);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:100px;margin-bottom:10px;position:relative;overflow:hidden;border:1px solid var(--b1)}
+.pd-img-main{height:400px;background:linear-gradient(135deg,#180808,#260e0e);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:100px;margin-bottom:10px;position:relative;overflow:hidden;border:1px solid var(--border)}
 .pd-img-thumbs{display:flex;gap:8px}
-.pd-thumb{width:72px;height:72px;border-radius:9px;background:var(--s2);border:1px solid var(--b1);display:flex;align-items:center;justify-content:center;font-size:28px;cursor:pointer;transition:.2s}
-.pd-thumb:hover,.pd-thumb.on{border-color:var(--r)}
+.pd-thumb{width:72px;height:72px;border-radius:9px;background:var(--bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:28px;cursor:pointer;transition:.2s}
+.pd-thumb:hover,.pd-thumb.on{border-color:var(--red)}
 /* 공유 버튼 */
 .share-row{display:flex;align-items:center;gap:8px;margin-top:14px}
 .share-label{font-size:12px;color:var(--t2);font-weight:500}
-.share-btn{display:flex;align-items:center;gap:5px;padding:7px 13px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--b1);background:var(--s1);color:var(--t2);transition:.2s}
-.share-btn:hover{border-color:var(--b2);color:var(--t)}
-.share-copy{border-color:rgba(255,59,59,.2);color:var(--r);background:rgba(255,59,59,.06)}
+.share-btn{display:flex;align-items:center;gap:5px;padding:7px 13px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--white);color:var(--t2);transition:.2s}
+.share-btn:hover{border-color:var(--border2);color:var(--t1)}
+.share-copy{border-color:rgba(255,59,59,.2);color:var(--red);background:rgba(239,68,68,.06)}
 /* 탭 */
-.tab-nav{display:flex;border-bottom:1px solid var(--b1);margin-top:20px}
+.tab-nav{display:flex;border-bottom:1px solid var(--border);margin-top:20px}
 .tab-btn{padding:11px 16px;font-size:14px;font-weight:500;color:var(--t2);cursor:pointer;border:none;background:none;font-family:inherit;border-bottom:2px solid transparent;margin-bottom:-1px;transition:.15s}
-.tab-btn:hover{color:var(--t)}.tab-btn.on{color:var(--t);font-weight:700;border-bottom-color:var(--r)}
+.tab-btn:hover{color:var(--t1)}.tab-btn.on{color:var(--t1);font-weight:700;border-bottom-color:var(--red)}
 .tab-content{padding:20px 0;display:none}.tab-content.on{display:block}
 /* 상품 설명 */
 .prod-desc p{font-size:14px;color:var(--t2);line-height:1.8;margin-bottom:12px}
-.prod-desc h4{font-size:15px;font-weight:700;color:var(--t);margin:16px 0 8px}
+.prod-desc h4{font-size:15px;font-weight:700;color:var(--t1);margin:16px 0 8px}
 .desc-list{display:flex;flex-direction:column;gap:8px}
 .dl-item{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--t2)}
-.dl-dot{width:5px;height:5px;border-radius:50%;background:var(--r);flex-shrink:0;margin-top:6px}
+.dl-dot{width:5px;height:5px;border-radius:50%;background:var(--red);flex-shrink:0;margin-top:6px}
 /* 리뷰 */
-.review-summary{display:flex;align-items:center;gap:20px;padding:16px;background:var(--s1);border:1px solid var(--b1);border-radius:12px;margin-bottom:16px}
-.rs-score{font-size:48px;font-weight:800;color:var(--t);line-height:1}
+.review-summary{display:flex;align-items:center;gap:20px;padding:16px;background:var(--white);border:1px solid var(--border);border-radius:12px;margin-bottom:16px}
+.rs-score{font-size:48px;font-weight:800;color:var(--t1);line-height:1}
 .rs-stars{display:flex;gap:2px;font-size:18px;margin-bottom:4px}
 .rs-cnt{font-size:12px;color:var(--t2)}
 .rs-bars{flex:1}
 .rs-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:4px;font-size:12px;color:var(--t2)}
-.rs-bar-bg{flex:1;height:5px;background:var(--b2);border-radius:2px}
-.rs-bar-fill{height:100%;background:var(--o);border-radius:2px}
+.rs-bar-bg{flex:1;height:5px;background:var(--border2);border-radius:2px}
+.rs-bar-fill{height:100%;background:var(--orange);border-radius:2px}
 .review-list{display:flex;flex-direction:column;gap:12px}
-.rv-card{background:var(--s1);border:1px solid var(--b1);border-radius:12px;padding:16px}
+.rv-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:16px}
 .rv-top{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-.rv-av{width:26px;height:26px;border-radius:50%;background:var(--s3);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--t)}
-.rv-name{font-size:13px;font-weight:600;color:var(--t)}
+.rv-av{width:26px;height:26px;border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--t1)}
+.rv-name{font-size:13px;font-weight:600;color:var(--t1)}
 .rv-date{font-size:11px;color:var(--t2);margin-left:auto}
 .rv-stars{font-size:12px;margin-bottom:6px}
 .rv-txt{font-size:13px;color:var(--t2);line-height:1.65}
 
 /* 우측 패널 */
 .pd-right{}
-.pd-panel{background:var(--s1);border:1px solid var(--b1);border-radius:16px;padding:22px;position:sticky;top:72px}
+.pd-panel{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:22px;position:sticky;top:72px}
 .pd-inf-row{display:flex;align-items:center;gap:10px;margin-bottom:14px}
 .pd-av{width:36px;height:36px;border-radius:50%;background:#e83e8c;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff}
 .pd-inf-name{font-size:14px;font-weight:700}
 .pd-inf-sub{font-size:11px;color:var(--t2)}
-.pd-follow-btn{margin-left:auto;padding:5px 12px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--b2);background:none;color:var(--t2);font-family:inherit;transition:.2s}
-.pd-follow-btn:hover{border-color:var(--r);color:var(--r)}
+.pd-follow-btn{margin-left:auto;padding:5px 12px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border2);background:none;color:var(--t2);font-family:inherit;transition:.2s}
+.pd-follow-btn:hover{border-color:var(--red);color:var(--red)}
 .pd-title{font-size:17px;font-weight:800;line-height:1.4;margin-bottom:12px;letter-spacing:-.3px}
 .pd-price-row{display:flex;align-items:center;gap:8px;margin-bottom:10px}
 .pd-orig{font-size:13px;color:var(--t3);text-decoration:line-through}
-.pd-sale{font-size:28px;font-weight:800;color:var(--t)}
-.pd-disc{font-size:13px;font-weight:700;color:var(--r);background:rgba(255,59,59,.1);padding:3px 8px;border-radius:5px}
+.pd-sale{font-size:28px;font-weight:800;color:var(--t1)}
+.pd-disc{font-size:13px;font-weight:700;color:var(--red);background:rgba(239,68,68,.1);padding:3px 8px;border-radius:5px}
 /* 타이머 */
-.pd-timer-box{background:var(--s2);border:1px solid var(--b2);border-radius:10px;padding:12px 16px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
+.pd-timer-box{background:var(--bg);border:1px solid var(--border2);border-radius:10px;padding:12px 16px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
 .pt-label{font-size:12px;color:var(--t2)}
 .pt-time{display:flex;gap:4px;align-items:center}
-.ptc{background:var(--bg);border-radius:5px;padding:4px 8px;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;color:var(--r)}
+.ptc{background:var(--bg);border-radius:5px;padding:4px 8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:18px;letter-spacing:1px;color:var(--red)}
 /* 진행률 */
 .pd-prog{margin-bottom:14px}
 .pd-prog-row{display:flex;justify-content:space-between;font-size:12px;color:var(--t2);margin-bottom:5px}
-.pd-prog-bar{height:5px;background:var(--b2);border-radius:3px}
-.pd-prog-fill{height:100%;background:linear-gradient(90deg,var(--r),var(--o));border-radius:3px}
+.pd-prog-bar{height:5px;background:var(--border2);border-radius:3px}
+.pd-prog-fill{height:100%;background:linear-gradient(90deg,var(--red),var(--orange));border-radius:3px}
 .pd-viewers{font-size:11px;color:var(--t3);text-align:center;margin-bottom:12px}
-.pd-viewers span{color:var(--o);font-weight:600}
+.pd-viewers span{color:var(--orange);font-weight:600}
 /* 옵션 */
 .pd-option-label{font-size:12px;font-weight:600;color:var(--t2);margin-bottom:7px}
 .pd-options{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
-.opt{padding:6px 13px;border-radius:7px;font-size:13px;font-weight:500;cursor:pointer;border:1px solid var(--b1);background:none;color:var(--t2);font-family:inherit;transition:.2s}
-.opt:hover{border-color:var(--b2);color:var(--t)}.opt.on{border-color:var(--r);color:var(--r);background:rgba(255,59,59,.07)}
+.opt{padding:6px 13px;border-radius:7px;font-size:13px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:none;color:var(--t2);font-family:inherit;transition:.2s}
+.opt:hover{border-color:var(--border2);color:var(--t1)}.opt.on{border-color:var(--red);color:var(--red);background:rgba(255,59,59,.07)}
 /* 수량 */
-.qty-row{display:flex;align-items:center;gap:0;margin-bottom:14px;background:var(--s2);border:1px solid var(--b1);border-radius:8px;overflow:hidden;width:fit-content}
-.qty-btn{width:36px;height:36px;background:none;border:none;color:var(--t);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s}
-.qty-btn:hover{background:var(--b1)}.qty-val{padding:0 16px;font-size:15px;font-weight:700;min-width:42px;text-align:center}
+.qty-row{display:flex;align-items:center;gap:0;margin-bottom:14px;background:var(--bg);border:1px solid var(--border);border-radius:8px;overflow:hidden;width:fit-content}
+.qty-btn{width:36px;height:36px;background:none;border:none;color:var(--t1);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s}
+.qty-btn:hover{background:var(--border)}.qty-val{padding:0 16px;font-size:15px;font-weight:700;min-width:42px;text-align:center}
 /* 최종 금액 */
-.pd-total{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-top:1px solid var(--b1);margin-bottom:14px}
-.pt-k{font-size:14px;font-weight:600;color:var(--t2)}.pt-v{font-size:20px;font-weight:800;color:var(--t)}
+.pd-total{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-top:1px solid var(--border);margin-bottom:14px}
+.pt-k{font-size:14px;font-weight:600;color:var(--t2)}.pt-v{font-size:20px;font-weight:800;color:var(--t1)}
 /* CTA */
-.btn-buy-main{width:100%;padding:14px;border-radius:11px;background:var(--r);border:none;color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;transition:.2s;margin-bottom:8px}
+.btn-buy-main{width:100%;padding:14px;border-radius:11px;background:var(--red);border:none;color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;transition:.2s;margin-bottom:8px}
 .btn-buy-main:hover{background:#e03333}
-.btn-wish{width:100%;padding:12px;border-radius:11px;background:none;border:1px solid var(--b2);color:var(--t2);font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:.2s;display:flex;align-items:center;justify-content:center;gap:6px}
-.btn-wish:hover{border-color:var(--t3);color:var(--t)}
+.btn-wish{width:100%;padding:12px;border-radius:11px;background:none;border:1px solid var(--border2);color:var(--t2);font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:.2s;display:flex;align-items:center;justify-content:center;gap:6px}
+.btn-wish:hover{border-color:var(--t3);color:var(--t1)}
 /* 배송 정보 */
-.pd-delivery{background:var(--s2);border-radius:8px;padding:12px 14px;margin-top:12px}
+.pd-delivery{background:var(--bg);border-radius:8px;padding:12px 14px;margin-top:12px}
 .pd-del-row{display:flex;gap:10px;font-size:12px;margin-bottom:5px}
 .pd-del-row:last-child{margin-bottom:0}
 .pd-del-k{color:var(--t3);flex-shrink:0;width:52px}.pd-del-v{color:var(--t2)}
 
 /* 관련 공구 */
 .related-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:16px 0}
-.rc{background:var(--s1);border:1px solid var(--b1);border-radius:12px;overflow:hidden;cursor:pointer;transition:.2s;text-decoration:none;display:block}
-.rc:hover{border-color:var(--b2);transform:translateY(-2px)}
-.rc-img{height:100px;background:var(--s2);display:flex;align-items:center;justify-content:center;font-size:32px}
+.rc{background:var(--white);border:1px solid var(--border);border-radius:12px;overflow:hidden;cursor:pointer;transition:.2s;text-decoration:none;display:block}
+.rc:hover{border-color:var(--border2);transform:translateY(-2px)}
+.rc-img{height:100px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:32px}
 .rc-body{padding:10px}
-.rc-name{font-size:12px;font-weight:600;color:var(--t);margin-bottom:4px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:30px}
-.rc-price{font-size:14px;font-weight:800;color:var(--t)}.rc-disc{font-size:10px;color:var(--r);font-weight:600}
+.rc-name{font-size:12px;font-weight:600;color:var(--t1);margin-bottom:4px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:30px}
+.rc-price{font-size:14px;font-weight:800;color:var(--t1)}.rc-disc{font-size:10px;color:var(--red);font-weight:600}
 
 
 /* ══════════════════════════════════════
@@ -142,18 +142,18 @@ nav {position:fixed;top:0;z-index:200;background:rgba(10,10,10,.95);border-botto
 
 
 /* 햄버거 드로어 메뉴 */
-.mob-menu-btn { display:none; width:36px; height:36px; border-radius:8px; background:var(--s2,#171719); border:1px solid var(--b1,#242428); align-items:center; justify-content:center; cursor:pointer; font-size:18px; color:var(--t2,#8a8a9a); flex-shrink:0; }
+.mob-menu-btn { display:none; width:36px; height:36px; border-radius:8px; background:var(--bg,#F8F8F7); border:1px solid var(--border,#E8E8E8); align-items:center; justify-content:center; cursor:pointer; font-size:18px; color:var(--t2,#6B7280); flex-shrink:0; }
 .mob-drawer{display:none;position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.82);align-items:flex-end;}
 .mob-drawer.open{display:flex;}
-.mob-drawer-inner { background:var(--s1,#111114); width:100%; border-radius:20px 20px 0 0; padding:20px 20px 40px; transform:translateY(100%); transition:transform .3s ease; }
+.mob-drawer-inner { background:var(--white,#FFF); width:100%; border-radius:20px 20px 0 0; padding:20px 20px 40px; transform:translateY(100%); transition:transform .3s ease; }
 .mob-drawer.open .mob-drawer-inner { transform:translateY(0); }
-.mob-drawer-handle { width:36px; height:4px; background:var(--b2,#2e2e34); border-radius:2px; margin:0 auto 20px; }
+.mob-drawer-handle { width:36px; height:4px; background:var(--border2,#D8D8D8); border-radius:2px; margin:0 auto 20px; }
 .mob-drawer-cats { display:flex; flex-direction:column; gap:6px; margin-bottom:20px; }
-.mob-drawer-cats a { padding:12px 16px; border-radius:10px; font-size:15px; font-weight:600; color:var(--t,#F2F2F5); text-decoration:none; border:1px solid var(--b1,#242428); background:var(--s2,#171719); display:flex; align-items:center; gap:10px; }
+.mob-drawer-cats a { padding:12px 16px; border-radius:10px; font-size:15px; font-weight:600; color:var(--t1,#111); text-decoration:none; border:1px solid var(--border,#E8E8E8); background:var(--bg,#F8F8F7); display:flex; align-items:center; gap:10px; }
 .mob-drawer-btns { display:flex; gap:8px; }
 .mob-drawer-btns button { flex:1; padding:12px; border-radius:10px; font-size:14px; font-weight:700; cursor:pointer; font-family:inherit; }
-.mob-search-bar { display:none; align-items:center; gap:8px; background:var(--s2,#171719); border:1px solid var(--b1,#242428); border-radius:10px; padding:10px 14px; margin:6px 16px 0; }
-.mob-search-bar input { background:none; border:none; outline:none; color:var(--t,#F2F2F5); font-size:14px; font-family:inherit; width:100%; }
+.mob-search-bar { display:none; align-items:center; gap:8px; background:var(--bg,#F8F8F7); border:1px solid var(--border,#E8E8E8); border-radius:10px; padding:10px 14px; margin:6px 16px 0; }
+.mob-search-bar input { background:none; border:none; outline:none; color:var(--t1,#111); font-size:14px; font-family:inherit; width:100%; }
 
 
 
@@ -312,7 +312,7 @@ input, select, textarea { font-size: 16px !important; }
           <div class="pt-time"><span class="ptc" id="ph">02</span>:<span class="ptc" id="pm">14</span>:<span class="ptc" id="ps">38</span></div>
         </div>
         <div class="pd-prog">
-          <div class="pd-prog-row"><span>4,812명 참여</span><span style="color:var(--r);font-weight:600">마감까지 18% 남음</span></div>
+          <div class="pd-prog-row"><span>4,812명 참여</span><span style="color:var(--red);font-weight:600">마감까지 18% 남음</span></div>
           <div class="pd-prog-bar"><div class="pd-prog-fill" style="width:82%"></div></div>
         </div>
         <div class="pd-viewers">지금 <span>127명</span>이 이 공구를 보고 있어요</div>
@@ -333,7 +333,7 @@ input, select, textarea { font-size: 16px !important; }
           <span class="pt-v" id="total-price">40,800원</span>
         </div>
         <button class="btn-buy-main" id="buyBtn" onclick="doBuy()">지금 공구 참여하기 🛍️</button>
-        <div id="buyErr" style="display:none;color:#FF3B3B;font-size:13px;margin-top:8px;padding:10px;background:rgba(255,59,59,0.08);border-radius:8px;text-align:center"></div>
+        <div id="buyErr" style="display:none;color:#EF4444;font-size:13px;margin-top:8px;padding:10px;background:rgba(255,59,59,0.08);border-radius:8px;text-align:center"></div>
         <div id="buyOk" style="display:none;color:#22c55e;font-size:13px;margin-top:8px;padding:10px;background:rgba(34,197,94,0.08);border-radius:8px;text-align:center"></div>
         <button class="btn-wish" id="wish-btn" onclick="toggleWish()">♡ 찜하기</button>
         <div class="pd-delivery">
@@ -365,7 +365,7 @@ let qty=1,price=40800;
 function changeQty(d){qty=Math.max(1,Math.min(3,qty+d));document.getElementById('qty').textContent=qty;document.getElementById('total-price').textContent=(price*qty).toLocaleString()+'원';}
 function setOpt(btn){document.querySelectorAll('.opt').forEach(o=>o.classList.remove('on'));btn.classList.add('on');}
 function setTab(btn,id){document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('on'));document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('on'));btn.classList.add('on');document.getElementById(id).classList.add('on');}
-function toggleWish(){const b=document.getElementById('wish-btn');b.textContent=b.textContent.includes('♡')?'♥ 찜 완료':'♡ 찜하기';b.style.color=b.textContent.includes('♥')?'var(--r)':'';}
+function toggleWish(){const b=document.getElementById('wish-btn');b.textContent=b.textContent.includes('♡')?'♥ 찜 완료':'♡ 찜하기';b.style.color=b.textContent.includes('♥')?'var(--red)':'';}
 function copyLink(){navigator.clipboard?.writeText(location.href).then(()=>alert('링크가 복사됐어요!'));}
 function shareKakao(){alert('카카오톡 공유 (Kakao SDK 연동 필요)');}
 function shareInsta(){alert('인스타그램 공유');}
@@ -401,9 +401,9 @@ document.querySelectorAll('.pd-thumb').forEach(th=>th.addEventListener('click',f
 .mob-bottom-nav {
   display: none;
   position: fixed; bottom: 0; left: 0; right: 0;
-  background: rgba(10,10,10,.97);
+  background: rgba(255,255,255,.88);
   
-  border-top: 1px solid var(--b1, #242428);
+  border-top: 1px solid var(--border, #E8E8E8);
   z-index: 300;
   padding: 0 8px;
   padding-bottom: env(safe-area-inset-bottom, 0px);
@@ -412,18 +412,18 @@ document.querySelectorAll('.pd-thumb').forEach(th=>th.addEventListener('click',f
   flex: 1; display: flex; flex-direction: column;
   align-items: center; gap: 3px;
   padding: 10px 4px;
-  text-decoration: none; color: var(--t2, #8a8a9a);
+  text-decoration: none; color: var(--t2, #6B7280);
   transition: .15s;
 }
 .mob-bottom-nav .mbn-item:hover,
-.mob-bottom-nav .mbn-item.active { color: var(--r, #FF3B3B); }
+.mob-bottom-nav .mbn-item.active { color: var(--red, #EF4444); }
 .mbn-icon { font-size: 18px; position: relative; }
 .mbn-label { font-size: 10px; font-weight: 600; white-space: nowrap; }
 .mbn-badge {
   position: absolute; top: -3px; right: -5px;
   width: 8px; height: 8px; border-radius: 50%;
-  background: var(--r, #FF3B3B);
-  border: 1.5px solid var(--bg, #0A0A0A);
+  background: var(--red, #EF4444);
+  border: 1.5px solid var(--bg, #F8F8F7);
 }
 
 </style>
@@ -446,6 +446,17 @@ if (GUGU_ID) {
       .single();
 
     if (error || !g) return; // 데이터 없으면 데모 유지
+
+    // 페이지뷰 기록 (전환율 + 유입 분석용)
+    try {
+      const viewer = await getCurrentUser();
+      await sb.from('page_views').insert({
+        gugu_id: GUGU_ID,
+        viewer_id: viewer?.id || null,
+        referrer: document.referrer || null,
+        source: urlParams.get('utm_source') || null
+      });
+    } catch(e) { /* 뷰 기록 실패해도 무시 */ }
 
     const p     = g.profiles;
     const iname = p?.channel_name || p?.name || '인플루언서';
@@ -497,7 +508,7 @@ if (GUGU_ID) {
     // 진행률
     const progRow  = document.querySelector('.pd-prog-row');
     const progFill = document.querySelector('.pd-prog-fill');
-    if (progRow)  progRow.innerHTML = `<span>${(g.current_participants||0).toLocaleString()}명 참여</span><span style="color:var(--r);font-weight:600">마감까지 ${100-pct}% 남음</span>`;
+    if (progRow)  progRow.innerHTML = `<span>${(g.current_participants||0).toLocaleString()}명 참여</span><span style="color:var(--red);font-weight:600">마감까지 ${100-pct}% 남음</span>`;
     if (progFill) progFill.style.width = pct + '%';
 
     // 타이머 — 종료일까지 카운트다운
@@ -566,7 +577,7 @@ async function doBuy(){
   const u = await getCurrentUser();
   if(!u){
     err.style.display='block';
-    err.innerHTML='구매하려면 로그인이 필요해요. <a href="login.html" style="color:var(--r);font-weight:700">로그인하기 →</a>';
+    err.innerHTML='구매하려면 로그인이 필요해요. <a href="login.html" style="color:var(--red);font-weight:700">로그인하기 →</a>';
     return;
   }
   if(u.profile?.role === 'influencer'){
@@ -612,7 +623,7 @@ async function doBuy(){
   // 참여자 수 증가
   await sb.rpc('increment_participants', {p_gugu_id: GUGU_ID});
 
-  btn.textContent='주문 완료! ✓'; btn.style.background='var(--g)';
+  btn.textContent='주문 완료! ✓'; btn.style.background='var(--green)';
   ok.style.display='block';
   ok.textContent='🎉 공구 참여 완료! 인플루언서 대시보드에 바로 반영돼요.';
   setTimeout(()=>location.href='order-complete.html', 1500);
@@ -679,7 +690,7 @@ function renderProductDetailV2(gugu) {
   if (infSub) infSub.textContent = `${profile.follower_count ? `팔로워 ${Number(profile.follower_count).toLocaleString('ko-KR')}명` : '인플루언서'} · ${gugu.category || '공구'}`;
 
   const progRow = document.querySelector('.pd-prog-row');
-  if (progRow) progRow.innerHTML = `<span>${Number(gugu.current_participants || 0).toLocaleString('ko-KR')}명 참여</span><span style="color:var(--r);font-weight:600">${escapeHtml(daysLeft(gugu.end_date))}</span>`;
+  if (progRow) progRow.innerHTML = `<span>${Number(gugu.current_participants || 0).toLocaleString('ko-KR')}명 참여</span><span style="color:var(--red);font-weight:600">${escapeHtml(daysLeft(gugu.end_date))}</span>`;
   const progFill = document.querySelector('.pd-prog-fill');
   if (progFill) progFill.style.width = `${pct}%`;
   const viewers = document.querySelector('.pd-viewers');
@@ -737,7 +748,7 @@ async function doBuy() {
   const user = await getCurrentUser();
   if (!user) {
     err.style.display = 'block';
-    err.innerHTML = '구매하려면 로그인이 필요해요. <a href="login.html" style="color:var(--r);font-weight:700">로그인하기</a>';
+    err.innerHTML = '구매하려면 로그인이 필요해요. <a href="login.html" style="color:var(--red);font-weight:700">로그인하기</a>';
     return;
   }
 
