@@ -433,6 +433,7 @@ async function doPay() {
   IMP.init(imp_code);
   IMP.request_pay({
     pg: 'tosspayments.iamporttest_3',
+    channelKey: 'channel-key-6c012d8e-770b-4cd5-8f7f-c1f33b786899',
     pay_method: 'card',
     merchant_uid: order_id,
     name: order_name,
