@@ -479,9 +479,13 @@ async function doPay() {
       // 결제 성공 → 서버 검증
       goComplete(rsp.imp_uid);
     } else {
-      btn.disabled = false;
-      btn.textContent = `${parseInt(btn.dataset.total).toLocaleString()}원 결제하기`;
-      if (rsp.error_msg) alert(rsp.error_msg);
+      setTimeout(async () => {
+        if (await pollPayment()) return;
+        if (pollTimer) clearInterval(pollTimer);
+        btn.disabled = false;
+        btn.textContent = `${parseInt(btn.dataset.total).toLocaleString()}원 결제하기`;
+        if (rsp.error_msg) alert(rsp.error_msg);
+      }, 1200);
     }
   });
 }
