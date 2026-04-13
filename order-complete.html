@@ -266,6 +266,12 @@ input, select, textarea { font-size: 16px !important; }
   const orderId    = qs.get('merchant_uid');
   const amount     = qs.get('amount');
 
+  if (paymentKey && orderId && amount && window.opener && !window.opener.closed) {
+    window.opener.location.href = location.href;
+    window.close();
+    return;
+  }
+
   if (!paymentKey || !orderId || !amount) return; // 직접 접근 무시
 
   // 로딩 표시
