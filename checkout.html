@@ -428,64 +428,27 @@ async function doPay() {
   }
 
   // ── 카드 결제 (PortOne) ──
-  const { order_id, order_db_id, amount, order_name, customer_name, customer_email, imp_code } = d;
+  const { order_id, order_db_id, amount, order_name, customer_name, customer_email, imp_code, pg, channel_key } = d;
   const IMP = window.IMP;
+  if (!IMP) { alert('결제 모듈 로드 실패'); btn.disabled=false; btn.textContent=`${parseInt(btn.dataset.total).toLocaleString()}원 결제하기`; return; }
   IMP.init(imp_code);
-  let paymentHandled = false;
-  let pollTimer = null;
-  const goComplete = (impUid) => {
-    if (paymentHandled) return;
-    paymentHandled = true;
-    if (pollTimer) clearInterval(pollTimer);
-    const impParam = impUid ? `imp_uid=${encodeURIComponent(impUid)}&` : '';
-    location.href = `/order-complete.html?${impParam}merchant_uid=${encodeURIComponent(order_id)}&amount=${encodeURIComponent(amount)}`;
-  };
-  const pollPayment = async () => {
-    if (paymentHandled) return false;
-    try {
-      const resp = await fetch('/api/payments/confirm', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-        body: JSON.stringify({ merchant_uid: order_id, amount: parseInt(amount) }),
-      });
-      const data = await resp.json();
-      if (data.ok) {
-        goComplete();
-        return true;
-      }
-    } catch (e) {
-      console.warn('[payment poll]', e);
-    }
-    return false;
-  };
-  pollTimer = setInterval(pollPayment, 2500);
-  setTimeout(() => { if (!paymentHandled && pollTimer) clearInterval(pollTimer); }, 120000);
-  window.addEventListener('focus', pollPayment);
-  document.addEventListener('visibilitychange', () => {
-    if (!document.hidden) pollPayment();
-  });
   IMP.request_pay({
-    pg: 'tosspayments.iamporttest_3',
-    channelKey: 'channel-key-6c012d8e-770b-4cd5-8f7f-c1f33b786899',
+    pg: (pg || 'tosspayments') + '.iamporttest_3',
+    channelKey: channel_key || 'channel-key-6c012d8e-770b-4cd5-8f7f-c1f33b786899',
     pay_method: 'card',
     merchant_uid: order_id,
     name: order_name,
     amount: amount,
     buyer_name: customer_name,
-    buyer_email: customer_email,
-    m_redirect_url: `${location.origin}/order-complete.html?merchant_uid=${encodeURIComponent(order_id)}&amount=${encodeURIComponent(amount)}`,
-  }, async function(rsp) {
+    buyer_email: customer_email || '',
+    m_redirect_url: `${location.origin}/order-complete.html?merchant_uid=${encodeURIComponent(order_id)}&amount=${amount}`,
+  }, function(rsp) {
     if (rsp.success) {
-      // 결제 성공 → 서버 검증
-      goComplete(rsp.imp_uid);
+      location.href = `/order-complete.html?imp_uid=${encodeURIComponent(rsp.imp_uid)}&merchant_uid=${encodeURIComponent(rsp.merchant_uid)}&amount=${amount}`;
     } else {
-      setTimeout(async () => {
-        if (await pollPayment()) return;
-        if (pollTimer) clearInterval(pollTimer);
-        btn.disabled = false;
-        btn.textContent = `${parseInt(btn.dataset.total).toLocaleString()}원 결제하기`;
-        if (rsp.error_msg) alert(rsp.error_msg);
-      }, 1200);
+      btn.disabled = false;
+      btn.textContent = `${parseInt(btn.dataset.total).toLocaleString()}원 결제하기`;
+      if (rsp.error_msg) alert(rsp.error_msg);
     }
   });
 }
