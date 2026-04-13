@@ -130,12 +130,40 @@ class _Query:
         return _Result(data, count)
 
 
+class _RpcResult:
+    def __init__(self, data=None):
+        self.data = data
+
+    def execute(self):
+        api_key = SUPABASE_SERVICE_KEY or SUPABASE_ANON_KEY
+        bearer = SUPABASE_SERVICE_KEY or SUPABASE_ANON_KEY
+        resp = requests.post(
+            f"{SUPABASE_URL}/rest/v1/rpc/{self._fn}",
+            headers={
+                "apikey": api_key,
+                "Authorization": f"Bearer {bearer}",
+                "Content-Type": "application/json",
+            },
+            json=self._params,
+            timeout=20,
+        )
+        if resp.status_code >= 400:
+            raise RuntimeError(f"Supabase RPC {resp.status_code}: {resp.text}")
+        return _Result(resp.json() if resp.text else None)
+
+
 class _DB:
     def __init__(self, auth_token=None):
         self.auth_token = auth_token
 
     def table(self, name):
         return _Query(name, auth_token=self.auth_token)
+
+    def rpc(self, fn, params=None):
+        r = _RpcResult()
+        r._fn = fn
+        r._params = params or {}
+        return r
 
 
 _client = _DB()
