@@ -1,16 +1,46 @@
 """
 POST /api/payments/confirm
-Toss 결제 완료 후 서버 검증 + 주문 확정
-Body: { paymentKey, orderId, amount }
+PortOne 결제 완료 후 서버 검증 + 주문 확정
+Body: { imp_uid, merchant_uid, amount }
 """
 from http.server import BaseHTTPRequestHandler
-import json, os, base64, datetime
+import json, os, datetime
 import requests as req
 from api._db import get_db, ok, err
 from api._auth import get_user_with_profile
 
-TOSS_SECRET_KEY = os.environ.get("TOSS_SECRET_KEY", "test_sk_zXLkKEypNArWmo50nX3lmeaxYG5R")
-TOSS_CONFIRM_URL = "https://api.tosspayments.com/v1/payments/confirm"
+PORTONE_API_KEY = os.environ.get("PORTONE_API_KEY", "")
+PORTONE_API_SECRET = os.environ.get("PORTONE_API_SECRET", "")
+
+
+def _get_portone_token():
+    """PortOne 액세스 토큰 발급"""
+    resp = req.post(
+        "https://api.iamport.kr/users/getToken",
+        json={"imp_key": PORTONE_API_KEY, "imp_secret": PORTONE_API_SECRET},
+        timeout=10,
+    )
+    if resp.status_code != 200:
+        return None
+    data = resp.json()
+    if data.get("code") != 0:
+        return None
+    return data["response"]["access_token"]
+
+
+def _get_payment_info(access_token, imp_uid):
+    """PortOne에서 결제 정보 조회"""
+    resp = req.get(
+        f"https://api.iamport.kr/payments/{imp_uid}",
+        headers={"Authorization": access_token},
+        timeout=10,
+    )
+    if resp.status_code != 200:
+        return None
+    data = resp.json()
+    if data.get("code") != 0:
+        return None
+    return data["response"]
 
 
 class handler(BaseHTTPRequestHandler):
@@ -23,78 +53,101 @@ class handler(BaseHTTPRequestHandler):
         if not user:
             return self._send(*err("로그인이 필요합니다", 401))
 
-        payment_key = body.get("paymentKey")
-        order_id    = body.get("orderId")      # toss_order_id
-        amount      = int(body.get("amount", 0))
+        imp_uid      = body.get("imp_uid")
+        merchant_uid = body.get("merchant_uid")  # order_id (GUGU-XXXX)
+        amount       = int(body.get("amount", 0))
 
-        if not all([payment_key, order_id, amount]):
+        if not all([imp_uid, merchant_uid, amount]):
             return self._send(*err("필수 파라미터 누락"))
 
         db = get_db()
 
         # DB에서 주문 조회 (금액 위변조 방지)
-        o = db.table("orders").select("*").eq("toss_order_id", order_id).eq("consumer_id", user.id).single().execute()
-        if not o.data:
+        # merchant_uid로 조회 시도 (toss_order_id 컬럼)
+        order = None
+        try:
+            o = db.table("orders").select("*").eq("toss_order_id", merchant_uid).eq("consumer_id", user.id).single().execute()
+            order = o.data
+        except Exception:
+            pass
+
+        if not order:
+            # toss_order_id 컬럼이 없는 경우 consumer_id + pending 으로 최근 주문 조회
+            try:
+                o = db.table("orders").select("*").eq("consumer_id", user.id).eq("status", "pending").order("created_at", desc=True).limit(1).execute()
+                if o.data:
+                    order = o.data[0]
+            except Exception:
+                pass
+
+        if not order:
             return self._send(*err("주문을 찾을 수 없습니다"))
 
-        order = o.data
         if order["total_amount"] != amount:
             return self._send(*err("금액 불일치 — 결제 거부", 400))
         if order["status"] != "pending":
             return self._send(*err("이미 처리된 주문입니다"))
 
-        # Toss 서버 검증
-        auth_bytes = base64.b64encode(f"{TOSS_SECRET_KEY}:".encode()).decode()
-        toss_resp = req.post(
-            TOSS_CONFIRM_URL,
-            headers={
-                "Authorization": f"Basic {auth_bytes}",
-                "Content-Type": "application/json",
-            },
-            json={"paymentKey": payment_key, "orderId": order_id, "amount": amount},
-            timeout=10,
-        )
+        # PortOne 서버 검증
+        access_token = _get_portone_token()
+        if not access_token:
+            return self._send(*err("결제 검증 실패: 토큰 발급 오류"))
 
-        if toss_resp.status_code != 200:
-            toss_err = toss_resp.json()
-            return self._send(*err(f"결제 실패: {toss_err.get('message', '알 수 없는 오류')}"))
+        payment = _get_payment_info(access_token, imp_uid)
+        if not payment:
+            return self._send(*err("결제 검증 실패: 결제 정보 조회 오류"))
 
-        toss_data = toss_resp.json()
-        method = toss_data.get("method", "")
+        # 금액 일치 확인
+        if payment["amount"] != amount:
+            return self._send(*err(f"결제 금액 불일치: 요청 {amount} vs 실제 {payment['amount']}"))
+
+        if payment["status"] != "paid":
+            return self._send(*err(f"결제 상태 이상: {payment['status']}"))
+
+        pay_method = payment.get("pay_method", "card")
 
         # 결제 레코드 저장
-        db.table("payments").insert({
-            "order_id":       order["id"],
-            "payment_key":    payment_key,
-            "toss_order_id":  order_id,
-            "payment_method": method,
-            "amount":         amount,
-            "status":         "done",
-            "raw_response":   json.dumps(toss_data, ensure_ascii=False),
-        }).execute()
+        try:
+            db.table("payments").insert({
+                "order_id":       order["id"],
+                "payment_key":    imp_uid,
+                "toss_order_id":  merchant_uid,
+                "payment_method": pay_method,
+                "amount":         amount,
+                "status":         "done",
+                "raw_response":   json.dumps(payment, ensure_ascii=False, default=str),
+            }).execute()
+        except Exception as e:
+            print(f"[confirm] payment insert error: {e}")
 
         # 주문 상태 업데이트
         db.table("orders").update({
             "status":      "paid",
             "paid_at":     datetime.datetime.utcnow().isoformat(),
-            "payment_key": payment_key,
+            "payment_key": imp_uid,
         }).eq("id", order["id"]).execute()
 
         # 참여자 수 증가
-        db.rpc("increment_participants", {"p_gugu_id": order["gugu_id"]}).execute()
+        try:
+            db.rpc("increment_participants", {"p_gugu_id": order["gugu_id"]}).execute()
+        except Exception as e:
+            print(f"[confirm] increment error: {e}")
 
         # 인플루언서에게 알림
-        gugu = db.table("gugus").select("influencer_id, product_name").eq("id", order["gugu_id"]).single().execute().data
-        if gugu:
-            gugu_title = (gugu.get("product_name") or gugu.get("title") or "상품")[:30]
-            db.table("notifications").insert({
-                "user_id": gugu["influencer_id"],
-                "type":    "new_order",
-                "title":   "새 주문이 들어왔어요 🛍️",
-                "content": f"{profile.get('name','소비자')}님이 [{gugu_title}]을 주문했어요",
-                "link":    f"/influencer-dashboard.html",
-                "is_read": False,
-            }).execute()
+        try:
+            gugu = db.table("gugus").select("influencer_id, title").eq("id", order["gugu_id"]).single().execute().data
+            if gugu:
+                gugu_title = (gugu.get("title") or "상품")[:30]
+                db.table("notifications").insert({
+                    "user_id": gugu["influencer_id"],
+                    "type":    "new_order",
+                    "title":   "새 주문이 들어왔어요",
+                    "content": f"{profile.get('name','소비자')}님이 [{gugu_title}]을 주문했어요",
+                    "link":    "/influencer-dashboard.html",
+                    "is_read": False,
+                }).execute()
+        except Exception as e:
+            print(f"[confirm] notification error: {e}")
 
         self._send(*ok({"order_id": order["id"], "status": "paid"}))
 

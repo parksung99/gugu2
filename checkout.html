@@ -277,8 +277,8 @@ input, select, textarea { font-size: 16px !important; }
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase.js"></script>
 <script src="js/nav.js"></script>
-<!-- Toss Payments SDK -->
-<script src="https://js.tosspayments.com/v1/payment"></script>
+<!-- PortOne SDK -->
+<script src="https://cdn.iamport.kr/v1/iamport.js"></script>
 <script>
 function toggleAll(el){document.querySelectorAll('.agree-cb').forEach(c=>c.checked=el.checked)}
 
@@ -427,24 +427,28 @@ async function doPay() {
     return;
   }
 
-  // ── 카드 결제 (Toss) ──
-  const { order_id, amount, order_name, customer_name, customer_email, toss_client_key } = d;
-  const tossPayments = TossPayments(toss_client_key);
-  try {
-    await tossPayments.requestPayment('카드', {
-      amount,
-      orderId:      order_id,
-      orderName:    order_name,
-      customerName: customer_name,
-      customerEmail:customer_email,
-      successUrl: window.location.origin + '/order-complete.html',
-      failUrl:    window.location.origin + '/checkout.html?gugu_id=' + btn.dataset.guguId + '&qty=' + btn.dataset.qty + '&fail=1',
-    });
-  } catch (e) {
-    btn.disabled = false;
-    btn.textContent = `${parseInt(btn.dataset.total).toLocaleString()}원 결제하기`;
-    if (e.code !== 'USER_CANCEL') alert(e.message || '결제 실패');
-  }
+  // ── 카드 결제 (PortOne) ──
+  const { order_id, order_db_id, amount, order_name, customer_name, customer_email, imp_code } = d;
+  const IMP = window.IMP;
+  IMP.init(imp_code);
+  IMP.request_pay({
+    pg: 'tosspayments',
+    pay_method: 'card',
+    merchant_uid: order_id,
+    name: order_name,
+    amount: amount,
+    buyer_name: customer_name,
+    buyer_email: customer_email,
+  }, async function(rsp) {
+    if (rsp.success) {
+      // 결제 성공 → 서버 검증
+      location.href = `/order-complete.html?imp_uid=${rsp.imp_uid}&merchant_uid=${rsp.merchant_uid}&amount=${amount}`;
+    } else {
+      btn.disabled = false;
+      btn.textContent = `${parseInt(btn.dataset.total).toLocaleString()}원 결제하기`;
+      if (rsp.error_msg) alert(rsp.error_msg);
+    }
+  });
 }
 </script>
 

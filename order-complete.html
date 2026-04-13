@@ -259,11 +259,11 @@ input, select, textarea { font-size: 16px !important; }
 <script src="js/supabase.js"></script>
 <script src="js/nav.js"></script>
 <script>
-// Toss 결제 완료 → 서버 검증 → 주문 확정
+// PortOne 결제 완료 → 서버 검증 → 주문 확정
 (async function confirmPayment() {
   const qs = new URLSearchParams(location.search);
-  const paymentKey = qs.get('paymentKey');
-  const orderId    = qs.get('orderId');
+  const paymentKey = qs.get('imp_uid');
+  const orderId    = qs.get('merchant_uid');
   const amount     = qs.get('amount');
 
   if (!paymentKey || !orderId || !amount) return; // 직접 접근 무시
@@ -280,7 +280,7 @@ input, select, textarea { font-size: 16px !important; }
   const resp = await fetch('/api/payments/confirm', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-    body: JSON.stringify({ paymentKey, orderId, amount: parseInt(amount) }),
+    body: JSON.stringify({ imp_uid: paymentKey, merchant_uid: orderId, amount: parseInt(amount) }),
   });
   const data = await resp.json();
 

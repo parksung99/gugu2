@@ -105,7 +105,7 @@ class handler(BaseHTTPRequestHandler):
                              "total_amount","payment_method","status")}
             order = db.table("orders").insert(base).execute()
 
-        toss_client_key = os.environ.get("TOSS_CLIENT_KEY", "test_ck_D5GePWvyJnrK0W0k6q8gLzN97Eoq")
+        imp_code = os.environ.get("IMP_CODE", "imp15482145")
         self._send(*ok({
             "payment_method":  "card",
             "order_id":        _toss_order_id,
@@ -114,7 +114,7 @@ class handler(BaseHTTPRequestHandler):
             "order_name":      gugu_title,
             "customer_name":   profile.get("name", ""),
             "customer_email":  getattr(user, "email", "") or "",
-            "toss_client_key": toss_client_key,
+            "imp_code":        imp_code,
         }))
 
     def _body(self):
