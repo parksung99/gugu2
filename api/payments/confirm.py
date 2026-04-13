@@ -9,8 +9,8 @@ import requests as req
 from api._db import get_db, ok, err
 from api._auth import get_user_with_profile
 
-PORTONE_API_KEY = os.environ.get("PORTONE_API_KEY", "")
-PORTONE_API_SECRET = os.environ.get("PORTONE_API_SECRET", "")
+PORTONE_API_KEY = os.environ.get("PORTONE_API_KEY") or os.environ.get("IMP_KEY", "")
+PORTONE_API_SECRET = os.environ.get("PORTONE_API_SECRET") or os.environ.get("IMP_SECRET", "")
 
 
 def _get_portone_token():
@@ -43,6 +43,21 @@ def _get_payment_info(access_token, imp_uid):
     return data["response"]
 
 
+def _find_payment_by_merchant_uid(access_token, merchant_uid, status="paid"):
+    """Look up a PortOne payment by merchant_uid when the browser callback is missed."""
+    resp = req.get(
+        f"https://api.iamport.kr/payments/find/{merchant_uid}/{status}",
+        headers={"Authorization": access_token},
+        timeout=10,
+    )
+    if resp.status_code != 200:
+        return None
+    data = resp.json()
+    if data.get("code") != 0:
+        return None
+    return data["response"]
+
+
 class handler(BaseHTTPRequestHandler):
     def do_OPTIONS(self):
         self._cors()
@@ -57,7 +72,7 @@ class handler(BaseHTTPRequestHandler):
         merchant_uid = body.get("merchant_uid")  # order_id (GUGU-XXXX)
         amount       = int(body.get("amount", 0))
 
-        if not all([imp_uid, merchant_uid, amount]):
+        if not all([merchant_uid, amount]):
             return self._send(*err("필수 파라미터 누락"))
 
         db = get_db()
@@ -85,6 +100,8 @@ class handler(BaseHTTPRequestHandler):
 
         if order["total_amount"] != amount:
             return self._send(*err("금액 불일치 — 결제 거부", 400))
+        if order["status"] == "paid":
+            return self._send(*ok({"order_id": order["id"], "status": "paid"}))
         if order["status"] != "pending":
             return self._send(*err("이미 처리된 주문입니다"))
 
@@ -93,11 +110,13 @@ class handler(BaseHTTPRequestHandler):
         if not access_token:
             return self._send(*err("결제 검증 실패: 토큰 발급 오류"))
 
-        payment = _get_payment_info(access_token, imp_uid)
+        payment = _get_payment_info(access_token, imp_uid) if imp_uid else _find_payment_by_merchant_uid(access_token, merchant_uid)
         if not payment:
             return self._send(*err("결제 검증 실패: 결제 정보 조회 오류"))
 
         # 금액 일치 확인
+        imp_uid = payment.get("imp_uid") or imp_uid
+
         if payment["amount"] != amount:
             return self._send(*err(f"결제 금액 불일치: 요청 {amount} vs 실제 {payment['amount']}"))
 

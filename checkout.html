@@ -431,6 +431,39 @@ async function doPay() {
   const { order_id, order_db_id, amount, order_name, customer_name, customer_email, imp_code } = d;
   const IMP = window.IMP;
   IMP.init(imp_code);
+  let paymentHandled = false;
+  let pollTimer = null;
+  const goComplete = (impUid) => {
+    if (paymentHandled) return;
+    paymentHandled = true;
+    if (pollTimer) clearInterval(pollTimer);
+    const impParam = impUid ? `imp_uid=${encodeURIComponent(impUid)}&` : '';
+    location.href = `/order-complete.html?${impParam}merchant_uid=${encodeURIComponent(order_id)}&amount=${encodeURIComponent(amount)}`;
+  };
+  const pollPayment = async () => {
+    if (paymentHandled) return false;
+    try {
+      const resp = await fetch('/api/payments/confirm', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({ merchant_uid: order_id, amount: parseInt(amount) }),
+      });
+      const data = await resp.json();
+      if (data.ok) {
+        goComplete();
+        return true;
+      }
+    } catch (e) {
+      console.warn('[payment poll]', e);
+    }
+    return false;
+  };
+  pollTimer = setInterval(pollPayment, 2500);
+  setTimeout(() => { if (!paymentHandled && pollTimer) clearInterval(pollTimer); }, 120000);
+  window.addEventListener('focus', pollPayment);
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) pollPayment();
+  });
   IMP.request_pay({
     pg: 'tosspayments.iamporttest_3',
     channelKey: 'channel-key-6c012d8e-770b-4cd5-8f7f-c1f33b786899',
@@ -444,7 +477,7 @@ async function doPay() {
   }, async function(rsp) {
     if (rsp.success) {
       // 결제 성공 → 서버 검증
-      location.href = `/order-complete.html?imp_uid=${rsp.imp_uid}&merchant_uid=${rsp.merchant_uid}&amount=${amount}`;
+      goComplete(rsp.imp_uid);
     } else {
       btn.disabled = false;
       btn.textContent = `${parseInt(btn.dataset.total).toLocaleString()}원 결제하기`;

@@ -63,6 +63,7 @@ class handler(BaseHTTPRequestHandler):
             "payment_method": payment_method,
             "status":         "pending",
         }
+        order_data["toss_order_id"] = order_id
         # 선택 컬럼 — DB에 있을 때만 추가 (없으면 PostgREST가 42703 에러)
         if shipping.get("name"):    order_data["shipping_name"]    = shipping["name"]
         if shipping.get("phone"):   order_data["shipping_phone"]   = shipping["phone"]
